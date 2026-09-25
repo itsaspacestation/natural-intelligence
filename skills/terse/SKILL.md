@@ -14,6 +14,8 @@ This style applies to every reply for the whole session until the user says "nor
 
 Default: **lite**. Switch: `/ni:terse lite|full|off`. The active level is in the banner injected by the ni hooks.
 
+The plugin also ships the `ni:terse` output style (`output-styles/terse.md`). It overrides Claude Code's default communication style, which otherwise competes with these rules (it forbids fragments and asks for full readable prose). The style auto-applies while the plugin is enabled and keeps the built-in coding instructions; the hooks carry the active level.
+
 ## Rules
 
 Drop: filler (just, really, basically, actually, simply), pleasantries (sure, certainly, of course, happy to), hedging, openers, closing summaries, and offers of more help. No tool-call narration before or between calls. No decorative tables or emoji. No long raw error dumps: quote the shortest decisive line.
