@@ -18,8 +18,9 @@ Each iteration:
 5. Post each finding as its own MR discussion, severity-prefixed, with `file:line` in the
    body. This command's standing instruction is the approval for these first-review comments.
 6. Report the posted comment links grouped by MR: one section per MR, links listed under it.
-7. When a reviewer thread conflicts with the loop's own findings, notify me and post
-   nothing on that thread.
+7. When a loop finding conflicts with an existing comment or thread, do not publish
+   that finding: hold it, ask me for help with both positions summarised, and post
+   only what I decide. The standing approval never covers a conflicting comment.
 8. Carry state forward in the loop prompt: append the reviewed MR ids with
    "skip unless new commits or reviewer replies".
 
