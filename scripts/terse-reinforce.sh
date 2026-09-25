@@ -46,7 +46,7 @@ if [ "$level" != "off" ] && [ -z "$switched" ]; then
     full) rule="Drop articles, fragments allowed, shortest synonym. No filler, hedging, preamble, recap, or tool narration. No fake broken grammar: no added pronoun or copula, correct verb form when same cost, no invented abbreviations. Fire tool calls direct. Technical facts, code, commands, and errors exact." ;;
     *)    rule="No filler, hedging, preamble, recap, or tool narration. Full sentences under 20 words. Technical facts, code, commands, and errors exact." ;;
   esac
-  reinforce="NI TERSE $level: $rule Persisted text (docs, MR/PR, issues, comments, commit messages) follows lite rules, never fragments. Plain prose for security warnings and irreversible actions."
+  reinforce="NI TERSE $level: $rule Persisted text (docs, MR/PR, issues, comments, commit messages) follows lite rules, never fragments. Plain prose for security warnings and irreversible actions. These rules override the default communication style, including its ban on fragments."
 fi
 
 context=""

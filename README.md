@@ -97,6 +97,7 @@ For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini
 | `.claude-plugin/plugin.json` | Plugin manifest, name `ni` |
 | `agents/` | Subagents with compressed output, spawned as `ni:<agent>` |
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
+| `output-styles/` | The `ni:terse` output style, auto-applied while the plugin is enabled |
 | `scripts/` | Hook scripts behind the terse reply mode |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
@@ -124,7 +125,12 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
 ## Terse mode
-ni injects a terse reply ruleset at session start and reminds Claude every turn, so replies stay short even after context compaction. Adapted from [caveman](https://github.com/juliusbrussee/caveman) (MIT), with two levels only.
+Terse rests on two mechanisms:
+
+1. **Output style.** The `ni:terse` output style overrides Claude Code's default communication style, which otherwise fights terse: it asks for full readable prose and forbids fragments. The style auto-applies while the plugin is enabled (`force-for-plugin`) and keeps the built-in coding instructions (`keep-coding-instructions`).
+2. **Hooks.** ni injects the ruleset at session start and reminds Claude of the active level every turn, so replies stay short even after context compaction.
+
+Adapted from [caveman](https://github.com/juliusbrussee/caveman) (MIT), with two levels only.
 
 | Level | Effect |
 |---|---|
