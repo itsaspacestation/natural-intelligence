@@ -11,17 +11,24 @@ Each iteration:
 
 1. List my open MRs: `glab mr list --author=@me --repo <path>`.
 2. For each MR, read state: `glab api projects/:id/merge_requests/<iid>` for
-   `detailed_merge_status` and `draft`, and
-   `glab api projects/:id/merge_requests/<iid>/approvals` for `approved`.
-3. Merge gates, all required: not a draft, `approved` is true, no unresolved threads,
-   `detailed_merge_status` is `mergeable` or only waiting on a running pipeline.
+   `detailed_merge_status`, `draft`, and `reviewers`, and
+   `glab api projects/:id/merge_requests/<iid>/approvals` for `approved` and `approved_by`.
+3. Merge gates, all required: not a draft, `approved` is true, at least one reviewer
+   assigned, every username in `reviewers` also appears in `approved_by`, no unresolved
+   threads, `detailed_merge_status` is `mergeable` or only waiting on a running pipeline.
+   `approved` alone only means the approval rules are met; it never replaces the
+   every-reviewer check.
 4. Gates pass and pipeline succeeded: `glab mr merge <iid> --repo <path>`.
    Gates pass but pipeline still running: `glab mr merge <iid> --auto-merge --repo <path>`,
-   then re-check it next iteration.
+   then re-check it next iteration. Auto-merge ignores the every-reviewer gate, so set it
+   only once every reviewer has approved. If a reviewer is added or an approval is revoked
+   afterwards, cancel it with
+   `glab api -X POST projects/:id/merge_requests/<iid>/cancel_merge_when_pipeline_succeeds`.
 5. `detailed_merge_status` is `need_rebase`: rebase my own branch with
    `glab mr rebase <iid> --repo <path>`, then re-check next iteration.
-6. Failed pipeline, conflicts, missing approval, or unresolved threads: skip, and report
-   the MR with its blocking reason.
+6. Failed pipeline, conflicts, missing approval, no reviewer, or unresolved threads: skip,
+   and report the MR with its blocking reason. For a missing approval, name the reviewers
+   who have not approved yet.
 7. Report each iteration: merged MRs with links, auto-merge set, blocked MRs with reasons.
 8. Carry state forward in the loop prompt: append merged MR ids as done, and pending ids
    with their last known blocker.
