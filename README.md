@@ -52,7 +52,13 @@ or simply
 ```
 Reviews every MR assigned to you in a loop, posts each finding as its own discussion, and reports the links. It never approves, merges, or resolves: those stay yours.
 
-### 7. Claude answers reviewers, and I approve
+### 7. Claude merges mine once approved
+```
+/ni:merge-loop group/project
+```
+Watches your own MRs in a loop and merges each one once it is approved, threads are resolved, and the pipeline is green. Anything blocked is reported with its reason, never forced.
+
+### 8. Claude answers reviewers, and I approve
 > Address the unresolved threads on MR !42.
 
 `ni:code-review` reads the threads, drafts the fixes and replies, and shows you a preview. Nothing is posted or resolved until you approve it.
@@ -152,6 +158,7 @@ User-invoked only; none loads on its own.
 | `/ni:help` | List the ni skills |
 | `/ni:terse` | Set the terse reply level |
 | `/ni:review-loop` | Review MRs assigned to me in a /loop, post findings, report the links |
+| `/ni:merge-loop` | Merge my approved MRs in a /loop, report merged and blocked ones |
 
 ## Agents
 Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose. Adapted from caveman's cavecrew (MIT).
