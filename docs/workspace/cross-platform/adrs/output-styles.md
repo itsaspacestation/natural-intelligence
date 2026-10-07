@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: accepted
 ---
 # Terse as output styles: no hooks, two styles, built-in switch
 

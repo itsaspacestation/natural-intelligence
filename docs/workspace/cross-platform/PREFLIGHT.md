@@ -33,7 +33,7 @@ Tick every box on disk, then commit the plan. Human gate: nothing below is ticke
 - [x] Total estimated time fits within the target session window (2–4H)
 
 **ADR ratification** (human moves `proposed` to `accepted`):
-- [ ] [output-styles](./adrs/output-styles.md) — stays `proposed` until tasks 10 and 11 pass (NFR7, NFR8)
+- [x] [output-styles](./adrs/output-styles.md) — accepted by the maintainer on 2026-10-07 after bench run 6; NFR8 (task 11) still to run
 - [x] [project-onboarding](./adrs/project-onboarding.md)
 
 **Plan commit**: once the gate passes, commit `docs/workspace/cross-platform/` and the root [CLAUDE.md](../../../CLAUDE.md) with:
