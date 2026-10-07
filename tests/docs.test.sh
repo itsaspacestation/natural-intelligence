@@ -26,13 +26,16 @@ fail() { FAILED=$((FAILED + 1)); printf 'FAIL %s: %s\n' "$1" "$2"; }
 skill_docs() { git ls-files -co --exclude-standard -- 'skills/*.md'; }
 
 # Prints file:line for every line holding a forbidden literal.
-# Exempt: the line right after PLATFORM_MARKER; dotnet.exe on a "WSL interop" line.
+# Exempt: the table after PLATFORM_MARKER, until the next blank line; dotnet.exe on a "WSL interop" line.
 scan_platform() {
   local file=$1 n=0 exempt=0 line lit rest
   while IFS= read -r line || [ -n "$line" ]; do
     n=$((n + 1))
-    if [ "$exempt" = 1 ]; then exempt=0; continue; fi
     case $line in "$PLATFORM_MARKER"*) exempt=1; continue ;; esac
+    if [ "$exempt" = 1 ]; then
+      [ -z "$line" ] && exempt=0
+      continue
+    fi
     for lit in "${FORBIDDEN_LITERALS[@]}"; do
       case $line in *"$lit"*) ;; *) continue ;; esac
       if [ "$lit" = '.exe' ]; then
@@ -48,18 +51,31 @@ scan_platform() {
 }
 
 # Prints file:line for every fenced line holding a shell-ism.
+# Only fences with no language tag or a shell tag (bash, sh, shell, zsh, console,
+# powershell, pwsh, cmd, bat) are scanned; mermaid, json, yaml fences are not.
 # Exempt: the table after SHELL_MARKER, until the next blank line.
 scan_shell() {
-  local file=$1 n=0 fence=0 table=0 line ism
+  local file=$1 n=0 fence=0 shellfence=0 table=0 line ism tag
   while IFS= read -r line || [ -n "$line" ]; do
     n=$((n + 1))
-    case ${line#"${line%%[! ]*}"} in '```'*) fence=$((1 - fence)); continue ;; esac
+    case ${line#"${line%%[! ]*}"} in
+      '```'*)
+        if [ "$fence" = 0 ]; then
+          fence=1
+          tag=${line#*'```'}
+          tag=${tag%% *}
+          case $tag in ''|bash|sh|shell|zsh|console|powershell|pwsh|cmd|bat) shellfence=1 ;; *) shellfence=0 ;; esac
+        else
+          fence=0; shellfence=0
+        fi
+        continue ;;
+    esac
     case $line in "$SHELL_MARKER"*) table=1; continue ;; esac
     if [ "$table" = 1 ]; then
       [ -z "$line" ] && table=0
       continue
     fi
-    [ "$fence" = 1 ] || continue
+    [ "$shellfence" = 1 ] || continue
     for ism in "${SHELL_ISMS[@]}"; do
       case $line in *"$ism"*) printf '%s:%s\n' "$file" "$n"; break ;; esac
     done
