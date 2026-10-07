@@ -335,8 +335,8 @@ classDiagram
 **Tests**: `test_shipped_tree`
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Test green on this branch (docs tolerated) and red when simulated with `GITHUB_REF_NAME=main` while `docs/` exists
-- [ ] README sentence present
+- [x] Test green on this branch (docs tolerated) and red when simulated with `GITHUB_REF_NAME=main` while `docs/` exists
+- [x] README sentence present
 **Depends on**: task 1
 **Time-box**: ~30 min
 **Uncertainty**: downhill

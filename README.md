@@ -108,6 +108,8 @@ For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
+An install is a full clone of this repository: `.github/` and `tests/` ship with the plugin but are never loaded; `docs/` and `CLAUDE.md` exist only on pull requests and are removed before merge.
+
 ## Update
 Auto-update is off by default for third-party marketplaces. Turn it on in `/plugin`, under **Marketplaces**, or update by hand:
 ```bash

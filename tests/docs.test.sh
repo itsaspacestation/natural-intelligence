@@ -25,6 +25,15 @@ LINKLINT_PCRE='(?<!\[)\x60(?:[\w.-]+/)*[\w.-]+\.md(?::\d+(?:[-,:]\d+)?)?\x60'
 ONBOARDING_LINK='software-engineer/SKILL.md#onboarding'
 ONBOARDING_LINKERS='skills/code-review/gitlab.md skills/code-review/github.md skills/git-conventions/gitlab.md skills/git-conventions/github.md skills/plan/SKILL.md skills/c4-graph/inputs.md'
 
+# Shipped tree (NFR9): top-level entries of git ls-files allowed by the Claude Code plugin structure.
+SHIPPED_ALLOWLIST='.claude-plugin agents commands skills output-styles assets README.md LICENSE NOTICE .github tests'
+# Workspace entries tolerated off main only; the last PR commit removes them.
+WORKSPACE_ENTRIES='docs CLAUDE.md'
+SECRET_PATTERN='-----BEGIN|ghp_[A-Za-z0-9]{20}|glpat-|AKIA[0-9A-Z]{16}'
+# Files that spell the secret patterns out: this lint and the workspace docs that specify it.
+SECRET_EXEMPT=':!tests/docs.test.sh :!docs'
+SHIPPED_MAX_BYTES=1048576
+
 PLATFORM_MARKER='<!-- platform-table -->'
 SHELL_MARKER='<!-- shell-table -->'
 ONBOARDING='skills/software-engineer/onboarding.md'
@@ -193,6 +202,31 @@ test_preflight_lint_matches_pcre_on_fixture() {
   if [ -z "$errors" ]; then ok test_preflight_lint_matches_pcre_on_fixture; else fail test_preflight_lint_matches_pcre_on_fixture "$LINKLINT_FIXTURE:${errors%;}"; fi
 }
 
+# Branch under test: GITHUB_REF_NAME in GitHub Actions, else the checked-out branch.
+current_branch() {
+  if [ -n "${GITHUB_REF_NAME:-}" ]; then printf '%s\n' "$GITHUB_REF_NAME"; else git branch --show-current; fi
+}
+
+# (a) top-level entries within the allowlist, (b) no secret pattern, (c) tracked size under 1 MB.
+test_shipped_tree() {
+  local branch allowed entry extra='' hits file bytes total=0 errors=''
+  branch=$(current_branch)
+  allowed=$SHIPPED_ALLOWLIST
+  [ "$branch" = main ] || allowed="$allowed $WORKSPACE_ENTRIES"
+  while IFS= read -r entry; do
+    case " $allowed " in *" $entry "*) ;; *) extra="$extra $entry" ;; esac
+  done < <(git ls-files | cut -d/ -f1 | sort -u)
+  [ -z "$extra" ] || errors="$errors top-level entries outside the plugin structure on '$branch':$extra;"
+  hits=$(git grep -lE -e "$SECRET_PATTERN" -- . $SECRET_EXEMPT)
+  [ -z "$hits" ] || errors="$errors secret pattern in: $(echo $hits);"
+  while IFS= read -r file; do
+    bytes=$(wc -c <"$file")
+    total=$((total + bytes))
+  done < <(git ls-files)
+  [ "$total" -lt "$SHIPPED_MAX_BYTES" ] || errors="$errors tracked files $((total / 1024)) KB (max $((SHIPPED_MAX_BYTES / 1024)) KB);"
+  if [ -z "$errors" ]; then ok test_shipped_tree; else fail test_shipped_tree "${errors# }"; fi
+}
+
 test_no_runtime_files
 test_manifest_has_no_hooks
 test_no_platform_leaks
@@ -203,5 +237,6 @@ test_terse_styles_frontmatter
 test_preflight_lint_is_git_grep
 test_preflight_lint_matches_pcre_on_fixture
 test_six_files_link_onboarding
+test_shipped_tree
 
 [ "$FAILED" -eq 0 ] || { printf '%s test(s) failed\n' "$FAILED"; exit 1; }
