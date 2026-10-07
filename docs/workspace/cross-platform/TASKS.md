@@ -257,9 +257,13 @@ classDiagram
 **Tests**: `test_terse_styles_frontmatter`
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`
 **Acceptance criteria**:
-- [ ] Test green
-- [ ] Picker names recorded here: lite = `<name>`, full = `<name>` (expected `ni:lite`, `ni:full`)
-- [ ] Selecting the full style and asking "explain connection pooling" yields a reply under 40 words with no articles (observed once, pasted here)
+- [x] Test green (`ok test_terse_styles_frontmatter`; `claude plugin validate .` exit 0 with the known root CLAUDE.md warning)
+- [ ] Picker names recorded here: lite = `ni:lite`, full = `ni:full` (expected from the `ni:terse` precedent; headless load confirmed with `claude --plugin-dir . -p "Reply with the single word pong"` → `pong`) — pending maintainer picker check
+- [ ] Selecting the full style and asking "explain connection pooling" yields a reply under 40 words with no articles (observed once, pasted here) — not met headless: no articles, but 84 words; see below
+**Headless effect check (2026-10-07)**: scratch dir outside the repo, `.claude/settings.local.json` = `{"outputStyle":"ni:full"}`, prompt `Explain database connection pooling in one short paragraph`, `claude --plugin-dir <repo> -p ... --output-format json`. The setting is honoured: the two replies differ in form.
+- `ni:full`, `usage.output_tokens` 207, 84 words, zero articles: "Connection pool keeps set of open database connections ready for reuse instead of opening new one per request. Opening connection costs TCP handshake, TLS, authentication, session setup, often tens of milliseconds. Application borrows connection from pool, runs queries, returns it. Pool enforces max size, caps concurrent connections so database not overwhelmed. Idle timeout and health checks drop stale connections. Typical settings: min idle, max size, acquire timeout, max lifetime. Examples: HikariCP (Java), PgBouncer (server-side for PostgreSQL), connection pooling built into most ORMs and drivers."
+- `default`, `usage.output_tokens` 196, 93 words: "Database connection pooling keeps a set of open database connections ready for reuse instead of opening a new one for every request. Opening a connection is expensive, since it involves a TCP handshake, authentication, and session setup, so an application borrows a connection from the pool, runs its queries, and returns it. The pool caps the number of concurrent connections, which protects the database from overload, and it typically handles health checks, idle timeouts, and reconnection. Common implementations include HikariCP for Java, pgbouncer for PostgreSQL, and the built-in pooling in ADO.NET and SQLAlchemy."
+- Reading: `ni:full` drops articles and fragments as specified, but adds facts (TLS, settings list) and spends more output tokens (207 vs 196) on the "one short paragraph" prompt. The 40-word target needs the shorter prompt from NFR6 ("explain connection pooling") or a tighter length rule in the body; task 10's benchmark decides the rewrite.
 **Depends on**: task 1
 **Time-box**: ~45 min
 **Uncertainty**: downhill
