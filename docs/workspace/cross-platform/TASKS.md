@@ -141,7 +141,7 @@ classDiagram
 - `test_terse_styles_frontmatter` — red now
 **Verify**: `bash tests/docs.test.sh; test $? -eq 1`
 **Acceptance criteria**:
-- [ ] First two tests green, five red naming the offending or missing files
+- [x] First two tests green, five red naming the offending or missing files
 **Depends on**: task 0
 **Time-box**: ~45 min
 **Uncertainty**: downhill
