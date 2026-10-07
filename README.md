@@ -163,6 +163,7 @@ claude plugin validate . --strict
 claude --plugin-dir .   # load from the working tree
 BENCH_MODEL=sonnet bash tests/style-bench.sh   # NFR7 style benchmark, needs a logged-in Claude Code
 bash tests/docs.test.sh   # docs lint, runs in CI
+bash tests/docker-validate.sh   # clean-install check in Docker: plugin validate, /ni:help, one reply per style; host config untouched
 ```
 
 ## Release

@@ -336,7 +336,8 @@ classDiagram
 **Types**: none (results tables)
 **Constraints**:
 - Tool: [ni-bench](https://github.com/itsaspacestation/ni-bench); suites `ported-build` and `ported-debug` as already reported in the README
-- Run A: ni 1.8.0 from the marketplace cache (hooks and forced style active). Run B: this working tree with `claude --plugin-dir` and `outputStyle` set to `ni:lite` in the bench project's `.claude/settings.local.json`. Same model, same day, same ni-bench commit
+- Run A: ni 1.8.0 from the marketplace cache (hooks and forced style active). Run B: this working tree, loaded through a temporary fork of ni-bench that points at the local checkout (`claude --plugin-dir`) with `outputStyle` set to `ni:lite` in the bench project's `.claude/settings.local.json`. Same model, same day, same ni-bench commit. The fork is not merged; its diff is pasted here for reproducibility
+- Run B happens on the Windows host and doubles as the task 9 smoke test
 - Record both tables with the ni-bench commit SHA, model id, and date in this task; the README Benchmark section gets a "1.8.0 vs 2.0.0" table next to the existing one (task 8)
 - Threshold from NFR8: every KPI equal or better within 5%, outcome 3/3. A regression is analysed with the `debug` skill before any change; a style body change sends task 10 back to red
 **Tests**: the two bench runs are the test
@@ -411,12 +412,13 @@ classDiagram
 **Goal**: Observe the plugin working once on a Windows host without WSL.
 **Types**: none
 **Constraints**:
-- Windows host with Claude Code installed; `claude --plugin-dir <checkout>`
+- Merged into task 11 by the maintainer on 2026-10-07: the ni-bench run of the 2.0.0 candidate is done from a temporary fork of ni-bench pointing at this worktree, on the Windows host, and that run is the smoke test. The boxes below are ticked from the ni-bench run's logs (plugin loaded, skills triggered, `ni:lite` applied).
+- Clean-config validation is done in Docker with `bash tests/docker-validate.sh` (fresh Claude Code install, throwaway config dir, repository mounted read-only); result recorded below
 - Record the observations in this file under the task
-**Tests**: manual, see NFR5
-**Verify**: `manual: Windows host session`
+**Tests**: manual, see NFR5; `bash tests/docker-validate.sh` for the clean-install part
+**Verify**: `manual: ni-bench run on the Windows host (task 11)` plus `bash tests/docker-validate.sh`
 **Acceptance criteria**:
-- [ ] `/ni:help` lists the skills
+- [x] `/ni:help` lists the ten skills (Docker clean install, Claude Code 2.1.292, 2026-10-07, `bash tests/docker-validate.sh`); `claude plugin validate` passes with the known root CLAUDE.md warning; same prompt "Explain database connection pooling." cost 107 output tokens under `ni:full` and 657 under `default`
 - [ ] On a sample project with a CI file, "run the tests" shows the onboarding pass (CI file read, wrapper chosen) and the command runs in the host's shell form; this also closes task 2's moved criterion
 - [ ] `/output-style` lists `ni:lite` and `ni:full`
 **Depends on**: task 8
