@@ -159,7 +159,7 @@ classDiagram
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`
 **Acceptance criteria**:
 - [x] Three tests green
-- [ ] `claude --plugin-dir . --model haiku -p "how do I run the tests of this repo"` names `ni:software-engineer` among the skills used and mentions reading the CI pipeline
+- [ ] Moved to task 9: this repo has no CI file before task 8, so the haiku probe (`claude --plugin-dir . --model haiku -p "how do I run the tests of this repo"`) answered from TASKS.md and could not show the CI pass; verified instead on a sample project with a CI file in task 9
 **Depends on**: task 1
 **Time-box**: ~60 min
 **Uncertainty**: downhill
@@ -334,7 +334,7 @@ classDiagram
 **Verify**: `manual: Windows host session`
 **Acceptance criteria**:
 - [ ] `/ni:help` lists the skills
-- [ ] On a sample project with a CI file, "run the tests" shows the onboarding pass (CI file read, wrapper chosen) and the command runs in the host's shell form
+- [ ] On a sample project with a CI file, "run the tests" shows the onboarding pass (CI file read, wrapper chosen) and the command runs in the host's shell form; this also closes task 2's moved criterion
 - [ ] `/output-style` lists `ni:lite` and `ni:full`
 **Depends on**: task 8
 **Time-box**: ~30 min

@@ -41,8 +41,8 @@ Snippets in skills are shell-neutral: one command per line, flags only, no shell
 syntax. Banned inside fenced blocks: `$(`, `${`, `<<`, `export`, `&&`, `||`,
 `2>/dev/null`, pipes to `sort`, `uniq`, `grep`, `awk`, `sed`, or `xargs`, the
 home-directory tilde shortcut, the Unix temp root, Windows executable suffixes, `sudo`,
-and the versioned Python launcher. Where the shells differ, show each form on its own
-line:
+and version-suffixed interpreter names. Where the shells differ, show each form on its
+own line:
 
 <!-- shell-table -->
 | Need | bash | PowerShell | cmd |
@@ -54,8 +54,9 @@ line:
 | Path separator | `/` | `\` or `/` | `\` |
 | Read a file into a flag | `--flag=@file` or `--input file` | same | same |
 
-Call `python`, never the versioned launcher; use `uv run` or `python -m` when a lock
-file or a pyproject exists.
+Call an interpreter by its plain name, never with a version suffix: hosts differ on
+which suffixed names exist. Prefer the project's committed runner or launcher, and run
+tools through the interpreter's module flag rather than a bare tool on PATH.
 
 ## Coverage
 
