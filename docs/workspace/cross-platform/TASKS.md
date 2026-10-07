@@ -197,8 +197,8 @@ classDiagram
 - `test_gitlab_md_keeps_input_payload`
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Two tests green
-- [ ] File length not increased by more than 5 lines
+- [x] Two tests green
+- [x] File length not increased by more than 5 lines
 **Depends on**: task 1
 **Time-box**: ~30 min
 **Uncertainty**: downhill
@@ -216,8 +216,8 @@ classDiagram
 - `test_preflight_lint_matches_pcre_on_fixture`
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Two tests green
-- [ ] New lint on `docs/workspace/cross-platform` returns no hit
+- [x] Two tests green
+- [x] New lint on `docs/workspace/cross-platform` returns no hit
 **Depends on**: task 1
 **Time-box**: ~30 min
 **Uncertainty**: downhill

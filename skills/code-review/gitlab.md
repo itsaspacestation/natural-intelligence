@@ -2,7 +2,7 @@
 
 Reference file of the [`code-review`](SKILL.md) skill. Read it when the review lives on
 a GitLab merge request: reading threads, posting replies or suggestions, resolving
-threads, or troubleshooting `glab`.
+threads, or troubleshooting `glab`. `--jq` is built into `glab`; no external `jq` is needed.
 
 ## Overview
 
@@ -36,8 +36,8 @@ glab mr note list <iid> -F json --state unresolved --type general   # non-diff c
 glab mr note list <iid> --file <path>                               # threads on one file
 ```
 
-Keep the full `id` of each discussion: it is what `--reply` targets. Human-readable
-output truncates it to the first eight characters, which `--reply` also accepts.
+Keep the full `id` of each discussion: the reply and resolve API calls need it.
+Human-readable output truncates it to the first eight characters.
 
 For diff context:
 
@@ -89,22 +89,23 @@ Fetch `diff_refs` immediately before posting — stale SHAs return 400:
 glab mr view <iid> -F json --jq '.diff_refs'   # base_sha, head_sha, start_sha
 ```
 
-Write the body to a file (heredoc, as above) with the `suggestion:-N+M` fence, then
+Write the body to `body.md` with the Write tool, with the `suggestion:-N+M` fence, then
 create the diff discussion from a JSON payload with a **nested** `position` object.
 Never pass `-f "position[...]"` fields: `glab api -f` sends a JSON body whose keys are
 the literal bracket strings, GitLab silently drops the anchor, the note lands as a
 general discussion and the suggestion loses its Apply button.
 
+Write `payload.json` with the Write tool, JSON-escaping the body:
+
+```json
+{"body": "<body.md content, JSON-escaped>",
+ "position": {"position_type": "text",
+   "base_sha": "<base_sha>", "head_sha": "<head_sha>", "start_sha": "<start_sha>",
+   "new_path": "src/Domain/Booking.cs", "new_line": 42}}
+```
+
 ```bash
-python3 - "$(cat body.md)" > payload.json << 'EOF'
-import json, sys
-print(json.dumps({"body": sys.argv[1], "position": {
-    "position_type": "text",
-    "base_sha": "<base_sha>", "head_sha": "<head_sha>", "start_sha": "<start_sha>",
-    "new_path": "src/Domain/Booking.cs", "new_line": 42}}))
-EOF
-glab api --method POST -H "Content-Type: application/json" \
-  "projects/<project-id>/merge_requests/<iid>/discussions" --input payload.json
+glab api --method POST -H "Content-Type: application/json" "projects/<project-id>/merge_requests/<iid>/discussions" --input payload.json
 ```
 
 Verify the response: the note's `type` must be `DiffNote`. A `DiscussionNote` means the
@@ -133,24 +134,24 @@ after the reply.
 **1. Reply** inside the reviewer's own thread, which is the default choice:
 
 ```bash
-glab mr note create <iid> --reply <discussion-id> -m "$(cat body.md)"
+glab api --method POST "projects/<project-id>/merge_requests/<iid>/discussions/<discussion-id>/notes" -F body=@body.md
 ```
 
-Start a new inline thread when there is no existing discussion on that line:
+Start a new inline thread when there is no existing discussion on that line with the
+`DiffNote` payload and `--input payload.json` call from [Posting a suggestion](#posting-a-suggestion)
+(`old_line` instead of `new_line` for a removed line). A general MR comment, not anchored:
 
 ```bash
-glab mr note create <iid> --file src/Domain/Booking.cs --line 42 -m "$(cat body.md)"
-glab mr note create <iid> --file src/Domain/Booking.cs --line 40:44 -m "$(cat body.md)"  # range
-glab mr note create <iid> --file src/Domain/Booking.cs --old-line 42 -m "..."            # removed line
+glab api --method POST "projects/<project-id>/merge_requests/<iid>/notes" -F body=@body.md
 ```
 
-Write the body to a file first with a heredoc, because fenced blocks and backticks do
-not survive inline shell quoting. `--file`, `--reply` and `--unique` are mutually
-exclusive, so a reply cannot carry `--unique`: to stay idempotent on a retry, re-read
-the thread and skip the ones that already have your note.
+Write the body to a file first with the Write tool, because fenced blocks and backticks
+do not survive inline shell quoting; `glab mr note create -m` takes only an inline
+string, and `glab api -F body=@body.md` reads the file. To stay idempotent on a retry,
+re-read the thread and skip the ones that already have your note.
 
 **2. Resolve** the thread. `glab` has no resolve verb, so go through the API — the
-discussion id is the same one `--reply` took:
+discussion id is the same one the reply took:
 
 ```bash
 glab api --method PUT "projects/<project-id>/merge_requests/<iid>/discussions/<discussion-id>?resolved=true"
