@@ -61,7 +61,7 @@ Before committing, the code must compile and tests must pass, none failing or ig
 
 ## Commit message
 
-Terse and exact. Why over what: the diff already says what changed.
+Short and exact. Why over what: the diff already says what changed.
 
 ### Subject
 
@@ -115,8 +115,6 @@ Examples:
   BREAKING CHANGE: clients on /v1/orders must migrate to /v1/checkout
   before 2026-06-01. Old route returns 410 after that date.
   ```
-
-Adapted from the MIT-licensed caveman-commit skill by Julius Brussee.
 
 ## Change description
 

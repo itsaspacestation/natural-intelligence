@@ -117,9 +117,9 @@ classDiagram
 **Tests**: none automated yet (task 1 adds `test_no_runtime_files`, green after this task)
 **Verify**: `git ls-files | grep -cE '\.(sh|ps1|cmd|js|py)$' | grep -qx 0 && grep -c '"hooks"' .claude-plugin/plugin.json | grep -qx 0 && claude plugin validate .`
 **Acceptance criteria**:
-- [ ] Verify command exits 0
-- [ ] `grep -rniI 'terse\|hook' --exclude-dir=.git --exclude-dir=docs .` returns only the investigator example rows and the NOTICE URL
-- [ ] Commit `refac!: remove hook-based terse mode` with the BREAKING CHANGE footer from [PREFLIGHT.md](./PREFLIGHT.md)
+- [x] Verify command exits 0
+- [x] `grep -rniI 'terse\|hook' --exclude-dir=.git --exclude-dir=docs .` returns only the investigator example rows and the NOTICE URL
+- [x] Commit `refac!: remove hook-based terse mode` with the BREAKING CHANGE footer from [PREFLIGHT.md](./PREFLIGHT.md)
 **Depends on**: (none)
 **Time-box**: ~30 min
 **Uncertainty**: downhill

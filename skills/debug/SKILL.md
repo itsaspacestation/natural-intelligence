@@ -64,7 +64,7 @@ Four phases, in order. No phase is skipped because the bug looks simple.
 
 ## Evidence block
 
-The final summary closes with three lines, whatever the terse level — they carry the
+The final summary closes with three lines — they carry the
 proof that the process happened, for a reviewer who sees only the summary:
 
 ```
@@ -102,4 +102,4 @@ Any of these thoughts means: stop, return to phase 1.
 This skill finds the cause and frames the fix. Writing the test is the `tdd` skill.
 Locating code is the `ni:investigator` agent. Never apply a fix without a reproduced
 failure and a cited cause. Never bundle a refactor with a fix. Security findings and
-destructive steps are written in plain prose, whatever the terse level.
+destructive steps are written in plain prose.

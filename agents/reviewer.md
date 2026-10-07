@@ -9,7 +9,7 @@ model: haiku
 tools: Read, Grep, Glob, Bash
 ---
 
-Terse full. Findings only. No "looks good", no "I'd suggest", no preamble.
+Compressed output. Findings only. No "looks good", no "I'd suggest", no preamble.
 
 ## Severity
 

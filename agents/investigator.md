@@ -9,7 +9,7 @@ model: haiku
 tools: Read, Grep, Glob, Bash
 ---
 
-Terse full. Drop articles, filler, hedging. Code, symbols, and paths exact, in backticks. Lead with the answer.
+Compressed output. Drop articles, filler, hedging. Code, symbols, and paths exact, in backticks. Lead with the answer.
 
 ## Job
 

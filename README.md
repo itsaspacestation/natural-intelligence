@@ -31,15 +31,7 @@ Claude does the heavy lifting. You make the calls. Skills trigger on their own f
 ### 1. Set up
 Install as above, run `/reload-plugins`, then `/ni:help` to check the skills are loaded.
 
-### 2. Pick a terse level
-```
-/ni:terse lite   # default: no filler, full sentences
-/ni:terse full   # fragments, fewest tokens
-/ni:terse off
-```
-The level persists across sessions. See [Terse mode](#terse-mode).
-
-### 3. Claude plans, and I decide
+### 2. Claude plans, and I decide
 > /ni:plan a workspace for the invoice export feature.
 
 or simply
@@ -49,12 +41,12 @@ or simply
 
 For a small change, Claude Code's built-in plan mode is enough.
 
-### 4. Claude builds, and I steer
+### 3. Claude builds, and I steer
 > Fix the rounding bug in the VAT total.
 
 `ni:software-engineer`, `ni:tdd`, and `ni:debug` enforce plan, failing test, fix, and commit, with the root cause found before any fix. `ni:git-conventions` writes the commit and the MR or PR description, routing to the right forge from the origin remote. Nothing is pushed without your go.
 
-### 5. Claude reviews, and I judge
+### 4. Claude reviews, and I judge
 > /ni:code-review my branch before I open the MR.
 
 or simply
@@ -63,19 +55,19 @@ or simply
 
 `ni:code-review` checks design, tests, performance, security, and correctness, and cites every finding by file and line. You decide what to fix.
 
-### 6. Claude reviews others, and I sign off
+### 5. Claude reviews others, and I sign off
 ```
 /ni:review-loop group/project
 ```
 Works on GitLab and GitHub: pass a project path or URL, or let it read the origin remote. Reviews every MR or PR assigned to you in a loop, posts each finding as its own discussion, and reports the links. It never approves, merges, or resolves: those stay yours.
 
-### 7. Claude merges mine once approved
+### 6. Claude merges mine once approved
 ```
 /ni:merge-loop group/project
 ```
 Watches your own MRs or PRs in a loop and merges each one once every reviewer has approved, threads are resolved, and CI is green. Anything blocked is reported with its reason, never forced.
 
-### 8. Claude answers reviewers, and I approve
+### 7. Claude answers reviewers, and I approve
 > Address the unresolved threads on MR !42 (or PR #42).
 
 `ni:code-review` reads the threads, drafts the fixes and replies, and shows you a preview. Nothing is posted or resolved until you approve it.
@@ -114,8 +106,6 @@ For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini
 | `.claude-plugin/plugin.json` | Plugin manifest, name `ni` |
 | `agents/` | Subagents with compressed output, spawned as `ni:<agent>` |
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
-| `output-styles/` | The `ni:terse` output style, auto-applied while the plugin is enabled |
-| `scripts/` | Hook scripts behind the terse reply mode |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
 ## Update
@@ -141,26 +131,9 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
-## Terse mode
-Terse rests on two mechanisms:
-
-1. **Output style.** The `ni:terse` output style overrides Claude Code's default communication style, which otherwise fights terse: it asks for full readable prose and forbids fragments. The style auto-applies while the plugin is enabled (`force-for-plugin`) and keeps the built-in coding instructions (`keep-coding-instructions`).
-2. **Hooks.** ni injects the ruleset at session start and reminds Claude of the active level every turn, so replies stay short even after context compaction.
-
-Adapted from [caveman](https://github.com/juliusbrussee/caveman) (MIT), with two levels only.
-
-| Level | Effect |
-|---|---|
-| `lite` | Default. No filler, hedging, preamble, or recap. Full sentences kept. |
-| `full` | Also drops articles, allows fragments. |
-| `off` | Nothing injected. |
-
-Switch with `/ni:terse lite|full|off`. The level persists in `~/.claude/ni/terse`. Persisted text (docs, MR text, comments, commit messages) follows lite rules whatever the level; code and security warnings stay in normal prose.
-
 ## Skills
 | Skill | Use when |
 |---|---|
-| `ni:terse` | The terse ruleset itself, for reference or manual invocation |
 | `ni:software-engineer` | Implementing, fixing, or refactoring with the plan, test, implement, commit workflow; Rust and .NET build, test, and coverage commands |
 | `ni:tdd` | Writing tests first, red-green-refactor |
 | `ni:debug` | Any failure or bug, before proposing a fix |
@@ -180,12 +153,11 @@ User-invoked only; none loads on its own.
 | Command | Does |
 |---|---|
 | `/ni:help` | List the ni skills |
-| `/ni:terse` | Set the terse reply level |
 | `/ni:review-loop` | Review MRs or PRs assigned to me in a /loop on GitLab or GitHub, post findings as one-click applicable suggestions where possible, resolve its own threads once a new commit fixes the finding, report the links |
 | `/ni:merge-loop` | Merge my MRs or PRs approved by every reviewer in a /loop, report merged and blocked ones |
 
 ## Agents
-Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose. Adapted from caveman's cavecrew (MIT).
+Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose.
 
 | Agent | Use for | Returns |
 |---|---|---|

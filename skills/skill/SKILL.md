@@ -25,10 +25,9 @@ Template: [template.md](template.md). Copy it, then delete the sections you do n
 
 ```
 natural-intelligence/
-  .claude-plugin/plugin.json   manifest, hooks
+  .claude-plugin/plugin.json   manifest
   agents/<name>.md             subagents, spawned as ni:<name>
   commands/<name>.md           slash commands, run as /ni:<name>
-  scripts/*.sh                 hook scripts, bash only, no node
   skills/<name>/SKILL.md       one skill per folder, name = folder
   skills/<name>/<topic>.md     reference file, linked from SKILL.md
   README.md                    skill, agent, and command tables
@@ -71,7 +70,7 @@ Sections in this order. Drop any that has nothing to say.
 | `## <Topic>` | One heading per technique or table |
 | `## Boundaries` | What the skill never does, what it hands to another skill |
 
-Voice: lite terse prose, whatever the session level. Full sentences under 20 words,
+Voice: short plain prose. Full sentences under 20 words,
 active, imperative for instructions, one term per concept. No filler, no emoji, no
 decorative tables. Tables carry data or comparisons only.
 
@@ -107,8 +106,8 @@ first lines, auto-clarity note. Output contracts are the point: rows, not prose.
 File `commands/<name>.md`. Frontmatter: `description`, optional `argument-hint`. Body
 is the prompt Claude receives. The placeholder `ARGUMENTS` with a dollar prefix carries the
 arguments (written out here because skills expand it too). Keep commands thin:
-point at a skill or a hook, do not restate rules. A command that needs a shell call
-prompts for approval, so let a hook do the write when one runs anyway.
+point at a skill, do not restate rules. A command that needs a shell call prompts for
+approval, so prefer commands that only read and reason.
 
 ## Verify and install
 

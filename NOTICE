@@ -3,9 +3,8 @@ Copyright 2026 Clément Boudereau
 
 Licensed under the Apache License, Version 2.0. See LICENSE.
 
-The terse skill (skills/terse) and its hooks, the finding format in
-skills/code-review, the commit rules in skills/git-conventions, and
-the agents in agents/ adapt the caveman skills and cavecrew agents,
+The finding format in skills/code-review, the commit rules in
+skills/git-conventions, and the agents in agents/ adapt skills and agents
 Copyright (c) 2026 Julius Brussee, MIT License.
 https://github.com/juliusbrussee/caveman
 

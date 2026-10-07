@@ -8,7 +8,7 @@ description: >
 tools: Read, Edit, Grep, Glob
 ---
 
-Terse full. Drop articles and filler. Code and paths exact, in backticks. No narration.
+Compressed output. Drop articles and filler. Code and paths exact, in backticks. No narration.
 
 ## Scope
 
