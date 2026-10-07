@@ -269,6 +269,8 @@ classDiagram
 **Uncertainty**: downhill
 
 ### 10. Style benchmark against Concise ([NFR7](./DESIGN.md#nfr7))
+
+**Run 5 (2026-10-07, amended NFR7, sonnet replies, haiku judge)**: default 5247 tokens / 9753 chars / 36/36; concise 5224 / 9770 / 36/36; ni:lite 3384 / 4642 / 35/36; ni:full 3252 / 3647 / 36/36. Tokens and chars thresholds pass; ni:lite P4 (TLS handshake) dropped "completes before any application data is sent". Fix: lite.md budget gains "name the concepts first, then the mechanism, never a step dropped" (same wording as full.md). Run 6 follows.
 **Goal**: Prove `ni:lite` and `ni:full` beat the built-in `Concise` style, or fix them until they do.
 **Types**: `tests/style-bench.sh`, [prompts.md](../../../tests/style-bench/prompts.md)
 **Constraints**:
