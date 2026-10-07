@@ -167,11 +167,11 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
 - **Scenario**: a plugin install is a full git clone (Claude Code docs: no ignore
   mechanism, only known component paths are loaded). On `main`, `git ls-files` top-level
   entries are exactly: `.claude-plugin`, `agents`, `commands`, `skills`,
-  `output-styles`, `assets`, `README.md`, `LICENSE`, `NOTICE`, `.github`, `tests`.
-  `docs/` and `CLAUDE.md` may exist only on a feature branch and are deleted by the
+  `output-styles`, `assets`, [README.md](../../../README.md), `LICENSE`, `NOTICE`, `.github`, `tests`.
+  `docs/` and [CLAUDE.md](../../../CLAUDE.md) may exist only on a feature branch and are deleted by the
   last commit of the pull request. Tracked files total under 1 MB (320 KB today).
 - **Measure**: `test_shipped_tree` in the docs lint: allowlist check (branch-aware:
-  `docs` and `CLAUDE.md` tolerated when the current branch is not `main`), no secret
+  `docs` and [CLAUDE.md](../../../CLAUDE.md) tolerated when the current branch is not `main`), no secret
   pattern in tracked files (`-----BEGIN`, `ghp_`, `glpat-`, `AKIA`), size under
   1024 KB.
 - **Verify**: `bash tests/docs.test.sh`; on the final PR commit also
@@ -232,7 +232,7 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
 | `claude plugin validate` fails on one OS only (path separator, line endings, case) | matrix leg red | fix the manifest or file name; the failing leg names the OS | release blocked |
 | `npm i -g @anthropic-ai/claude-code` not on PATH on the Windows runner | `claude: command not found` | use `npx @anthropic-ai/claude-code plugin validate .` on every leg | CI only |
 | A new top-level folder or a large asset lands in the repo | `test_shipped_tree` red | move it under a known component path or drop it; raise the budget only in an ADR | release blocked |
-| `docs/` or `CLAUDE.md` merged to `main` | `test_shipped_tree` red on `main` | revert commit that deletes them, then re-merge | one release |
+| `docs/` or [CLAUDE.md](../../../CLAUDE.md) merged to `main` | `test_shipped_tree` red on `main` | revert commit that deletes them, then re-merge | one release |
 | A ni style loses to `concise` on tokens or drops a fact | NFR7 table red | rewrite the style body, rerun; do not ship the style until green | release blocked |
 | 2.0.0 regresses against 1.8.0 on a ni-bench KPI | NFR8 comparison | find the cause (style body, onboarding pass cost, missing hook reinforcement), fix, rerun; release only when equal or better within 5% | release blocked |
 | `settings.local.json` `outputStyle` not honoured by `claude -p` | bench shows identical token counts across styles | fall back to `--append-system-prompt-file` with the style body for the bench only; record the deviation | bench only |
