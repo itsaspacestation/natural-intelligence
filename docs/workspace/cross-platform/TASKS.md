@@ -158,7 +158,7 @@ classDiagram
 **Tests**: `test_software_engineer_files`, `test_onboarding_checklist`, `test_no_shell_isms` for these files
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`
 **Acceptance criteria**:
-- [ ] Three tests green
+- [x] Three tests green
 - [ ] `claude --plugin-dir . --model haiku -p "how do I run the tests of this repo"` names `ni:software-engineer` among the skills used and mentions reading the CI pipeline
 **Depends on**: task 1
 **Time-box**: ~60 min
