@@ -22,8 +22,8 @@ Tick every box on disk, then commit the plan. Human gate: nothing below is ticke
 - [x] Every failure-modes row that yields a rule appears as an error-path invariant in the transformations table
 - [x] Every DESIGN.md section is filled or marked `N/A: <reason>` — no blank sections
 - [x] No constraint is ambiguous enough that two reasonable agents would interpret it differently
-- [x] Link lint green — every file reference in workspace docs is a clickable link:
-  `! grep -rPn '(?<!\[)\x60(?:[\w.-]+/)*[\w.-]+\.md(?::\d+(?:[-,:]\d+)?)?\x60' docs/workspace/cross-platform --include='*.md'`
+- [x] Link lint green — every file reference in workspace docs is a clickable link. Run from the repository root; green when the command prints nothing (exit 1 means no match):
+  `` ! git grep -nE '(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`' -- 'docs/workspace/cross-platform/*.md' ``
 
 **Autopilot readiness**:
 - [x] Build, test, and lint commands pass (green baseline) — no suite exists before task 1; baseline is `claude plugin validate .`
