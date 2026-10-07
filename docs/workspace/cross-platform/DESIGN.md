@@ -163,7 +163,30 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
   release until explained or fixed.
 - **Verify**: `manual: ni-bench run by a maintainer, both result tables committed to the README`
 
+### <a id="nfr9"></a>NFR9 — Shipped tree follows the Claude Code plugin structure and stays small
+- **Scenario**: a plugin install is a full git clone (Claude Code docs: no ignore
+  mechanism, only known component paths are loaded). On `main`, `git ls-files` top-level
+  entries are exactly: `.claude-plugin`, `agents`, `commands`, `skills`,
+  `output-styles`, `assets`, `README.md`, `LICENSE`, `NOTICE`, `.github`, `tests`.
+  `docs/` and `CLAUDE.md` may exist only on a feature branch and are deleted by the
+  last commit of the pull request. Tracked files total under 1 MB (320 KB today).
+- **Measure**: `test_shipped_tree` in the docs lint: allowlist check (branch-aware:
+  `docs` and `CLAUDE.md` tolerated when the current branch is not `main`), no secret
+  pattern in tracked files (`-----BEGIN`, `ghp_`, `glpat-`, `AKIA`), size under
+  1024 KB.
+- **Verify**: `bash tests/docs.test.sh`; on the final PR commit also
+  `claude plugin validate . --strict` (no root CLAUDE.md left, so no warning).
+
 ## Non-goals
+
+- **Hiding `.github/` and `tests/` from the install.** Accepted trade-off: no ignore
+  mechanism exists, superpowers ships the same kind of files, they hold no secret and
+  are never loaded. The `git-subdir` layout is rejected for now: it moves every path
+  and adds an unverified Claude Code version floor.
+- **A durable `docs/YYYYMMDD_cross-platform/` folder in the repo.** Rejected: the
+  workspace lives only on the pull request and is deleted by its last commit; git
+  history keeps it. The plan skill's Phase 6 promotion step is replaced by that
+  deletion.
 
 - **Hook-based terse mode.** Rejected: see [ADR output-styles](./adrs/output-styles.md).
 - **`force-for-plugin`.** Rejected: it overrides the user's own style choice and
@@ -208,6 +231,8 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
 | Picker name differs from `ni:lite` / `ni:full` | `/output-style` list | task 7 records the real names; README uses them | docs only |
 | `claude plugin validate` fails on one OS only (path separator, line endings, case) | matrix leg red | fix the manifest or file name; the failing leg names the OS | release blocked |
 | `npm i -g @anthropic-ai/claude-code` not on PATH on the Windows runner | `claude: command not found` | use `npx @anthropic-ai/claude-code plugin validate .` on every leg | CI only |
+| A new top-level folder or a large asset lands in the repo | `test_shipped_tree` red | move it under a known component path or drop it; raise the budget only in an ADR | release blocked |
+| `docs/` or `CLAUDE.md` merged to `main` | `test_shipped_tree` red on `main` | revert commit that deletes them, then re-merge | one release |
 | A ni style loses to `concise` on tokens or drops a fact | NFR7 table red | rewrite the style body, rerun; do not ship the style until green | release blocked |
 | 2.0.0 regresses against 1.8.0 on a ni-bench KPI | NFR8 comparison | find the cause (style body, onboarding pass cost, missing hook reinforcement), fix, rerun; release only when equal or better within 5% | release blocked |
 | `settings.local.json` `outputStyle` not honoured by `claude -p` | bench shows identical token counts across styles | fall back to `--append-system-prompt-file` with the style body for the bench only; record the deviation | bench only |
