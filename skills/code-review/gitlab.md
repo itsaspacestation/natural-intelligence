@@ -15,7 +15,8 @@ flags. Load it first. Git rules are in the [`git-conventions`](../git-convention
 
 ## Reading the review
 
-Find the merge request. With no id, `glab` uses the current branch's MR.
+Find the merge request. With no id, `glab` uses the current branch's MR. Commands
+follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).
 
 ```bash
 glab mr list --reviewer=@me            # MRs waiting on me
@@ -27,10 +28,7 @@ Get structured discussions, which is what to work from:
 
 ```bash
 # All unresolved diff comments with file, line, author, body and discussion id
-glab mr note list <iid> -F json --state unresolved --type diff \
-  --jq '.[] | {id, notes: [.notes[] | {author: .author.username, body,
-        file: .position.new_path, line: .position.new_line,
-        old_line: .position.old_line}]}'
+glab mr note list <iid> -F json --state unresolved --type diff --jq '.[] | {id, notes: [.notes[] | {author: .author.username, body, file: .position.new_path, line: .position.new_line, old_line: .position.old_line}]}'
 
 glab mr note list <iid> -F json --state unresolved --type general   # non-diff comments
 glab mr note list <iid> --file <path>                               # threads on one file

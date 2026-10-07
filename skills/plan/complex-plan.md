@@ -107,9 +107,10 @@ If no workspace is active, proceed to Phase 1.
 ### Phase 1 — New need
 
 Create the workspace and register it in the project's root `CLAUDE.md`. Name it `<NAME>` after the current agent session (fall back to a short slug of the work if the session is unnamed) — this keeps the draft folder traceable to the session that owns it. The same `<NAME>` becomes the durable home `docs/YYYYMMDD_<NAME>/` (date-prefixed) at integration (Phase 6) — a workspace is both the feature and its temporary focus space.
-```bash
-mkdir -p docs/workspace/<NAME>/adrs
-```
+
+Create `docs/workspace/<NAME>/adrs/` (the Write tool creates missing folders when it
+writes the first file). No shell command is needed.
+
 Add a self-describing entry under `## Active workspaces` — this is the resume anchor (Phase 0 reads it; update it after every task; remove it at Phase 6). Name only the `plan` skill; per-session skills live in TASKS.md.
 
 ```markdown

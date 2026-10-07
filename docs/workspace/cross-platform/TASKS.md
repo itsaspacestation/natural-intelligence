@@ -236,8 +236,8 @@ classDiagram
 - `test_no_shell_isms` green for these files
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Both tests green
-- [ ] `grep -c "description-file" skills/git-conventions/gitlab.md` prints at least 1
+- [x] Both tests green
+- [x] `grep -c "description-file" skills/git-conventions/gitlab.md` prints at least 1
 **Depends on**: tasks 2, 3, 4, 5
 **Time-box**: ~45 min
 **Uncertainty**: downhill

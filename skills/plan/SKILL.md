@@ -58,3 +58,4 @@ Claude Code's built-in plan mode covers interactive approval of an immediate cha
 once a plan should persist to disk, this skill owns it at either scale. Implementation
 methodology belongs to [`software-engineer`](../software-engineer/SKILL.md) and
 [`tdd`](../tdd/SKILL.md); commits to [`git-conventions`](../git-conventions/SKILL.md).
+Commands follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).

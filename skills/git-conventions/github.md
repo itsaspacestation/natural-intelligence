@@ -7,27 +7,30 @@ operation targets GitHub: create, describe, diff, gate, merge, rebase, CI status
 routing rule and the git-versus-forge boundary. Load it first. Review threads and
 suggestions belong to the [`code-review`](../code-review/SKILL.md) skill.
 
-`gh` syntax below is from documented behaviour (`manual: no gh binary in this
-environment`).
+`gh` flags below were checked against `gh pr create --help` and `gh pr edit --help`
+(gh 2.101.0).
 
 ## Create and describe
 
-Write the description markdown to a file, pick the reviewer (rule below), then:
+Write the description markdown to a file with the Write tool, pick the reviewer (rule
+below), then:
 
 ```bash
 gh pr create --title "<title>" --body-file <file> --assignee @me --reviewer <username>
 ```
 
+Commands follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).
+
 Reviewer selection, in order:
 1. `CODEOWNERS` exists (root, `.github/` or `docs/`): GitHub auto-requests the matching
    owners on creation — pass no `--reviewer`, do not duplicate them.
 2. Otherwise the top recent committer of the touched files, excluding the author and bots:
-   `git log --since="6 months ago" --format=%ae -- <paths> | sort | uniq -c | sort -rn`
+   `git shortlog -sne --since="6 months ago" -- <paths>`
 3. No candidate: create without `--reviewer` and tell the user to pick one.
 
 The assignee is always me (`--assignee @me`).
 
-Edit an existing description:
+Edit an existing description. Write the description to a file with the Write tool, then:
 
 ```bash
 gh pr edit <number> --body-file <file>

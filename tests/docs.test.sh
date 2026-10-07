@@ -21,6 +21,10 @@ LINKLINT_FIXTURE='tests/fixtures/linklint.md'
 LINKLINT_ERE='(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`'
 LINKLINT_PCRE='(?<!\[)\x60(?:[\w.-]+/)*[\w.-]+\.md(?::\d+(?:[-,:]\d+)?)?\x60'
 
+# Skill files with command blocks; each links the onboarding shell rules once (FR7).
+ONBOARDING_LINK='software-engineer/SKILL.md#onboarding'
+ONBOARDING_LINKERS='skills/code-review/gitlab.md skills/code-review/github.md skills/git-conventions/gitlab.md skills/git-conventions/github.md skills/plan/SKILL.md skills/c4-graph/inputs.md'
+
 PLATFORM_MARKER='<!-- platform-table -->'
 SHELL_MARKER='<!-- shell-table -->'
 ONBOARDING='skills/software-engineer/onboarding.md'
@@ -164,6 +168,16 @@ test_preflight_lint_is_git_grep() {
   if [ -z "$errors" ]; then ok test_preflight_lint_is_git_grep; else fail test_preflight_lint_is_git_grep "$PREFLIGHT_TEMPLATE:${errors%;}"; fi
 }
 
+test_six_files_link_onboarding() {
+  local file count errors=''
+  for file in $ONBOARDING_LINKERS; do
+    if [ ! -f "$file" ]; then errors="$errors $file missing;"; continue; fi
+    count=$(grep -c -F -- "$ONBOARDING_LINK" "$file")
+    [ "$count" = 1 ] || errors="$errors $file links $ONBOARDING_LINK $count times, want 1;"
+  done
+  if [ -z "$errors" ]; then ok test_six_files_link_onboarding; else fail test_six_files_link_onboarding "${errors# }"; fi
+}
+
 # The ERE lint must flag the fixture's lines 2 and 3 only; where grep -P exists, the PCRE it replaces must agree.
 test_preflight_lint_matches_pcre_on_fixture() {
   local want='2 3' got pcre errors=''
@@ -188,5 +202,6 @@ test_onboarding_checklist
 test_terse_styles_frontmatter
 test_preflight_lint_is_git_grep
 test_preflight_lint_matches_pcre_on_fixture
+test_six_files_link_onboarding
 
 [ "$FAILED" -eq 0 ] || { printf '%s test(s) failed\n' "$FAILED"; exit 1; }
