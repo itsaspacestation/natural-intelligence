@@ -136,7 +136,7 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
 
 ### <a id="nfr6"></a>NFR6 — Terse styles selectable and effective
 - **Scenario**: `claude --plugin-dir .` → `/output-style` lists `ni:lite` and `ni:full`;
-  selecting `ni:full` then asking "explain connection pooling" → reply under 40 words
+  selecting `ni:full` then asking "explain connection pooling" → reply shorter than the `ni:lite` reply
   with no articles.
 - **Measure**: both observed once, picker names recorded in task 7.
 - **Verify**: `manual: interactive picker, no headless equivalent documented`

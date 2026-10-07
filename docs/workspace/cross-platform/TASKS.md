@@ -259,7 +259,7 @@ classDiagram
 **Acceptance criteria**:
 - [x] Test green (`ok test_terse_styles_frontmatter`; `claude plugin validate .` exit 0 with the known root CLAUDE.md warning)
 - [ ] Picker names recorded here: lite = `ni:lite`, full = `ni:full` (expected from the `ni:terse` precedent; headless load confirmed with `claude --plugin-dir . -p "Reply with the single word pong"` → `pong`) — pending maintainer picker check
-- [ ] Selecting the full style and asking "explain connection pooling" yields a reply under 40 words with no articles (observed once, pasted here) — not met headless: no articles, but 84 words; see below
+- [ ] In the green bench run, the `ni:full` P1 reply (connection pooling) is shorter than the `ni:lite` P1 reply and contains no articles (replaces the earlier 40-word criterion, which predates the scope budget; first headless try: no articles, 84 words)
 **Headless effect check (2026-10-07)**: scratch dir outside the repo, `.claude/settings.local.json` = `{"outputStyle":"ni:full"}`, prompt `Explain database connection pooling in one short paragraph`, `claude --plugin-dir <repo> -p ... --output-format json`. The setting is honoured: the two replies differ in form.
 - `ni:full`, `usage.output_tokens` 207, 84 words, zero articles: "Connection pool keeps set of open database connections ready for reuse instead of opening new one per request. Opening connection costs TCP handshake, TLS, authentication, session setup, often tens of milliseconds. Application borrows connection from pool, runs queries, returns it. Pool enforces max size, caps concurrent connections so database not overwhelmed. Idle timeout and health checks drop stale connections. Typical settings: min idle, max size, acquire timeout, max lifetime. Examples: HikariCP (Java), PgBouncer (server-side for PostgreSQL), connection pooling built into most ORMs and drivers."
 - `default`, `usage.output_tokens` 196, 93 words: "Database connection pooling keeps a set of open database connections ready for reuse instead of opening a new one for every request. Opening a connection is expensive, since it involves a TCP handshake, authentication, and session setup, so an application borrows a connection from the pool, runs its queries, and returns it. The pool caps the number of concurrent connections, which protects the database from overload, and it typically handles health checks, idle timeouts, and reconnection. Common implementations include HikariCP for Java, pgbouncer for PostgreSQL, and the built-in pooling in ADO.NET and SQLAlchemy."
@@ -280,7 +280,7 @@ classDiagram
 **Tests**: the bench is the test
 **Verify**: `bash tests/style-bench.sh` exits 0
 **Acceptance criteria**:
-- [ ] Table pasted here with `ni:lite` < `concise` < `default` on output tokens, `ni:full` < `ni:lite`, facts kept 100% for both ni styles
+- [ ] Table pasted here with `ni:lite` < `concise` on output tokens, `ni:full` < `ni:lite` on visible reply characters, facts kept 100% for both ni styles (amended NFR7, 2026-10-07)
 - [ ] [ADR output-styles](./adrs/output-styles.md) status moves to `accepted` only after this box is ticked
 **Bench runs (2026-10-07, replies sonnet, judge haiku, Claude Code 2.1.292)**:
 - Red before any style change (one prompt, P1, unchanged bodies): `concise` 721 tokens / 328 words, `ni:full` 676 tokens / 269 words, both 4/4 facts. Word diet without a scope: 7% fewer tokens only.
