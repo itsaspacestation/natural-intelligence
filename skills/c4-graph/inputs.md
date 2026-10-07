@@ -10,7 +10,7 @@ Reference file of the [`c4-graph`](SKILL.md) skill. Read it when converting from
 | DOT digraph | Each `"A" -> "B" [label="X"]` is one edge; `subgraph cluster_*` are boundaries |
 | `.drawio` file | XML: `mxCell` with `vertex="1"` are nodes (C4 metadata in the wrapping `<object c4Name= c4Type= c4Technology= c4Description=>`), `edge="1"` with `source`/`target` ids are edges; edge labels may sit in a child `mxCell` |
 | Editable `.drawio.svg` | The model is in the `<svg content="...">` attribute, HTML-escaped; unescape, then as `.drawio` |
-| Pasted model | Often URL-encoded; decode: `python3 -c "import urllib.parse,sys;print(urllib.parse.unquote(open(sys.argv[1]).read()))" model.enc` |
+| Pasted model | Often URL-encoded. Decode it with the interpreter present on the host (`python -c` or `node -e` one-liner), or paste the model and ask Claude to decode it |
 
 Plain draw.io SVG export (no `content` attribute, base64 images inside): there is no model to extract. Reply with the procedure — open the diagram in draw.io, Extras > Edit Diagram, paste the XML here — and stop. Never guess edges from rendered paths.
 
@@ -55,21 +55,35 @@ Split outputs (several levels): check the deepest level first — the union of a
 
 ## Render check
 
-Never deliver an unrendered diagram. Standalone render without any markdown host:
+Never deliver an unrendered diagram. Standalone render without any markdown host. Commands follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).
 
-```bash
-cat > /tmp/mm.html <<'EOF'
+Write `mm.html` into the working directory with the Write tool:
+
+```html
 <!doctype html><body style="background:#1e1e1e"><div style="background:#ffffff;padding:16px">
 <pre class="mermaid">
 <!-- paste the mermaid block here, init included -->
 </pre></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script></body>
-EOF
-"<chrome-or-chromium>" --headless --disable-gpu --virtual-time-budget=8000 \
-  --screenshot=/tmp/mm.png --window-size=1600,1200 --force-device-scale-factor=2 "file:///tmp/mm.html"
 ```
 
-`<chrome-or-chromium>` is any Chrome or Chromium binary on the machine. View the PNG and check: all edge labels visible, dark text, white canvas, boundaries titled. If labels are invisible, re-read the white-on-white trap in [mermaid-rules.md](mermaid-rules.md).
+Then render it to `mm.png` beside it:
+
+```bash
+"<chrome>" --headless --disable-gpu --virtual-time-budget=8000 --screenshot=mm.png --window-size=1600,1200 --force-device-scale-factor=2 "file:///<absolute path to mm.html>"
+```
+
+Build the `file://` URI from the absolute path of `mm.html` as the host writes it (forward slashes, `C:/...` on Windows); Claude prints the path, no shell computes it. Delete `mm.html` and `mm.png` after viewing the PNG.
+
+<!-- platform-table -->
+| Host | `<chrome>` |
+|---|---|
+| Linux | `google-chrome` or `chromium` |
+| macOS | `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome` |
+| Windows | `C:\Program Files\Google\Chrome\Application\chrome.exe` |
+| WSL | `/mnt/c/Program Files/Google/Chrome/Application/chrome.exe` |
+
+View the PNG and check: all edge labels visible, dark text, white canvas, boundaries titled. If labels are invisible, re-read the white-on-white trap in [mermaid-rules.md](mermaid-rules.md).
 
 When no renderer exists, say so and ask the user to preview before relying on the diagram.

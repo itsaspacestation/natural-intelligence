@@ -178,8 +178,8 @@ classDiagram
 - `test_c4_inputs_chrome_table_four_rows`
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Two tests green
-- [ ] Render recipe still under 15 lines
+- [x] Two tests green
+- [x] Render recipe still under 15 lines
 **Depends on**: task 2
 **Time-box**: ~40 min
 **Uncertainty**: downhill
