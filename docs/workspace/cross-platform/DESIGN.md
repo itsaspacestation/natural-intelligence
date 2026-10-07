@@ -161,7 +161,11 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
   words than `ni:lite` in every run, while its output tokens landed within ±150 of
   `ni:lite`, above in two runs. Before the `## Scope` section was added, `ni:full`
   spent more tokens than `default` (207 versus 196 on one prompt): the scope and length
-  budget is what shortens replies, not article dropping. `concise` was not shorter than
+  budget is what shortens replies, not article dropping. A confirmation run with
+  `MAX_THINKING_TOKENS=0` left output tokens almost unchanged, so the remaining
+  full-versus-lite token noise is tool-call tokens on change prompts, not thinking.
+  Gated run 6: `ni:lite` 36% under `concise`, `ni:full` 39% under `ni:lite` on visible
+  characters, 36/36 facts for both. `concise` was not shorter than
   `default` in three of four runs.
 
 ### <a id="nfr8"></a>NFR8 — No regression against ni 1.8.0 on ni-bench

@@ -283,6 +283,7 @@ classDiagram
 **Verify**: `bash tests/style-bench.sh` exits 0
 **Acceptance criteria**:
 - [x] Run 6 (2026-10-07, sonnet replies, haiku judge, Claude Code 2.1.292, exit 0): default 4911 tokens / 9175 chars / 36/36; concise 5286 / 10146 / 36/36; ni:lite 3374 / 5618 / 36/36; ni:full 3271 / 3445 / 36/36. ni:lite 36% under concise on tokens; ni:full 39% under ni:lite on visible chars and 3% under on tokens. Thresholds met (amended NFR7)
+- Run 7, confirmation with `MAX_THINKING_TOKENS=0` (informational): default 5301 tokens / 9553 chars; concise 5202 / 9440; ni:lite 3414 / 4381 / 35/36; ni:full 3701 / 3642 / 36/36. Output tokens barely moved with thinking off, so the full-versus-lite token gap is tool-call tokens on the change prompts, not thinking. The one ni:lite miss (P2 "GET, PUT, and DELETE are idempotent") is a judge false negative: the kept reply states "GET, HEAD, OPTIONS, PUT, and DELETE are idempotent by specification" and the judge comment itself says so. `tests/style-bench/last-run.md` holds run 7; the README publishes run 6 (gated, green).
 - [ ] [ADR output-styles](./adrs/output-styles.md) status moves to `accepted` only after this box is ticked
 **Bench runs (2026-10-07, replies sonnet, judge haiku, Claude Code 2.1.292)**:
 - Red before any style change (one prompt, P1, unchanged bodies): `concise` 721 tokens / 328 words, `ni:full` 676 tokens / 269 words, both 4/4 facts. Word diet without a scope: 7% fewer tokens only.
