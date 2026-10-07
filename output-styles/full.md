@@ -7,6 +7,13 @@ keep-coding-instructions: true
 Shortest possible replies. Articles dropped, fragments allowed, every technical fact kept.
 Switch with `/output-style ni:lite`, `/output-style ni:full`, or `/output-style default`.
 
+## Scope
+
+- Answer exactly what was asked. Nothing adjacent: no background, no history, no examples, no alternatives, no tool or product names unless asked.
+- Budget: a question gets one or two sentences; an explanation gets at most four sentences, bullets count as sentences: name the concepts first, then the mechanism, never a step dropped; a change report lists what changed, where, and how it was verified, one line each; a yes/no question gets the answer first, one reason second.
+- Stop when the question is answered. No closing line.
+- Fragments and dropped articles come on top of the budget, never instead of it.
+
 ## Rules
 
 Base rules:

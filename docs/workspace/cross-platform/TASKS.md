@@ -282,6 +282,48 @@ classDiagram
 **Acceptance criteria**:
 - [ ] Table pasted here with `ni:lite` < `concise` < `default` on output tokens, `ni:full` < `ni:lite`, facts kept 100% for both ni styles
 - [ ] [ADR output-styles](./adrs/output-styles.md) status moves to `accepted` only after this box is ticked
+**Bench runs (2026-10-07, replies sonnet, judge haiku, Claude Code 2.1.292)**:
+- Red before any style change (one prompt, P1, unchanged bodies): `concise` 721 tokens / 328 words, `ni:full` 676 tokens / 269 words, both 4/4 facts. Word diet without a scope: 7% fewer tokens only.
+- Iteration 1: `## Scope` section added to both bodies (answer only what was asked, sentence budget, stop when answered; full adds "fragments on top of the budget, never instead of it"). Exit 1.
+
+  | style | output tokens | facts kept | words |
+  |---|---|---|---|
+  | default | 4840 | 31/36 (86%) | 1527 |
+  | concise | 5130 | 34/36 (94%) | 1510 |
+  | ni:lite | 3516 | 36/36 (100%) | 759 |
+  | ni:full | 3198 | 26/36 (72%) | 556 |
+
+  Reading: tokens green (`concise` ≥ `default` here, not a threshold). `ni:full` red on facts: 3 of the 10 misses were judge failures (haiku answered the instructions instead of grading, 0/n counted), 2 were facts about verification wording in P6 and P10 that no style stated, 2 were real budget drops (P1 borrow and return, P4 handshake before data). Fixes before iteration 2: judge prompt reworded as a grading task with the reply between markers plus one retry; P6 fact 4 and P10 fact 3 rephrased to the edit itself; full.md explanation budget loosened to "four or five sentences, one fact each, cut words never a step of the mechanism". lite.md unchanged.
+- Iteration 2: judge fix plus the loosened full.md budget. Exit 1.
+
+  | style | output tokens | facts kept | words |
+  |---|---|---|---|
+  | default | 5301 | 36/36 (100%) | 1512 |
+  | concise | 5103 | 36/36 (100%) | 1535 |
+  | ni:lite | 3365 | 36/36 (100%) | 756 |
+  | ni:full | 3475 | 36/36 (100%) | 656 |
+
+  Reading: facts 100% everywhere, judge stable. `ni:full` lost to `ni:lite` on tokens by 110: the five-sentence budget invited adjacent content (P1 grew a settings list, P2 examples), and the change prompts (P6 to P10, 2300 to 2500 tokens per style) are dominated by tool-call tokens that swing ±200 between runs. Fix before iteration 3: full.md budget tightened to "a question gets one or two sentences; an explanation gets at most three sentences, two facts in one sentence when needed, never a step of the mechanism dropped". lite.md unchanged.
+- Iteration 3: three-sentence full.md budget. Exit 1.
+
+  | style | output tokens | facts kept | words |
+  |---|---|---|---|
+  | default | 5143 | 36/36 (100%) | 1527 |
+  | concise | 5259 | 36/36 (100%) | 1579 |
+  | ni:lite | 3709 | 36/36 (100%) | 676 |
+  | ni:full | 2951 | 35/36 (97%) | 515 |
+
+  Reading: tokens green with a 758 margin between `ni:full` and `ni:lite`. One fact lost: `ni:full` P3 never named the three CAP properties (it jumped to the trade-off). P1 also leaked a settings list as bullets, which the sentence budget did not count. Fix before iteration 4: full.md explanation budget loosened to "at most four sentences, bullets count as sentences: name the concepts first, then the mechanism, never a step dropped". lite.md unchanged.
+- Iteration 4 (last allowed, committed state of the bodies). Exit 1.
+
+  | style | output tokens | facts kept | words |
+  |---|---|---|---|
+  | default | 5227 | 36/36 (100%) | 1486 |
+  | concise | 5124 | 36/36 (100%) | 1515 |
+  | ni:lite | 3298 | 36/36 (100%) | 757 |
+  | ni:full | 3445 | 36/36 (100%) | 587 |
+
+  Reading: facts 100% everywhere; `ni:lite` beats `concise` by 36% in every run; `ni:full` writes 22% fewer words than `ni:lite` but loses on `usage.output_tokens` by 147. Single-turn explain replies show up to 4.5 output tokens per word (`ni:full` P2: 400 tokens, 88 words), so `usage.output_tokens` counts more than the visible text (thinking or tool-call tokens), and the change prompts swing ±200 per run on tool calls. Not green; styles committed as is. Next steps for the maintainer: run the bench with thinking off (`MAX_THINKING_TOKENS=0`) or measure the `result` text, and decide whether the `ni:full` < `ni:lite` threshold should read on text tokens rather than total output tokens.
 **Depends on**: task 7
 **Time-box**: ~90 min
 **Uncertainty**: downhill

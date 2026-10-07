@@ -122,6 +122,7 @@ Restart Claude Code to apply.
 ```bash
 claude plugin validate . --strict
 claude --plugin-dir .   # load from the working tree
+BENCH_MODEL=sonnet bash tests/style-bench.sh   # NFR7 style benchmark, needs a logged-in Claude Code
 ```
 
 ## Release
