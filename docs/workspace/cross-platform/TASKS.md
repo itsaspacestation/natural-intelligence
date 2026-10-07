@@ -368,9 +368,9 @@ classDiagram
 - `test_plugin_version_is_2_0_0`
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`; then push and `gh run watch` shows three legs green (needs `gh auth login` first)
 **Acceptance criteria**:
-- [ ] Five tests green
-- [ ] Workflow green on ubuntu, windows, and macos on the feature branch; badge visible
-- [ ] Windows and macos legs run `plugin validate` in the runner default shell (PowerShell, zsh), no `shell: bash` override
+- [x] Six tests green (the five listed plus `test_ci_workflow_matrix`: three runners, `plugin validate`, no `shell:` line)
+- [ ] Workflow green on ubuntu, windows, and macos on the feature branch; badge visible (pending push: maintainer validates locally first)
+- [ ] Windows and macos legs run `plugin validate` in the runner default shell (PowerShell, zsh), no `shell: bash` override (pending push: maintainer validates locally first)
 **Depends on**: tasks 6, 7, 10 (task 11 adds its own table to the README when it runs)
 **Time-box**: ~45 min
 **Uncertainty**: downhill

@@ -34,6 +34,14 @@ SECRET_PATTERN='-----BEGIN|ghp_[A-Za-z0-9]{20}|glpat-|AKIA[0-9A-Z]{16}'
 SECRET_EXEMPT=':!tests/docs.test.sh :!docs'
 SHIPPED_MAX_BYTES=1048576
 
+# Release 2.0.0 (FR8, FR9, NFR4): README sections, manifest version, CI matrix.
+README='README.md'
+MANIFEST='.claude-plugin/plugin.json'
+WORKFLOW='.github/workflows/test.yml'
+STYLE_COMMANDS=('/output-style ni:lite' '/output-style ni:full' '/output-style default')
+LANGUAGE_NAMES=('dotnet' 'rust' '.NET' 'Rust' 'Cargo')
+CI_RUNNERS=('ubuntu-latest' 'windows-latest' 'macos-latest')
+
 PLATFORM_MARKER='<!-- platform-table -->'
 SHELL_MARKER='<!-- shell-table -->'
 ONBOARDING='skills/software-engineer/onboarding.md'
@@ -227,6 +235,49 @@ test_shipped_tree() {
   if [ -z "$errors" ]; then ok test_shipped_tree; else fail test_shipped_tree "${errors# }"; fi
 }
 
+test_readme_has_requirements_section() {
+  if grep -q -x '## Requirements' "$README"; then ok test_readme_has_requirements_section; else fail test_readme_has_requirements_section "$README lacks a '## Requirements' heading"; fi
+}
+
+test_readme_reply_styles_section() {
+  local cmd missing=''
+  for cmd in "${STYLE_COMMANDS[@]}"; do
+    grep -q -F -- "$cmd" "$README" || missing="$missing '$cmd'"
+  done
+  if [ -z "$missing" ]; then ok test_readme_reply_styles_section; else fail test_readme_reply_styles_section "$README lacks:$missing"; fi
+}
+
+test_readme_release_notes_migration() {
+  local errors=''
+  grep -q -x '### 2.0.0' "$README" || errors="$errors no '### 2.0.0' heading;"
+  grep -q -F '/output-style ni:lite' "$README" || errors="$errors no /output-style ni:lite mention;"
+  if [ -z "$errors" ]; then ok test_readme_release_notes_migration; else fail test_readme_release_notes_migration "$README:${errors%;}"; fi
+}
+
+test_readme_names_no_language() {
+  local name hits=''
+  for name in "${LANGUAGE_NAMES[@]}"; do
+    hits="$hits $(grep -n -F -- "$name" "$README" | cut -d: -f1 | sed "s|^|$README:|")"
+  done
+  hits=$(echo $hits)
+  if [ -z "$hits" ]; then ok test_readme_names_no_language; else fail test_readme_names_no_language "$hits"; fi
+}
+
+test_plugin_version_is_2_0_0() {
+  if grep -q -F '"version": "2.0.0"' "$MANIFEST"; then ok test_plugin_version_is_2_0_0; else fail test_plugin_version_is_2_0_0 "$MANIFEST version is not 2.0.0"; fi
+}
+
+test_ci_workflow_matrix() {
+  local runner errors=''
+  if [ ! -f "$WORKFLOW" ]; then fail test_ci_workflow_matrix "$WORKFLOW missing"; return; fi
+  for runner in "${CI_RUNNERS[@]}"; do
+    grep -q -F -- "$runner" "$WORKFLOW" || errors="$errors no $runner;"
+  done
+  grep -q -F 'plugin validate' "$WORKFLOW" || errors="$errors no plugin validate step;"
+  grep -q -E '^[[:space:]]*shell:' "$WORKFLOW" && errors="$errors has a shell: line;"
+  if [ -z "$errors" ]; then ok test_ci_workflow_matrix; else fail test_ci_workflow_matrix "$WORKFLOW:${errors%;}"; fi
+}
+
 test_no_runtime_files
 test_manifest_has_no_hooks
 test_no_platform_leaks
@@ -238,5 +289,11 @@ test_preflight_lint_is_git_grep
 test_preflight_lint_matches_pcre_on_fixture
 test_six_files_link_onboarding
 test_shipped_tree
+test_readme_has_requirements_section
+test_readme_reply_styles_section
+test_readme_release_notes_migration
+test_readme_names_no_language
+test_plugin_version_is_2_0_0
+test_ci_workflow_matrix
 
 [ "$FAILED" -eq 0 ] || { printf '%s test(s) failed\n' "$FAILED"; exit 1; }

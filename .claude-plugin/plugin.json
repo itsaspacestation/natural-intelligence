@@ -1,7 +1,7 @@
 {
   "name": "ni",
-  "description": "ni, natural intelligence: a fresh, grounded set of engineering skills that keep the human in the loop. Say it nickel (French: spot on, good enough) or nice (UK/US). Test-driven development, domain-driven design, git conventions, code and merge request reviews, .NET and Rust builds, planning for multi-session work, and evidence-based analysis that cites the code instead of guessing.",
-  "version": "1.8.0",
+  "description": "ni, natural intelligence: a fresh, grounded set of engineering skills that keep the human in the loop. Say it nickel (French: spot on, good enough) or nice (UK/US). Test-driven development, domain-driven design, git conventions, code and merge request reviews, build, test, and coverage on any project through onboarding, planning for multi-session work, and evidence-based analysis that cites the code instead of guessing.",
+  "version": "2.0.0",
   "author": {
     "name": "Clément Boudereau",
     "email": "cboudereau@gmail.com"
@@ -20,12 +20,15 @@
     "git",
     "code-review",
     "gitlab",
-    "dotnet",
-    "rust",
     "planning",
     "evidence-based",
     "c4",
     "mermaid",
-    "diagrams"
+    "diagrams",
+    "output-style",
+    "onboarding",
+    "windows",
+    "macos",
+    "cross-platform"
   ]
 }

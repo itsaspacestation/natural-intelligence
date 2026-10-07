@@ -1,5 +1,7 @@
 <p align="center"><img src="assets/logo.svg" alt="ni" width="300"></p>
 
+![CI](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/test.yml/badge.svg)
+
 # ni
 
 **Never Claude alone.** You and I: Claude NI.
@@ -24,6 +26,21 @@ ni is a Claude Code plugin, distributed through the [itsaspacestation marketplac
 | verbosity_score | 85% (85) | 82% (82) | 80% (80) | 🏆85% (85) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
+
+### Reply styles vs built-in styles (NFR7)
+
+| style | output tokens | reply chars | facts kept | words |
+|---|---|---|---|---|
+| default | 4911 | 9175 | 36/36 | 1494 |
+| concise | 5286 | 10146 | 36/36 | 1617 |
+| ni:lite | 3374 | 5618 | 36/36 | 899 |
+| ni:full | 3271 | 3445 | 36/36 | 521 |
+
+Setup: 10 prompts, sonnet replies, haiku judge, Claude Code 2.1.292, 2026-10-07, `tests/style-bench.sh`. ni:lite is 36% under concise on output tokens, ni:full 39% under ni:lite on visible characters, all facts kept.
+
+### ni 1.8.0 vs 2.0.0 (ni-bench)
+
+Pending: table added when the maintainer runs ni-bench (task 11).
 
 ## Quick tour
 Claude does the heavy lifting. You make the calls. Skills trigger on their own from what you ask; the prompts below are examples.
@@ -72,6 +89,14 @@ Watches your own MRs or PRs in a loop and merges each one once every reviewer ha
 
 `ni:code-review` reads the threads, drafts the fixes and replies, and shows you a preview. Nothing is posted or resolved until you approve it.
 
+## Requirements
+- Claude Code with its own [system requirements](https://code.claude.com/docs/en/setup) per OS: macOS, Linux, or Windows (native or WSL).
+- Claude Code 2.1.251 or later for live output-style switching with `/output-style`.
+- `glab` for GitLab or `gh` for GitHub, depending on the forge the project uses.
+- Chrome, only for the c4-graph PNG export.
+
+ni ships no scripts and assumes no shell: the commands in the skills are shell-neutral and run in bash, PowerShell, and cmd.
+
 ## Install
 Inside Claude Code:
 ```
@@ -98,7 +123,21 @@ For a team, commit this to the project's `.claude/settings.json`. Claude Code of
 }
 ```
 
-For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini/`. 
+For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini/` (Windows: `%USERPROFILE%\.copilot`, `%USERPROFILE%\.cursor`, `%USERPROFILE%\.gemini`).
+
+## Reply styles
+ni ships two output styles. Switch live inside Claude Code:
+```
+/output-style ni:lite
+/output-style ni:full
+/output-style default
+```
+
+- `ni:lite`: no filler, full sentences, every technical fact kept, a scope budget per reply.
+- `ni:full`: the same budget, and it also drops articles and allows fragments.
+- `default`: Claude Code's built-in style.
+
+The choice persists as `outputStyle`: per project in `.claude/settings.local.json`, or for every project in `~/.claude/settings.json` (Windows: `%USERPROFILE%\.claude\settings.json`). Live switching needs Claude Code 2.1.251 or later.
 
 ## Layout
 | Path | Purpose |
@@ -123,6 +162,7 @@ Restart Claude Code to apply.
 claude plugin validate . --strict
 claude --plugin-dir .   # load from the working tree
 BENCH_MODEL=sonnet bash tests/style-bench.sh   # NFR7 style benchmark, needs a logged-in Claude Code
+bash tests/docs.test.sh   # docs lint, runs in CI
 ```
 
 ## Release
@@ -134,10 +174,14 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.0.0
+2.0.0 drops the hook-based terse mode, which no longer works on current Claude Code, for ni's own output styles: run `/output-style ni:lite` or `/output-style ni:full`; `~/.claude/ni/terse` may be deleted.
+Language reference files are replaced by project onboarding (`ni:software-engineer`).
+
 ## Skills
 | Skill | Use when |
 |---|---|
-| `ni:software-engineer` | Implementing, fixing, or refactoring with the plan, test, implement, commit workflow; Rust and .NET build, test, and coverage commands |
+| `ni:software-engineer` | Implementing, fixing, or refactoring with the plan, test, implement, commit workflow; onboarding on an existing project: commands discovered from the CI pipeline, wrappers, lock files, and repository conventions |
 | `ni:tdd` | Writing tests first, red-green-refactor |
 | `ni:debug` | Any failure or bug, before proposing a fix |
 | `ni:plan` | Multi-session work with a durable workspace, design doc, and ADRs |
