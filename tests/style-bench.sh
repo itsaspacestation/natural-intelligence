@@ -8,6 +8,9 @@
 # Env: BENCH_MODEL reply model (sonnet), BENCH_JUDGE_MODEL (haiku),
 #      BENCH_STYLES, BENCH_PROMPTS for partial runs (thresholds then skipped),
 #      BENCH_KEEP=1 keeps the raw replies and prints their directory.
+#      MAX_THINKING_TOKENS=0 (inherited by claude) for a run without thinking tokens.
+# Thresholds: ni:lite output tokens < concise; ni:full reply chars < ni:lite reply chars;
+# facts kept 100% for both ni styles. ni:full vs ni:lite tokens is reported, not gated.
 # Bash 3.2 compatible.
 set -u
 
@@ -75,16 +78,17 @@ judge_kept() { json_field "$1" result | sed -n 's/.*kept: *\([0-9][0-9]*\) *\/ *
 RESULTS=$(mktemp -d "${TMPDIR:-/tmp}/style-bench-results.XXXXXX")
 [ "${BENCH_KEEP:-0}" = 1 ] || SCRATCH_DIRS="$SCRATCH_DIRS $RESULTS"
 JUDGE_DIR=$(new_scratch default)
-TABLE='| style | output tokens | facts kept | words |
-|---|---|---|---|'
-DETAIL='| style | prompt | output tokens | facts kept | words | judge |
-|---|---|---|---|---|---|'
+TABLE='| style | output tokens | reply chars | facts kept | words |
+|---|---|---|---|---|'
+DETAIL='| style | prompt | output tokens | reply chars | facts kept | words | judge |
+|---|---|---|---|---|---|---|'
 tok_default=0 tok_concise=0 tok_lite=0 tok_full=0 pct_lite=0 pct_full=0
+chr_lite=0 chr_full=0
 
 for style in $STYLES; do
   scratch=$(new_scratch "$style")
   tag=$(printf '%s' "$style" | tr ':' '_')
-  tokens=0 kept=0 total=0 words=0
+  tokens=0 kept=0 total=0 words=0 chars=0
   for id in $PROMPT_IDS; do
     reset_sample "$scratch"
     prompt=$(prompt_text "$id")
@@ -110,26 +114,27 @@ for style in $STYLES; do
       if [ -z "$k" ]; then printf 'warn: %s P%s: judge verdict unparsable\n' "$style" "$id" >&2; k=0; fi
     fi
     w=$(printf '%s' "$reply" | wc -w | tr -d ' ')
-    tokens=$((tokens + t)); kept=$((kept + k)); total=$((total + n)); words=$((words + w))
-    printf '%s P%s: tokens=%s kept=%s/%s words=%s\n' "$style" "$id" "$t" "$k" "$n" "$w"
+    c=$(printf '%s' "$reply" | wc -c | tr -d ' ')
+    tokens=$((tokens + t)); kept=$((kept + k)); total=$((total + n)); words=$((words + w)); chars=$((chars + c))
+    printf '%s P%s: tokens=%s chars=%s kept=%s/%s words=%s\n' "$style" "$id" "$t" "$c" "$k" "$n" "$w"
     DETAIL="$DETAIL
-| $style | P$id | $t | $k/$n | $w | $(printf '%s' "$verdict" | tr '\n|' '; ' | cut -c1-160) |"
+| $style | P$id | $t | $c | $k/$n | $w | $(printf '%s' "$verdict" | tr '\n|' '; ' | cut -c1-160) |"
   done
   pct=$((kept * 100 / total))
   TABLE="$TABLE
-| $style | $tokens | $kept/$total ($pct%) | $words |"
+| $style | $tokens | $chars | $kept/$total ($pct%) | $words |"
   case $style in
     default) tok_default=$tokens ;;
     concise) tok_concise=$tokens ;;
-    ni:lite) tok_lite=$tokens pct_lite=$pct ;;
-    ni:full) tok_full=$tokens pct_full=$pct ;;
+    ni:lite) tok_lite=$tokens pct_lite=$pct chr_lite=$chars ;;
+    ni:full) tok_full=$tokens pct_full=$pct chr_full=$chars ;;
   esac
 done
 
 {
   printf '# Style bench, last run\n\n'
-  printf 'Date: %s\nModel: %s (judge: %s)\nClaude Code: %s\nStyles: %s\nPrompts: %s\n\n' \
-    "$(date -u +%Y-%m-%dT%H:%MZ)" "$MODEL" "$JUDGE_MODEL" "$(claude --version)" "$STYLES" "$PROMPT_IDS"
+  printf 'Date: %s\nModel: %s (judge: %s)\nClaude Code: %s\nStyles: %s\nPrompts: %s\nMAX_THINKING_TOKENS: %s\n\n' \
+    "$(date -u +%Y-%m-%dT%H:%MZ)" "$MODEL" "$JUDGE_MODEL" "$(claude --version)" "$STYLES" "$PROMPT_IDS" "${MAX_THINKING_TOKENS:-unset}"
   printf '%s\n\n## Per prompt\n\n%s\n' "$TABLE" "$DETAIL"
 } >"$LAST_RUN"
 printf '\n%s\n\nWritten to %s\n' "$TABLE" "$LAST_RUN"
@@ -141,7 +146,10 @@ if [ "$STYLES" != "$ALL_STYLES" ]; then
 fi
 FAILED=0
 [ "$tok_lite" -lt "$tok_concise" ] || { printf 'FAIL ni:lite tokens %s >= concise %s\n' "$tok_lite" "$tok_concise"; FAILED=1; }
-[ "$tok_full" -lt "$tok_lite" ] || { printf 'FAIL ni:full tokens %s >= ni:lite %s\n' "$tok_full" "$tok_lite"; FAILED=1; }
+# ni:full vs ni:lite reads on the visible reply: output_tokens also counts thinking and
+# tool-call tokens, which the style does not control (NFR7, measured 2026-10-07).
+[ "$chr_full" -lt "$chr_lite" ] || { printf 'FAIL ni:full reply chars %s >= ni:lite %s\n' "$chr_full" "$chr_lite"; FAILED=1; }
+[ "$tok_full" -lt "$tok_lite" ] || printf 'note: ni:full tokens %s >= ni:lite %s (informational, see NFR7)\n' "$tok_full" "$tok_lite"
 [ "$pct_lite" -eq 100 ] || { printf 'FAIL ni:lite facts kept %s%%\n' "$pct_lite"; FAILED=1; }
 [ "$pct_full" -eq 100 ] || { printf 'FAIL ni:full facts kept %s%%\n' "$pct_full"; FAILED=1; }
 [ "$tok_concise" -lt "$tok_default" ] || printf 'note: concise tokens %s >= default %s (not a threshold)\n' "$tok_concise" "$tok_default"

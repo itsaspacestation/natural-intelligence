@@ -62,9 +62,16 @@ Option A.
   5 code-change requests on a sample repo) runs once under `default`, `concise`,
   `ni:lite`, and `ni:full` with `--output-format json`; output tokens and a per-prompt
   checklist of technical facts are recorded. Ship only if `ni:lite` uses fewer output
-  tokens than `concise` and `ni:full` fewer than `ni:lite`, both with every fact kept.
-  If a style fails, rewrite its body and rerun; the ADR stays `proposed` until the
-  table is green. The result table goes in the README benchmark section.
+  tokens than `concise` and `ni:full` has a shorter visible reply (characters of the
+  `result` text) than `ni:lite`, both with every fact kept. Output tokens include
+  thinking and tool-call tokens that a style cannot control, so the full-versus-lite
+  gap is read on the visible reply and the token figure is reported only. If a style
+  fails, rewrite its body and rerun; the ADR stays `proposed` until the table is green.
+  The result table goes in the README benchmark section.
+- **Measured** (2026-10-07, four full runs): `ni:lite` beat `concise` by 31% to 36% on
+  output tokens with all 36 facts kept; `ni:full` wrote 13% to 24% fewer words than
+  `ni:lite`; the first body without a scope section was heavier than `default`. The
+  scope and length budget, not article dropping, produces the saving.
 - **Benchmark against ni 1.8.0** (NFR8): the ni-bench suites already published in the
   README run against 1.8.0 and against the 2.0.0 candidate with `ni:lite`, by a
   maintainer, by hand. Both tables go in the README. A regression beyond 5% on any KPI

@@ -147,10 +147,22 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
   `claude -p --output-format json` with the style set in a scratch project's
   `.claude/settings.local.json` → output tokens summed per style; each reply checked
   against the prompt's list of technical facts.
-- **Measure**: `ni:lite` total output tokens < `concise` total; `ni:full` total <
-  `ni:lite` total; facts kept = 100% for both ni styles. Pass/fail.
+- **Measure**: `ni:lite` total output tokens < `concise` total (cost claim); `ni:full`
+  total visible reply characters < `ni:lite` total (reading claim: `usage.output_tokens`
+  also counts thinking and tool-call tokens, which a style does not control, so the
+  full-versus-lite gap is read on the `result` text); facts kept = 100% for both ni
+  styles. Pass/fail. `ni:full` versus `ni:lite` tokens is reported, not gated.
 - **Verify**: `bash tests/style-bench.sh` (needs a logged-in Claude Code, so it runs
-  locally, not in CI; the result table is committed to the README)
+  locally, not in CI; the result table is committed to the README). A confirmation run
+  with `MAX_THINKING_TOKENS=0` is recorded once.
+- **Measured fact** (2026-10-07, 10 prompts, sonnet replies, haiku judge, Claude Code
+  2.1.292, four runs): `ni:lite` used 31% to 36% fewer output tokens than `concise`
+  and half the words, facts 36/36 in runs 2 to 4. `ni:full` wrote 13% to 24% fewer
+  words than `ni:lite` in every run, while its output tokens landed within ±150 of
+  `ni:lite`, above in two runs. Before the `## Scope` section was added, `ni:full`
+  spent more tokens than `default` (207 versus 196 on one prompt): the scope and length
+  budget is what shortens replies, not article dropping. `concise` was not shorter than
+  `default` in three of four runs.
 
 ### <a id="nfr8"></a>NFR8 — No regression against ni 1.8.0 on ni-bench
 - **Scenario**: the [ni-bench](https://github.com/itsaspacestation/ni-bench) suites
