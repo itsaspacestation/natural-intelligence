@@ -40,9 +40,8 @@ command. The project's own files are the source of truth for its commands; the
 Snippets in skills are shell-neutral: one command per line, flags only, no shell
 syntax. Banned inside fenced blocks: `$(`, `${`, `<<`, `export`, `&&`, `||`,
 `2>/dev/null`, pipes to `sort`, `uniq`, `grep`, `awk`, `sed`, or `xargs`, the
-home-directory tilde shortcut, the Unix temp root, Windows executable suffixes, `sudo`,
-and version-suffixed interpreter names. Where the shells differ, show each form on its
-own line:
+home-directory tilde shortcut, the Unix temp root, Windows executable suffixes, and
+`sudo`. Where the shells differ, show each form on its own line:
 
 <!-- shell-table -->
 | Need | bash | PowerShell | cmd |
@@ -54,8 +53,10 @@ own line:
 | Path separator | `/` | `\` or `/` | `\` |
 | Read a file into a flag | `--flag=@file` or `--input file` | same | same |
 
-Call an interpreter by its plain name, never with a version suffix: hosts differ on
-which suffixed names exist. Prefer the project's committed runner or launcher, and run
+Use the interpreter name the project's own files use (CI pipeline, wrapper, lock file,
+Makefile). When no file names one, probe once with the plain name and once with the
+host's suffixed name, keep the one that answers, and write that exact name into every
+verify command you record. Prefer the project's committed runner or launcher, and run
 tools through the interpreter's module flag rather than a bare tool on PATH.
 
 ## Coverage

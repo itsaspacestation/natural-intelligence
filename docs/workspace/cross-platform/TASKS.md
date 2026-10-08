@@ -386,7 +386,7 @@ classDiagram
 **Tests**: `bash tests/docs.test.sh` green; `test_onboarding_checklist` still green (≤ 100 lines)
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] `grep -c 'version suffix' skills/software-engineer/onboarding.md` prints 0
+- [x] `grep -c 'version suffix' skills/software-engineer/onboarding.md` prints 0
 - [ ] Rerun (task 19): no `python` to `python3` retry in any ni2 trace
 **Depends on**: task 11
 **Time-box**: ~20 min
