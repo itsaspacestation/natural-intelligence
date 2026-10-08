@@ -402,8 +402,8 @@ classDiagram
 **Tests**: `test_preflight_lint_is_git_grep` updated to require `--untracked`; fixture test extended
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Both tests green
-- [ ] Template lint bullet is one command line plus one sentence
+- [x] Both tests green
+- [x] Template lint bullet is one command line plus one sentence
 - [ ] Rerun (task 19): no `git add -N` in any ni2 trace
 **Depends on**: task 11
 **Time-box**: ~30 min

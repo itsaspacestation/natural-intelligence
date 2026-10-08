@@ -23,7 +23,7 @@ Tick every box on disk, then commit the plan. Human gate: nothing below is ticke
 - [x] Every DESIGN.md section is filled or marked `N/A: <reason>` — no blank sections
 - [x] No constraint is ambiguous enough that two reasonable agents would interpret it differently
 - [x] Link lint green — every file reference in workspace docs is a clickable link. Run from the repository root; green when the command prints nothing (exit 1 means no match):
-  `` ! git grep -nE '(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`' -- 'docs/workspace/cross-platform/*.md' ``
+  `` ! git grep --untracked -nE '(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`' -- 'docs/workspace/cross-platform/*.md' ``
 
 **Autopilot readiness**:
 - [x] Build, test, and lint commands pass (green baseline) — no suite exists before task 1; baseline is `claude plugin validate .`

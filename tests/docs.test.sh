@@ -16,6 +16,9 @@ ONBOARDING_STEPS=('Host' 'Project stack' 'Target platform' 'Package manager' 'CI
 STYLE_FILES='output-styles/lite.md output-styles/full.md'
 PREFLIGHT_TEMPLATE='skills/plan/templates/preflight.md'
 LINKLINT_FIXTURE='tests/fixtures/linklint.md'
+# Untracked copy of the fixture, created and removed by the fixture test (never committed).
+LINKLINT_UNTRACKED='tests/fixtures/linklint-untracked.md'
+trap 'rm -f "$LINKLINT_UNTRACKED"' EXIT
 # Unlinked backticked .md reference, with optional :line or :line-line suffix (FR6).
 # POSIX ERE form used by the template, and the GNU-only PCRE form it replaces.
 LINKLINT_ERE='(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`'
@@ -181,7 +184,7 @@ test_preflight_lint_is_git_grep() {
   local errors=''
   if [ ! -f "$PREFLIGHT_TEMPLATE" ]; then fail test_preflight_lint_is_git_grep "$PREFLIGHT_TEMPLATE missing"; return; fi
   grep -q -F 'grep -rPn' "$PREFLIGHT_TEMPLATE" && errors="$errors still has grep -rPn;"
-  grep -q -F 'git grep -nE' "$PREFLIGHT_TEMPLATE" || errors="$errors lacks git grep -nE;"
+  grep -q -F 'git grep --untracked -nE' "$PREFLIGHT_TEMPLATE" || errors="$errors lacks git grep --untracked -nE;"
   if [ -z "$errors" ]; then ok test_preflight_lint_is_git_grep; else fail test_preflight_lint_is_git_grep "$PREFLIGHT_TEMPLATE:${errors%;}"; fi
 }
 
@@ -195,13 +198,19 @@ test_six_files_link_onboarding() {
   if [ -z "$errors" ]; then ok test_six_files_link_onboarding; else fail test_six_files_link_onboarding "${errors# }"; fi
 }
 
-# The ERE lint must flag the fixture's lines 2 and 3 only; where grep -P exists, the PCRE it replaces must agree.
+# The ERE lint must flag the fixture's lines 2 and 3 only, tracked or untracked (no staging);
+# where grep -P exists, the PCRE it replaces must agree.
 test_preflight_lint_matches_pcre_on_fixture() {
-  local want='2 3' got pcre errors=''
+  local want='2 3' got untracked pcre errors=''
   if [ ! -f "$LINKLINT_FIXTURE" ]; then fail test_preflight_lint_matches_pcre_on_fixture "$LINKLINT_FIXTURE missing"; return; fi
   got=$(git grep -nE "$LINKLINT_ERE" -- "$LINKLINT_FIXTURE" | awk -F: '{ print $2 }')
   got=$(echo $got)
   [ "$got" = "$want" ] || errors="$errors git grep -nE flags lines '$got', want '$want';"
+  cp "$LINKLINT_FIXTURE" "$LINKLINT_UNTRACKED"
+  untracked=$(git grep --untracked -nE "$LINKLINT_ERE" -- "$LINKLINT_UNTRACKED" | awk -F: '{ print $2 }')
+  untracked=$(echo $untracked)
+  rm -f "$LINKLINT_UNTRACKED"
+  [ "$untracked" = "$want" ] || errors="$errors git grep --untracked flags lines '$untracked', want '$want';"
   if echo a | grep -P a >/dev/null 2>&1; then
     pcre=$(grep -Pn "$LINKLINT_PCRE" "$LINKLINT_FIXTURE" | awk -F: '{ print $1 }')
     pcre=$(echo $pcre)
