@@ -419,7 +419,7 @@ classDiagram
 **Tests**: `bash tests/docs.test.sh` green (no shell-ism introduced)
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Wording landed; `grep -c 'as few tool calls' skills/plan/complex-plan.md` prints 1
+- [x] Wording landed; `grep -c 'as few tool calls' skills/plan/complex-plan.md` prints 1
 - [ ] Rerun (task 19): plan-complex ni2 turns within 5% of ni, or the remaining gap explained from traces
 **Depends on**: task 15
 **Time-box**: ~20 min
