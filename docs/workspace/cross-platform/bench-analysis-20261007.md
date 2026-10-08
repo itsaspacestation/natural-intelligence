@@ -117,3 +117,26 @@ Reading against run 1:
   +9% red in both runs. Tasks 14 to 17 target the stable effects; the ported-debug gap
   is a style operating point (lite versus full) and task 19 adds a `ni:full` arm
   reading to decide whether the README publishes lite, full, or both.
+
+## Run 3: 20261008-204737, candidate after the Session 3 fixes
+
+ni2 = 2.0.0+local.ca1014d (fixes 8f575eb, 2a49681, 05728d8, ca1014d), ni-bench at
+96c4102 (last-turn cost on resume, approval regex on requests, `python` shim in the
+base image). Full matrix, 42 trials, 7.09 USD, not partial, outcome 3/3 everywhere.
+
+| Scenario | tokens | cost | duration | turns | readability | executability | verbosity |
+|---|---|---|---|---|---|---|---|
+| ported-build | 3208→3292 (+3%) | 0.1062→0.1101 (+4%) | 23.8→26.8 (+13%) | 11→11 | 80→80 | 76→78 | 85→85 |
+| ported-debug | 966→1034 (+7%) | 0.0728→0.0716 (−2%) | 12.1→12.0 (−1%) | 6→6 | 80→82 | 62→72 | 88→88 |
+| plan-complex | 18281→20750 (+14%) | 0.4030→0.4357 (+8%) | 123.1→142.3 (+16%) | 13→14 (+8%) | 88→88 | 90→90 | 72→72 |
+| plan-easy | 2227→2227 | 0.0988→0.0873 (−12%) | 21.1→19.0 (−10%) | 7→7 | 88→85 | 86→85 | 85→85 |
+| debug-easy | 651→685 (+5%) | 0.0662→0.0658 (−1%) | 9.7→10.0 (+3%) | 7→7 | 85→82 | 70→65 | 90→85 |
+| debug-complex | 1087→946 (−13%) | 0.0730→0.0697 (−5%) | 12.9→11.7 (−9%) | 6→6 | 88→85 | 80→80 | 90→88 |
+| build-small | 2371→2466 (+4%) | 0.1010→0.1004 (−1%) | 20.7→20.3 (−2%) | 10→10 | 82→88 | 80→85 | 80→85 |
+
+Against runs 1 and 2: plan-complex turns went from +50% to +60% down to +8% (the
+link-lint and file-writing fixes), tokens from +20% to +24% down to +14%; ported-build
+turns from +40% or equal to equal; ported-debug tokens +7% (was +9% twice), the
+lite-versus-full operating point. NFR8 on the published scenarios: ported-build
+duration +13% and ported-debug tokens +7% remain above the 5% threshold; every judge
+KPI equal or better. Per-trial reading follows in the next section.

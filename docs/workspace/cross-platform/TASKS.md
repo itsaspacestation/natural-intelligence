@@ -491,7 +491,7 @@ classDiagram
 **Tests**: the run is the test
 **Verify**: `manual: maintainer runs ni-bench`
 **Acceptance criteria**:
-- [ ] Table pasted here with ni-bench SHA, label, model, date
+- [x] Run 3 (2026-10-08, run-20261008-204737, ni-bench 96c4102, ni2 = 2.0.0+local.ca1014d, claude-sonnet-5-5, 42 trials, 7.09 USD): table in [bench-analysis-20261007.md](./bench-analysis-20261007.md) run 3 section
 - [ ] Every ported KPI within 5% or better, outcome 3/3; README placeholder replaced
 - [ ] Task 11's second box ticked by reference to this task
 **Depends on**: tasks 14, 15, 16, 17, 18
