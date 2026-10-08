@@ -455,8 +455,8 @@ classDiagram
 **Tests**: ni-bench pytest, plus a unit test for the resume totals
 **Verify**: `uv run pytest -q` in the ni-bench worktree
 **Acceptance criteria**:
-- [ ] Three changes committed with tests on `compare-ni-2`
-- [ ] `./scripts/check-isolation.sh` still clean
+- [x] Three changes committed with tests on `compare-ni-2` (ni-bench 96c4102, 156 pytest green, ruff clean)
+- [x] `./scripts/check-isolation.sh` still clean (all 16 checks OK after rebuilding base and arms; ni2 `python --version` prints Python 3.11.2)
 **Depends on**: task 11
 **Time-box**: ~60 min
 **Uncertainty**: downhill
