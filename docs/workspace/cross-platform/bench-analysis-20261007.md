@@ -140,3 +140,81 @@ turns from +40% or equal to equal; ported-debug tokens +7% (was +9% twice), the
 lite-versus-full operating point. NFR8 on the published scenarios: ported-build
 duration +13% and ported-debug tokens +7% remain above the 5% threshold; every judge
 KPI equal or better. Per-trial reading follows in the next section.
+
+### Run 3 per-trial reading
+
+Fix checks over the 42 run 3 traces:
+- Interpreter retry: 0 retries. ni2 uses the plain name in 10 trials (the base image
+  now has the shim). Verify commands recorded as `python -m pytest` in ported-build
+  PLAN.md 3/3 and plan-complex TASKS.md 0/13/12: correct on the shim host, the probed
+  name is not written back as the rule asks. Portability risk, no run 3 cost.
+- `git add` in plan trials: 0. ni2 ran `git grep --untracked` 3/3.
+- plan-complex tool calls: ni Write 4/6/0, Bash 5/5/6, turns 13/16/11; ni2 Write 5/7/8,
+  Bash 4/4/2, turns 12/15/14. Turn gap +50% to +60% → +8%.
+- Acronym expansions in ni2 replies: 0 of 21. Fenced evidence block in debug replies:
+  ni2 0/9, ni 1/9.
+- Simulator turns: none in 42 trials; the approval regex held on "Approve the plan
+  commit:" (plan-complex ni2 03). No trial resumed, so the cost-on-resume fix is
+  untested by run 3.
+
+Remaining stable gaps:
+- plan-complex tokens +14%, duration +16%: duration tracks output tokens (6.7 ms per
+  token both arms). Two of three ni2 trials drafted PREFLIGHT.md with Write (370 and
+  394 words of output) where all ni trials copied the template with one `sed`
+  substitution; one link-lint fix round; one extra ADR (median 3 vs 2). The task 16
+  sentence "draft the small files (ADRs under 40 lines, PREFLIGHT.md) in the same
+  turn" caused the drafting; Phase 4c still says copy. About 60% of the gap.
+- ported-debug tokens +7%: identical tool calls and turns; ni2 replies add a 3 to 5
+  bullet bold-labelled list before the three evidence lines (reply chars 804/950/703
+  vs 683/720/661), from the lite rules "full sentences" and "list for parallel
+  items" against terse level full fragments. Judge prefers ni2 (readability +2,
+  executability +10).
+- ported-build duration +13%: sign flips across runs (+2%, −13%, +12%); the median
+  trial has fewer output tokens than ni and longer API latency. Noise. One contributor:
+  ni2 wrote an ADR in 2/3 trials (ni 1/3), judge "a PLAN.md plus an ADR that the task
+  did not need".
+- debug-easy executability −5: within-arm spread 8 points, identical judge sentence
+  on all six trials ("transcript shows no tool calls"). Noise.
+
+NFR8 verdict, run 3, published scenarios: pass on every KPI except ported-build
+duration (+12.6%, noise) and ported-debug tokens (+7.0%, style operating point). A
+`ni:full` arm is estimated to bring ported-debug within 5% (style bench: full is 8%
+fewer output tokens and 31% fewer chars than lite; the ni2 reply excess is 6% to 32%
+chars). Medium confidence.
+
+README-ready tables (run 3, ni-bench 96c4102, ni2 2.0.0+local.ca1014d, n=3):
+
+ported-build
+
+| KPI | ni 1.8.0 | ni 2.0.0 |
+|---|---|---|
+| tokens_total | 100% (3 208 tok) | 97% (3 292 tok) |
+| cost_usd | 100% ($0.1062) | 96% ($0.1101) |
+| duration_s | 100% (23.8 s) | 89% (26.8 s) |
+| turns | 100% (11) | 100% (11) |
+| human_readability | 80% (80) | 80% (80) |
+| agent_executability | 76% (76) | 78% (78) |
+| verbosity_score | 85% (85) | 85% (85) |
+| outcome | 100% (3/3) | 100% (3/3) |
+
+ported-debug
+
+| KPI | ni 1.8.0 | ni 2.0.0 |
+|---|---|---|
+| tokens_total | 100% (966 tok) | 93% (1 034 tok) |
+| cost_usd | 98% ($0.0728) | 100% ($0.0716) |
+| duration_s | 99% (12.1 s) | 100% (12.0 s) |
+| turns | 100% (6) | 100% (6) |
+| human_readability | 80% (80) | 82% (82) |
+| agent_executability | 62% (62) | 72% (72) |
+| verbosity_score | 88% (88) | 88% (88) |
+| outcome | 100% (3/3) | 100% (3/3) |
+
+Next steps ranked: (1) plan skill: PREFLIGHT.md is copied with one substitution, never
+drafted; drop it from the "draft the small files" sentence (high). (2) debug skill:
+the summary is prose plus the three lines, no labelled list, or publish the `ni:full`
+reading (medium). (3) small-plan ADR trigger wording, ported-build wrote an ADR the
+task did not need (low). (4) write the probed interpreter name into verify commands
+(medium, portability). Bench: `ni:full` arm; judge tool-trace visibility; the
+cost-on-resume fix needs a two-turn trial to be exercised. Accept as noise:
+ported-build duration, debug-easy executability, plan-easy and build-small.
