@@ -343,8 +343,8 @@ classDiagram
 **Tests**: the two bench runs are the test
 **Verify**: `manual: ni-bench run by a maintainer`
 **Acceptance criteria**:
-- [ ] Both tables pasted here with ni-bench SHA, model id, date
-- [ ] Every KPI within the NFR8 threshold, or the regression explained and fixed with a rerun pasted below
+- [x] Run 1 (2026-10-07, full matrix 42 trials, 6.50 USD, ni-bench `compare-ni-2` at f6390ea, ni2 = 2.0.0+local.e97097b, `ni:lite`): tables and the per-trial reading in [bench-analysis-20261007.md](./bench-analysis-20261007.md)
+- [ ] Every KPI within the NFR8 threshold: NOT MET on run 1 (ported-build cost +6%, turns +40%; ported-debug tokens +9%, duration +13%; plan-complex tokens +24%, turns +60%). Causes traced to five plugin rules and four bench artefacts; fixed by tasks 14 to 18, rerun in task 19
 **Depends on**: tasks 2, 7, 10
 **Time-box**: ~60 min (plus bench wall-clock)
 **Uncertainty**: downhill
@@ -374,6 +374,109 @@ classDiagram
 - [ ] Windows and macos legs run `plugin validate` in the runner default shell (PowerShell, zsh), no `shell: bash` override (pending push: maintainer validates locally first)
 **Depends on**: tasks 6, 7, 10 (task 11 adds its own table to the README when it runs)
 **Time-box**: ~45 min
+**Uncertainty**: downhill
+
+### 14. Interpreter name rule ([FR3](./DESIGN.md#fr3), [NFR8](./DESIGN.md#nfr8))
+**Goal**: Stop the `python` versus `python3` retry and the non-runnable verify commands.
+**Types**: [onboarding.md](../../../skills/software-engineer/onboarding.md)
+**Constraints**:
+- Evidence: [bench-analysis-20261007.md](./bench-analysis-20261007.md) root cause 1 (6 retry turns, PLAN.md and TASKS.md verify commands that fail on a host with `python3` only)
+- Replace "call an interpreter by its plain name, never with a version suffix" and the banned-list entry with: use the interpreter name the project's own files name (CI pipeline, wrapper, lock file); when none does, probe once and keep the name that answers; write that name into every verify command. No language named; "interpreter" stays generic
+- Lint: `test_no_platform_leaks` keeps `python3` as a forbidden literal in skills; the rule text must not contain it
+**Tests**: `bash tests/docs.test.sh` green; `test_onboarding_checklist` still green (≤ 100 lines)
+**Verify**: `bash tests/docs.test.sh`
+**Acceptance criteria**:
+- [ ] `grep -c 'version suffix' skills/software-engineer/onboarding.md` prints 0
+- [ ] Rerun (task 19): no `python` to `python3` retry in any ni2 trace
+**Depends on**: task 11
+**Time-box**: ~20 min
+**Uncertainty**: downhill
+
+### 15. Preflight link lint without index side effects ([FR6](./DESIGN.md#fr6), [NFR8](./DESIGN.md#nfr8))
+**Goal**: A link lint that sees untracked workspace files and leaves the user's git index alone.
+**Types**: [preflight.md](../../../skills/plan/templates/preflight.md), `tests/docs.test.sh`
+**Constraints**:
+- Evidence: root cause 2 (`git add -N docs CLAUDE.md` run in the user's repository; three-line lint block copied into generated PREFLIGHT.md, machine_words +45%)
+- Keep `git grep` (portable regex engine) but add `--untracked` so untracked files are scanned without staging: `git grep --untracked -nE '...' -- 'docs/workspace/<NAME>/*.md'`; one line only in the template; the cmd quoting note moves to [onboarding.md](../../../skills/software-engineer/onboarding.md) shell table (one row), not into the template
+- Verify `git grep --untracked` works on an untracked fixture in `test_preflight_lint_matches_pcre_on_fixture` (add an untracked copy of the fixture in a temp dir inside the repo during the test, remove after)
+**Tests**: `test_preflight_lint_is_git_grep` updated to require `--untracked`; fixture test extended
+**Verify**: `bash tests/docs.test.sh`
+**Acceptance criteria**:
+- [ ] Both tests green
+- [ ] Template lint bullet is one command line plus one sentence
+- [ ] Rerun (task 19): no `git add -N` in any ni2 trace
+**Depends on**: task 11
+**Time-box**: ~30 min
+**Uncertainty**: downhill
+
+### 16. Workspace file writing in the plan skill ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Fewer turns when the plan skill creates its workspace.
+**Types**: [complex-plan.md](../../../skills/plan/complex-plan.md)
+**Constraints**:
+- Evidence: root cause 3 (7 to 8 Write calls vs 3 to 6 Bash heredocs; plan-complex turns 16 vs 10)
+- Phase 1 wording: create the workspace files in as few tool calls as the host allows: one Write per file is correct, but draft the small files (ADRs under 40 lines, PREFLIGHT.md) in the same turn as DESIGN.md; never a shell heredoc (shell rules). State that the number of files, not the number of turns, is the measure of a plan
+- Phase 4c: the generated PREFLIGHT.md carries the one-line lint from task 15, not a per-shell block
+**Tests**: `bash tests/docs.test.sh` green (no shell-ism introduced)
+**Verify**: `bash tests/docs.test.sh`
+**Acceptance criteria**:
+- [ ] Wording landed; `grep -c 'as few tool calls' skills/plan/complex-plan.md` prints 1
+- [ ] Rerun (task 19): plan-complex ni2 turns within 5% of ni, or the remaining gap explained from traces
+**Depends on**: task 15
+**Time-box**: ~20 min
+**Uncertainty**: downhill (effect on turns is medium confidence; the rerun decides)
+
+### 17. Style rules: acronyms and evidence fences ([FR10](./DESIGN.md#fr10), [NFR8](./DESIGN.md#nfr8))
+**Goal**: Remove the two style rules that cost tokens or points without keeping a fact.
+**Types**: [lite.md](../../../output-styles/lite.md), [full.md](../../../output-styles/full.md), [debug/SKILL.md](../../../skills/debug/SKILL.md)
+**Constraints**:
+- Evidence: root causes 4 and 5 (SKU expanded wrongly from the user's own prompt; evidence block fenced in 3/3 ni2 debug trials, 0/3 ni)
+- Acronym rule becomes: expand an acronym once only when it is uncommon and absent from the user's message; never invent an expansion
+- Fence rule becomes: code, commands, and error strings in fenced blocks; the debug evidence block and other short structured summaries stay in plain lines. [debug/SKILL.md](../../../skills/debug/SKILL.md) says the evidence block is three plain lines
+- Both style bodies stay ≤ 60 lines; `test_terse_styles_frontmatter` green
+**Tests**: `bash tests/docs.test.sh`; `BENCH_PROMPTS=2 BENCH_STYLES='ni:lite ni:full' bash tests/style-bench.sh` as a smoke (partial run, thresholds skipped)
+**Verify**: `bash tests/docs.test.sh`
+**Acceptance criteria**:
+- [ ] Both rules reworded in lite.md and full.md; debug SKILL.md states plain lines
+- [ ] Full style bench (`bash tests/style-bench.sh`) still green after the change, table pasted here
+**Depends on**: task 11
+**Time-box**: ~40 min (plus one 20-minute bench run)
+**Uncertainty**: downhill
+
+### 18. ni-bench corrections on `compare-ni-2` ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Make the NFR8 numbers trustworthy before the rerun. Lives in the ni-bench worktree, not in this repository.
+**Types**: none here (ni-bench `harness/runner.py`, `harness/simulator.py`, `arms/Dockerfile.base`)
+**Constraints**:
+- Evidence: bench artefacts section of [bench-analysis-20261007.md](./bench-analysis-20261007.md)
+- runner: a resumed `claude -p` returns cumulative totals; take the last turn's totals instead of summing turns (plan-complex ni2 trial 02: 1.0877 reported, about 0.57 real)
+- simulator: `approve|approval` must match a request form only (needs your approval, please approve), not a status line
+- base image: add a `python` shim to `python3` so the arm host resembles a developer machine; record the change in the report header
+- judge tool trace: out of scope for this rerun (changes the rubric for every arm); noted as a follow-up in ni-bench
+- Commit on `compare-ni-2`, tests green (`uv run pytest -q`), not pushed; the maintainer decides later what reaches ni-bench `main`
+**Tests**: ni-bench pytest, plus a unit test for the resume totals
+**Verify**: `uv run pytest -q` in the ni-bench worktree
+**Acceptance criteria**:
+- [ ] Three changes committed with tests on `compare-ni-2`
+- [ ] `./scripts/check-isolation.sh` still clean
+**Depends on**: task 11
+**Time-box**: ~60 min
+**Uncertainty**: downhill
+
+### 19. ni-bench rerun after the fixes ([NFR8](./DESIGN.md#nfr8))
+**Goal**: NFR8 verdict on the fixed candidate.
+**Types**: none (results tables)
+**Constraints**:
+- Maintainer runs, from the ni-bench worktree: `./scripts/stage-ni-local.sh && docker compose build ni2 harness ni` then `BENCH_ARMS=ni,ni2 BENCH_N=3 ./scripts/bench.sh ported`; optionally the full matrix for the plan-complex check
+- Same model and ni-bench commit for both arms; label shows the new local sha
+- NFR8 thresholds as written; a remaining regression is explained from traces or triggers another fix round (tasks 14 to 17 reopen)
+- README `### ni 1.8.0 vs 2.0.0 (ni-bench)` placeholder replaced with the final table (task 8 convention)
+**Tests**: the run is the test
+**Verify**: `manual: maintainer runs ni-bench`
+**Acceptance criteria**:
+- [ ] Table pasted here with ni-bench SHA, label, model, date
+- [ ] Every ported KPI within 5% or better, outcome 3/3; README placeholder replaced
+- [ ] Task 11's second box ticked by reference to this task
+**Depends on**: tasks 14, 15, 16, 17, 18
+**Time-box**: ~30 min plus bench wall-clock
 **Uncertainty**: downhill
 
 ### 12. Shipped-tree lint ([NFR9](./DESIGN.md#nfr9))
@@ -439,8 +542,14 @@ Tasks: 7, 10, 11, 12, 8
 **Checkpoint**: `bash tests/docs.test.sh && claude plugin validate . && git grep -nE '(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md' -- 'docs/workspace/cross-platform/*.md' ; test $? -eq 1`
 **Commit point**: yes, `feat(styles): ni:lite and ni:full output styles`, `test(styles): benchmark against concise`, `docs(benchmark): ni-bench 1.8.0 vs 2.0.0`, `docs(readme): ...`, `ci: ...`, `chore(release): 2.0.0`
 
-### Session 3 — Windows verification and PR close (~0.75H, human)
-Tasks: 9, 13
+### Session 3 — Bench feedback (~3H)
+Tasks: 14, 15, 16, 17, 18
+**Skills**: `skill`, `software-engineer`, `tdd`, `evidence-based-analysis`
+**Checkpoint**: `bash tests/docs.test.sh && claude plugin validate . && bash tests/style-bench.sh` here; `uv run pytest -q` and `./scripts/check-isolation.sh` in the ni-bench worktree
+**Commit point**: yes, `fix(onboarding): ...`, `fix(plan): ...`, `fix(styles): ...` here; `fix(harness): ...` on `compare-ni-2`
+
+### Session 4 — Rerun, Windows verification, PR close (~1H, human)
+Tasks: 19, 13 (task 9 merged into 11 and 19)
 **Skills**: `evidence-based-analysis`
 **Checkpoint**: manual observations recorded in task 9
 **Commit point**: yes, `docs(workspace): record windows smoke test`

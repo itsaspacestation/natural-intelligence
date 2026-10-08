@@ -251,6 +251,7 @@ they beat the built-in `Concise` style. See [ADR output-styles](./adrs/output-st
 | `docs/` or [CLAUDE.md](../../../CLAUDE.md) merged to `main` | `test_shipped_tree` red on `main` | revert commit that deletes them, then re-merge | one release |
 | A ni style loses to `concise` on tokens or drops a fact | NFR7 table red | rewrite the style body, rerun; do not ship the style until green | release blocked |
 | 2.0.0 regresses against 1.8.0 on a ni-bench KPI | NFR8 comparison | find the cause (style body, onboarding pass cost, missing hook reinforcement), fix, rerun; release only when equal or better within 5% | release blocked |
+| Run 1 (2026-10-07) regressed: ported-build cost +6% and turns +40%, ported-debug tokens +9%, plan-complex turns +60% | traces: `python` retry, `git add -N` from the link lint, one Write per workspace file, acronym expansion | tasks 14 to 18 fix the five plugin rules and three bench artefacts; task 19 reruns; see [bench-analysis-20261007.md](./bench-analysis-20261007.md) | release blocked until the rerun |
 | `settings.local.json` `outputStyle` not honoured by `claude -p` | bench shows identical token counts across styles | fall back to `--append-system-prompt-file` with the style body for the bench only; record the deviation | bench only |
 | Claude Code older than 2.1.251 | style switch not applied until restart | README Requirements line | one session |
 | User runs `/ni:terse` after upgrade | command unknown | README Release line: use `/output-style ni:lite`, `ni:full`, or `default` | one prompt |
