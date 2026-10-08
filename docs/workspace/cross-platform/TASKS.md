@@ -436,8 +436,26 @@ classDiagram
 **Tests**: `bash tests/docs.test.sh`; `BENCH_PROMPTS=2 BENCH_STYLES='ni:lite ni:full' bash tests/style-bench.sh` as a smoke (partial run, thresholds skipped)
 **Verify**: `bash tests/docs.test.sh`
 **Acceptance criteria**:
-- [ ] Both rules reworded in lite.md and full.md; debug SKILL.md states plain lines
+- [x] Both rules reworded in lite.md and full.md; debug SKILL.md states plain lines
 - [ ] Full style bench (`bash tests/style-bench.sh`) still green after the change, table pasted here
+  - Smoke (2026-10-08, prompts 2 and 4, ni:lite and ni:full, sonnet): both styles load; ni:full P4 3/4 (judge: "completes before any application data is sent").
+  - Run 1 (2026-10-08, sonnet replies, haiku judge, Claude Code 2.1.294, exit 1): tokens and chars thresholds pass; ni:full facts 34/36. P6: judge false negative (reply lists both occurrences and a project-wide grep with 0 matches, which is the fact's "no other callers" clause; ni:lite's equivalent wording was judged kept). P4: "later traffic is encrypted" implies but does not state the ordering, real miss at n=1, so one re-run.
+
+    | style | output tokens | reply chars | facts kept | words |
+    |---|---|---|---|---|
+    | default | 5382 | 10533 | 36/36 (100%) | 1702 |
+    | concise | 5149 | 9324 | 36/36 (100%) | 1485 |
+    | ni:lite | 3347 | 4608 | 36/36 (100%) | 745 |
+    | ni:full | 3032 | 3339 | 34/36 (94%) | 506 |
+
+  - Run 2 (2026-10-08, same settings, exit 1, `tests/style-bench/last-run.md`): tokens and chars thresholds pass; ni:full 34/36 again. P4: the reply says the keys derived in the handshake "then encrypt and integrity-protect all application data"; the judge failed `default` P4 on the same fact for "After the handshake, both sides use those keys", so this is a judge false negative on a strict reading. P1: "opening a connection is costly" absent, real miss; the prompt is an explanation with no acronym and no code, so neither reworded rule reaches it. `default` also dropped to 34/36 (P4, P6). Not green on the facts gate; not re-run a third time (noise at n=1 per task brief). The wording stays: tokens and chars thresholds passed in both runs.
+
+    | style | output tokens | reply chars | facts kept | words |
+    |---|---|---|---|---|
+    | default | 5637 | 9836 | 34/36 (94%) | 1610 |
+    | concise | 5215 | 9529 | 36/36 (100%) | 1523 |
+    | ni:lite | 3568 | 4690 | 36/36 (100%) | 746 |
+    | ni:full | 3292 | 3244 | 34/36 (94%) | 513 |
 **Depends on**: task 11
 **Time-box**: ~40 min (plus one 20-minute bench run)
 **Uncertainty**: downhill

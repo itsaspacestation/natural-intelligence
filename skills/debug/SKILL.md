@@ -64,14 +64,17 @@ Four phases, in order. No phase is skipped because the bug looks simple.
 
 ## Evidence block
 
-The final summary closes with three lines — they carry the
-proof that the process happened, for a reviewer who sees only the summary:
+The final summary closes with three plain text lines, not a fenced block and not a
+list. They carry the proof that the process happened, for a reviewer who sees only the
+summary:
 
 ```
 reproduced: <command → one line of failing output>
 root cause before fix: <file:line — mechanism in one clause>
 tests: red <N failed: test names> → green <N passed>
 ```
+
+The fence above shows the template only; the reply writes the three lines bare.
 
 A correct fix with an absent process trace reads as a guess to any reviewer.
 
