@@ -88,3 +88,32 @@ Plugin: 1 interpreter rule (high), 2 link lint (high), 3 plan file writing (medi
 (high), simulator regex (high), judge tool trace (high that it removes the shared
 penalty), python shim (medium). Accept as judge noise: debug-easy judge KPIs,
 debug-complex trial 02, debug-complex duration; re-run at n ≥ 5 after the fixes.
+
+## Run 2: 20261008-183033, same candidate, full matrix again
+
+Same arms and labels (ni 1.8.0, ni2 2.0.0+local.e97097b), 42 trials, 6.00 USD, not
+partial, 0 indeterminate, outcome 3/3 everywhere. No plugin fix applied between the
+runs, so run 2 measures run-to-run variance.
+
+| Scenario | tokens | cost | duration | turns | readability | executability | verbosity |
+|---|---|---|---|---|---|---|---|
+| ported-build | 3354→3104 (−7%) | 0.1203→0.1124 (−7%) | 30.6→26.7 (−13%) | 13→13 | 80→80 | 78→78 | 82→85 |
+| ported-debug | 944→1031 (+9%) | 0.0723→0.0715 (−1%) | 15.1→16.4 (+9%) | 6→6 | 80→85 | 72→72 | 88→88 |
+| plan-complex | 18158→21832 (+20%) | 0.4129→0.4392 (+6%) | 125.7→153.6 (+22%) | 10→15 (+50%) | 90→88 | 90→90 | 72→72 |
+| plan-easy | 2068→2273 (+10%) | 0.0925→0.0913 (−1%) | 20.3→20.4 | 7→7 | 88→88 | 88→87 | 88→88 |
+| debug-easy | 660→643 (−3%) | 0.0666→0.0649 (−3%) | 16.9→11.8 (−30%) | 7→7 | 85→85 | 70→60 | 90→88 |
+| debug-complex | 1130→1189 (+5%) | 0.0783→0.0786 | 17.8→16.2 (−9%) | 7→8 (+14%) | 88→85 | 80→80 | 88→85 |
+| build-small | 2339→2355 (+1%) | 0.1014→0.1048 (+3%) | 21.0→22.9 (+9%) | 12→12 | 85→82 | 80→80 | 85→82 |
+
+Reading against run 1:
+- Stable across both runs (real effects): plan-complex tokens, duration, and turns
+  (+20% to +24%, +50% to +60%); ported-debug tokens +9% (reply length under `ni:lite`
+  full sentences versus terse level full fragments); debug-easy executability −7 to
+  −10 (the fenced evidence block is the only textual difference, so task 17 is
+  justified, not only noise).
+- Flipped sign between runs (noise at n=3): ported-build (cost +6% then −7%, turns +40%
+  then equal), plan-easy (tokens −13% then +10%), build-small (−15% then +1%).
+- NFR8 on the published scenarios after run 2: ported-build green; ported-debug tokens
+  +9% red in both runs. Tasks 14 to 17 target the stable effects; the ported-debug gap
+  is a style operating point (lite versus full) and task 19 adds a `ni:full` arm
+  reading to decide whether the README publishes lite, full, or both.

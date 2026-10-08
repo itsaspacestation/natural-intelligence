@@ -343,7 +343,7 @@ classDiagram
 **Tests**: the two bench runs are the test
 **Verify**: `manual: ni-bench run by a maintainer`
 **Acceptance criteria**:
-- [x] Run 1 (2026-10-07, full matrix 42 trials, 6.50 USD, ni-bench `compare-ni-2` at f6390ea, ni2 = 2.0.0+local.e97097b, `ni:lite`): tables and the per-trial reading in [bench-analysis-20261007.md](./bench-analysis-20261007.md)
+- [x] Run 1 (2026-10-07, 6.50 USD) and run 2 (2026-10-08, 6.00 USD), both full matrix 42 trials, ni-bench `compare-ni-2` at f6390ea, ni2 = 2.0.0+local.e97097b, `ni:lite`: tables and the per-trial reading in [bench-analysis-20261007.md](./bench-analysis-20261007.md); run 2 separates stable effects (plan-complex turns, ported-debug tokens, debug-easy executability) from noise (ported-build, plan-easy, build-small flipped sign)
 - [ ] Every KPI within the NFR8 threshold: NOT MET on run 1 (ported-build cost +6%, turns +40%; ported-debug tokens +9%, duration +13%; plan-complex tokens +24%, turns +60%). Causes traced to five plugin rules and four bench artefacts; fixed by tasks 14 to 18, rerun in task 19
 **Depends on**: tasks 2, 7, 10
 **Time-box**: ~60 min (plus bench wall-clock)
@@ -467,6 +467,7 @@ classDiagram
 **Constraints**:
 - Maintainer runs, from the ni-bench worktree: `./scripts/stage-ni-local.sh && docker compose build ni2 harness ni` then `BENCH_ARMS=ni,ni2 BENCH_N=3 ./scripts/bench.sh ported`; optionally the full matrix for the plan-complex check
 - Same model and ni-bench commit for both arms; label shows the new local sha
+- Add a third arm reading `ni2full` (same image, init hook writes `outputStyle: ni:full`) on the ported scenarios, so the lite-versus-full operating point is measured against 1.8.0 terse full; the README publishes the arm that meets NFR8, both if both do
 - NFR8 thresholds as written; a remaining regression is explained from traces or triggers another fix round (tasks 14 to 17 reopen)
 - README `### ni 1.8.0 vs 2.0.0 (ni-bench)` placeholder replaced with the final table (task 8 convention)
 **Tests**: the run is the test
