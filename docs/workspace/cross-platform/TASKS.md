@@ -564,6 +564,20 @@ classDiagram
 **Time-box**: ~20 min plus bench wall-clock
 **Uncertainty**: downhill
 
+### 24. Skill authoring writes cross-platform skills ([FR7](./DESIGN.md#fr7))
+**Goal**: A skill, agent, or command written by following the `skill` skill is shell-neutral without relying on the lint alone.
+**Types**: none (markdown rules)
+**Constraints**:
+- `skills/skill/SKILL.md` gains a Snippets rule that links the shell rules in `software-engineer/onboarding.md`; one owner, no restated table
+- `template.md` points at the same rules; `bash tests/docs.test.sh` joins the verify list
+**Tests**: `bash tests/docs.test.sh` (link and shell lint)
+**Verify**: `claude plugin validate .`
+**Acceptance criteria**:
+- [x] Snippets rule, template note, and verify step landed; docs lint green
+**Depends on**: task 2
+**Time-box**: ~10 min
+**Uncertainty**: downhill
+
 ### 12. Shipped-tree lint ([NFR9](./DESIGN.md#nfr9))
 **Goal**: Fail CI when the repository grows outside the Claude Code plugin structure, over budget, or with a secret.
 **Types**: `tests/docs.test.sh`
@@ -634,7 +648,7 @@ Tasks: 14, 15, 16, 17, 18
 **Commit point**: yes, `fix(onboarding): ...`, `fix(plan): ...`, `fix(styles): ...` here; `fix(harness): ...` on `compare-ni-2`
 
 ### Session 4 — Bench feedback round 2 (~1.5H)
-Tasks: 20, 21, 22, 23
+Tasks: 20, 21, 22, 23, 24
 **Skills**: `skill`, `software-engineer`, `evidence-based-analysis`
 **Checkpoint**: `bash tests/docs.test.sh && claude plugin validate .`; the task 22 run recorded
 **Commit point**: yes, `fix(plan): ...`, `fix(debug): ...` here; `feat(arms): ni2 runs output style ni:full` on `compare-ni-2`
