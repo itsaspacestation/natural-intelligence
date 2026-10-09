@@ -3,11 +3,6 @@ Copyright 2026 Clément Boudereau
 
 Licensed under the Apache License, Version 2.0. See LICENSE.
 
-The finding format in skills/code-review, the commit rules in
-skills/git-conventions, and the agents in agents/ adapt skills and agents
-Copyright (c) 2026 Julius Brussee, MIT License.
-https://github.com/juliusbrussee/caveman
-
 The debug skill (skills/debug) adapts the systematic-debugging skill from
 superpowers, Copyright (c) 2025 Jesse Vincent, MIT License.
 https://github.com/obra/superpowers
