@@ -15,9 +15,9 @@ ONBOARDING_STEPS=('Host' 'Project stack' 'Target platform' 'Package manager' 'CI
   'Repository conventions' 'Test and coverage' 'Variant' 'Command form' 'Trace')
 STYLE_FILES='output-styles/lite.md output-styles/full.md'
 PREFLIGHT_TEMPLATE='skills/plan/templates/preflight.md'
-LINKLINT_FIXTURE='tests/fixtures/linklint.md'
+LINKLINT_FIXTURE='.github/scripts/fixtures/linklint.md'
 # Untracked copy of the fixture, created and removed by the fixture test (never committed).
-LINKLINT_UNTRACKED='tests/fixtures/linklint-untracked.md'
+LINKLINT_UNTRACKED='.github/scripts/fixtures/linklint-untracked.md'
 trap 'rm -f "$LINKLINT_UNTRACKED"' EXIT
 # Unlinked backticked .md reference, with optional :line or :line-line suffix (FR6).
 # POSIX ERE form used by the template, and the GNU-only PCRE form it replaces.
@@ -29,12 +29,12 @@ ONBOARDING_LINK='software-engineer/SKILL.md#onboarding'
 ONBOARDING_LINKERS='skills/code-review/gitlab.md skills/code-review/github.md skills/git-conventions/gitlab.md skills/git-conventions/github.md skills/plan/SKILL.md skills/c4-graph/inputs.md'
 
 # Shipped tree (NFR9): top-level entries of git ls-files allowed by the Claude Code plugin structure.
-SHIPPED_ALLOWLIST='.claude-plugin agents commands skills output-styles assets README.md LICENSE NOTICE .github tests'
+SHIPPED_ALLOWLIST='.claude-plugin agents commands skills output-styles assets README.md LICENSE NOTICE .github'
 # Workspace entries tolerated off main only; the last PR commit removes them.
 WORKSPACE_ENTRIES='docs CLAUDE.md'
 SECRET_PATTERN='-----BEGIN|ghp_[A-Za-z0-9]{20}|glpat-|AKIA[0-9A-Z]{16}'
 # Files that spell the secret patterns out: this lint and the workspace docs that specify it.
-SECRET_EXEMPT=':!tests/docs.test.sh :!docs'
+SECRET_EXEMPT=':!.github/scripts/docs.test.sh :!docs'
 SHIPPED_MAX_BYTES=1048576
 
 # Release 2.0.0 (FR8, FR9, NFR4): README sections, manifest version, CI matrix.
@@ -121,7 +121,7 @@ body_lines() {
 
 test_no_runtime_files() {
   local hits
-  hits=$(git ls-files | grep -E '\.(sh|ps1|cmd|js|py)$' | grep -v '^tests/')
+  hits=$(git ls-files | grep -E '\.(sh|ps1|cmd|js|py)$' | grep -v '^\.github/')
   if [ -z "$hits" ]; then ok test_no_runtime_files; else fail test_no_runtime_files "$(echo $hits)"; fi
 }
 

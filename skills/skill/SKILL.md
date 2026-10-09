@@ -118,7 +118,7 @@ approval, so prefer commands that only read and reason.
 ## Verify and install
 
 1. `claude plugin validate . --strict` from the repo root
-2. `bash tests/docs.test.sh`: enforces the shell rules, links, and shipped tree
+2. `bash .github/scripts/docs.test.sh`: enforces the shell rules, links, and shipped tree
 3. `claude --plugin-dir . -p "..."` to load from the working tree
 4. Add the skill, agent, or command to the README table
 5. Bump `version` in `.claude-plugin/plugin.json`: users only get updates on a version change

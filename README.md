@@ -36,7 +36,7 @@ ni is a Claude Code plugin, distributed through the [itsaspacestation marketplac
 | ni:lite | 3374 | 5618 | 36/36 | 899 |
 | ni:full | 3271 | 3445 | 36/36 | 521 |
 
-Setup: 10 prompts, sonnet replies, haiku judge, Claude Code 2.1.292, 2026-10-07, `tests/style-bench.sh`. ni:lite is 36% under concise on output tokens, ni:full 39% under ni:lite on visible characters, all facts kept.
+Setup: 10 prompts, sonnet replies, haiku judge, Claude Code 2.1.292, 2026-10-07, `scripts/style-bench.sh` in [ni-bench](https://github.com/itsaspacestation/ni-bench). ni:lite is 36% under concise on output tokens, ni:full 39% under ni:lite on visible characters, all facts kept.
 
 ### ni 1.8.0 vs 2.0.0 (ni-bench)
 
@@ -160,7 +160,7 @@ The choice persists as `outputStyle`: per project in `.claude/settings.local.jso
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
-An install is a full clone of this repository: `.github/` and `tests/` ship with the plugin but are never loaded; `docs/` and `CLAUDE.md` exist only on pull requests and are removed before merge.
+An install is a full clone of this repository: `.github/` ships with the plugin but is never loaded; `docs/` and `CLAUDE.md` exist only on pull requests and are removed before merge.
 
 ## Update
 Auto-update is off by default for third-party marketplaces. Turn it on in `/plugin`, under **Marketplaces**, or update by hand:
@@ -174,9 +174,7 @@ Restart Claude Code to apply.
 ```bash
 claude plugin validate . --strict
 claude --plugin-dir .   # load from the working tree
-BENCH_MODEL=sonnet bash tests/style-bench.sh   # NFR7 style benchmark, needs a logged-in Claude Code
-bash tests/docs.test.sh   # docs lint, runs in CI
-bash tests/docker-validate.sh   # clean-install check in Docker: plugin validate, /ni:help, one reply per style; host config untouched
+bash .github/scripts/docs.test.sh   # docs lint, runs in CI
 ```
 
 ## Release
