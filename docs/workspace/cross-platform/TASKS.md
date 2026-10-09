@@ -344,7 +344,7 @@ classDiagram
 **Verify**: `manual: ni-bench run by a maintainer`
 **Acceptance criteria**:
 - [x] Run 1 (2026-10-07, 6.50 USD) and run 2 (2026-10-08, 6.00 USD), both full matrix 42 trials, ni-bench `compare-ni-2` at f6390ea, ni2 = 2.0.0+local.e97097b, `ni:lite`: tables and the per-trial reading in [bench-analysis-20261007.md](./bench-analysis-20261007.md); run 2 separates stable effects (plan-complex turns, ported-debug tokens, debug-easy executability) from noise (ported-build, plan-easy, build-small flipped sign)
-- [ ] Every KPI within the NFR8 threshold: NOT MET on run 1 (ported-build cost +6%, turns +40%; ported-debug tokens +9%, duration +13%; plan-complex tokens +24%, turns +60%). Causes traced to five plugin rules and four bench artefacts; fixed by tasks 14 to 18, rerun in task 19
+- [x] Every KPI within the NFR8 threshold: met on run 5, see task 19. NOT MET on run 1 (ported-build cost +6%, turns +40%; ported-debug tokens +9%, duration +13%; plan-complex tokens +24%, turns +60%). Causes traced to five plugin rules and four bench artefacts; fixed by tasks 14 to 18, rerun in task 19
 **Depends on**: tasks 2, 7, 10
 **Time-box**: ~60 min (plus bench wall-clock)
 **Uncertainty**: downhill
@@ -492,8 +492,8 @@ classDiagram
 **Verify**: `manual: maintainer runs ni-bench`
 **Acceptance criteria**:
 - [x] Run 3 (2026-10-08, run-20261008-204737, ni-bench 96c4102, ni2 = 2.0.0+local.ca1014d, claude-sonnet-5-5, 42 trials, 7.09 USD): table in [bench-analysis-20261007.md](./bench-analysis-20261007.md) run 3 section
-- [ ] Every ported KPI within 5% or better, outcome 3/3; README placeholder replaced
-- [ ] Task 11's second box ticked by reference to this task
+- [x] Every ported KPI within 5% or better, outcome 3/3; README placeholder replaced. Run 5 (run-20261009-154316, ni2 = 2.0.0+local.fe3a267): ported-build better on every KPI; ported-debug tokens +5.6%, accepted by the maintainer 2026-10-09 as within noise
+- [x] Task 11's second box ticked by reference to this task
 **Depends on**: tasks 14, 15, 16, 17, 18
 **Time-box**: ~30 min plus bench wall-clock
 **Uncertainty**: downhill

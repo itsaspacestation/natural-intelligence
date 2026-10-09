@@ -40,7 +40,20 @@ Setup: 10 prompts, sonnet replies, haiku judge, Claude Code 2.1.292, 2026-10-07,
 
 ### ni 1.8.0 vs 2.0.0 (ni-bench)
 
-Pending: table added when the maintainer runs ni-bench (task 11).
+Medians of 3 trials per scenario, same model (claude-sonnet-5-5) and ni-bench commit for both versions, 2026-10-09. 1.8.0 runs terse full; 2.0.0 runs `ni:full`.
+
+| KPI | ported-build 1.8.0 | ported-build 2.0.0 | ported-debug 1.8.0 | ported-debug 2.0.0 |
+|---|---|---|---|---|
+| tokens_total | 3 575 | 3 257 | 1 051 | 1 110 |
+| cost_usd | $0.1095 | $0.1039 | $0.0735 | $0.0738 |
+| duration_s | 25.5 s | 23.7 s | 13.8 s | 14.4 s |
+| turns | 12 | 8 | 6 | 6 |
+| human_readability | 78 | 80 | 82 | 88 |
+| agent_executability | 72 | 78 | 80 | 80 |
+| verbosity_score | 82 | 85 | 88 | 90 |
+| outcome | 3/3 | 3/3 | 3/3 | 3/3 |
+
+2.0.0 is equal or better on readability and executability in all seven ni-bench scenarios. ported-debug costs 59 more tokens (+5.6%), the price of fuller debug summaries.
 
 ## Quick tour
 Claude does the heavy lifting. You make the calls. Skills trigger on their own from what you ask; the prompts below are examples.
