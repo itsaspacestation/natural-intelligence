@@ -559,7 +559,7 @@ classDiagram
 **Verify**: `claude plugin validate .`; the run
 **Acceptance criteria**:
 - [x] Both wordings landed; docs lint green
-- [ ] Rerun: plan-easy and debug-complex ni2 readability and executability equal or better than ni (medians, n=3)
+- [x] Rerun: plan-easy and debug-complex ni2 readability and executability equal or better than ni (medians, n=3); run 5, run-20261009-154316, all seven scenarios equal or better
 **Depends on**: task 22
 **Time-box**: ~20 min plus bench wall-clock
 **Uncertainty**: downhill

@@ -235,3 +235,20 @@ ported-build duration, debug-easy executability, plan-easy and build-small.
 - debug-complex: task 21's two-or-three-sentence cap dropped test file names and why the existing tests missed the bug.
 - debug-easy, ported-build: judge noise; the judge sees no tool calls, both arms get the same "only asserted" reason.
 - `ni:full` is not the cause. Fixes in task 23.
+
+## Run 5 (run-20261009-154316, ni2 = 2.0.0+local.fe3a267, ni:full, all seven scenarios, n=3)
+
+| Scenario | Readability ni→ni2 | Executability ni→ni2 | Tokens ni→ni2 |
+|---|---|---|---|
+| plan-easy | 88→88 | 85→90 | 2 464→2 999 (+22%) |
+| plan-complex | 90→90 | 90→90 | 19 818→19 566 (−1%) |
+| debug-easy | 85→88 | 62→75 | 677→769 (+14%) |
+| debug-complex | 88→88 | 72→78 | 1 062→1 131 (+6%) |
+| build-small | 82→85 | 78→80 | 2 237→2 449 (+9%) |
+| ported-debug | 82→88 | 80→80 | 1 051→1 110 (+5.6%) |
+| ported-build | 78→80 | 72→78 | 3 575→3 257 (−9%) |
+
+- Task 23 worked: ni2 readability and executability are equal or better than ni on all seven scenarios.
+- Outcome 3/3 for both arms everywhere.
+- NFR8 (ported scenarios): ported-build better on every KPI. ported-debug is within 5% on every KPI except tokens_total, +5.6% (59 tokens).
+- The token cost comes from the longer plans and debug summaries that task 23 asks for.
