@@ -112,9 +112,9 @@ Create `docs/workspace/<NAME>/adrs/` (the Write tool creates missing folders whe
 writes the first file). No shell command is needed.
 
 Create the workspace files in as few tool calls as the host allows: one Write per file is
-correct, but draft the small files (ADRs under 40 lines, PREFLIGHT.md) in the same turn as
-DESIGN.md. Never a shell heredoc. The number of files, not the number of turns, is the
-measure of a plan.
+correct, but draft the small files (ADRs under 40 lines) in the same turn as DESIGN.md;
+PREFLIGHT.md is never drafted, it is copied (Phase 4c). Never a shell heredoc. The number
+of files, not the number of turns, is the measure of a plan.
 
 Add a self-describing entry under `## Active workspaces` — this is the resume anchor (Phase 0 reads it; update it after every task; remove it at Phase 6). Name only the `plan` skill; per-session skills live in TASKS.md.
 
@@ -202,7 +202,7 @@ Task granularity: each task should be independently completable and testable (IN
 
 Before moving to Phase 5, the entire TASKS.md must pass the pre-flight gate. This is the last human checkpoint before autopilot.
 
-Copy [templates/preflight.md](templates/preflight.md) to the workspace as `PREFLIGHT.md` and tick every box on disk. Every box must be checked before autopilot starts. The plan-commit instruction lives in the template. The copied PREFLIGHT.md keeps the one-line link lint from the template; never expand it into per-shell variants.
+Copy [templates/preflight.md](templates/preflight.md) to the workspace as `PREFLIGHT.md` with one substitution of `<NAME>` (a single shell command or one Write of the template text), never draft it. Tick every box on disk. Every box must be checked before autopilot starts. The plan-commit instruction lives in the template. The copied PREFLIGHT.md keeps the one-line link lint from the template; never expand it into per-shell variants.
 
 ### Phase 5 — Implement (autopilot)
 

@@ -64,8 +64,10 @@ Four phases, in order. No phase is skipped because the bug looks simple.
 
 ## Evidence block
 
-The final summary closes with three plain text lines, not a fenced block and not a
-list. They carry the proof that the process happened, for a reviewer who sees only the
+The final summary is two or three sentences of prose (cause, fix, how it was verified)
+followed by three plain text lines, not a fenced block and not a list. No labelled bullet
+list before the lines; no "not committed" line unless the user asked about commits. The
+three lines carry the proof that the process happened, for a reviewer who sees only the
 summary:
 
 ```
