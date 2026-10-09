@@ -485,7 +485,7 @@ classDiagram
 **Constraints**:
 - Maintainer runs, from the ni-bench worktree: `./scripts/stage-ni-local.sh && docker compose build ni2 harness ni` then `BENCH_ARMS=ni,ni2 BENCH_N=3 ./scripts/bench.sh ported`; optionally the full matrix for the plan-complex check
 - Same model and ni-bench commit for both arms; label shows the new local sha
-- Add a third arm reading `ni2full` (same image, init hook writes `outputStyle: ni:full`) on the ported scenarios, so the lite-versus-full operating point is measured against 1.8.0 terse full; the README publishes the arm that meets NFR8, both if both do
+- Superseded 2026-10-09: no third arm; `ni2` itself runs `ni:full` from task 22 on, so the comparison is like-for-like with 1.8.0 terse full
 - NFR8 thresholds as written; a remaining regression is explained from traces or triggers another fix round (tasks 14 to 17 reopen)
 - README `### ni 1.8.0 vs 2.0.0 (ni-bench)` placeholder replaced with the final table (task 8 convention)
 **Tests**: the run is the test
@@ -536,7 +536,7 @@ classDiagram
 **Types**: none (ni-bench `compare-ni-2`, results tables)
 **Constraints**:
 - ni-bench: maintainer decision 2026-10-09: `ni2` switches to `outputStyle: ni:full` (like-for-like with 1.8.0 terse level full); no lite arm is benchmarked. Dockerfile.ni2 takes a `NI_STYLE` build arg defaulting to `ni:full`; check-isolation expects it
-- Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2 ni2full`, then `BENCH_ARMS=ni,ni2 BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
+- Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2`, then `BENCH_ARMS=ni,ni2 BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
 - Record the table here and in the analysis file; NFR8 verdict on the published scenarios; the README publishes the `ni:full` reading
 **Tests**: ni-bench pytest for the new arm
 **Verify**: `uv run pytest -q` in ni-bench; the run
@@ -620,7 +620,7 @@ Tasks: 14, 15, 16, 17, 18
 Tasks: 20, 21, 22
 **Skills**: `skill`, `software-engineer`, `evidence-based-analysis`
 **Checkpoint**: `bash tests/docs.test.sh && claude plugin validate .`; the task 22 run recorded
-**Commit point**: yes, `fix(plan): ...`, `fix(debug): ...` here; `feat(arms): ni2full` on `compare-ni-2`
+**Commit point**: yes, `fix(plan): ...`, `fix(debug): ...` here; `feat(arms): ni2 runs output style ni:full` on `compare-ni-2`
 
 ### Session 5 — Verdict and PR close (~0.5H, human)
 Tasks: 19 verdict, 13 (task 9 merged into 11 and 19)
