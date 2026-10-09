@@ -160,8 +160,6 @@ The choice persists as `outputStyle`: per project in `.claude/settings.local.jso
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
-An install is a full clone of this repository: `.github/` ships with the plugin but is never loaded; `docs/` and `CLAUDE.md` exist only on pull requests and are removed before merge.
-
 ## Update
 Auto-update is off by default for third-party marketplaces. Turn it on in `/plugin`, under **Marketplaces**, or update by hand:
 ```bash
@@ -185,10 +183,6 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 3. `claude plugin tag .` creates the `ni--v<version>` tag, then push the commit and the tag.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
-
-### 2.0.0
-2.0.0 drops the hook-based terse mode, which no longer works on current Claude Code, for ni's own output styles: run `/output-style ni:lite` or `/output-style ni:full`; `~/.claude/ni/terse` may be deleted.
-Language reference files are replaced by project onboarding (`ni:software-engineer`).
 
 ## Skills
 | Skill | Use when |

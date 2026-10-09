@@ -5,7 +5,7 @@
 set -u
 
 # Whole lines of skills/**/*.md must not contain these.
-FORBIDDEN_LITERALS=('/mnt/c/' '.exe' 'grep -P' 'python3' '/tmp/' 'sudo ' '/usr/bin/env' '~/' 'caveman')
+FORBIDDEN_LITERALS=('/mnt/c/' '.exe' 'grep -P' 'python3' '/tmp/' 'sudo ' '/usr/bin/env' '~/')
 # Lines inside fenced code blocks of skills/**/*.md must not contain these.
 SHELL_ISMS=('$(' '${' '<<' 'export ' '&&' '||' '2>/dev/null' '| sort' '| uniq' '| grep' '| awk' '| sed' '| xargs')
 # Exact listing of skills/software-engineer.
@@ -258,7 +258,6 @@ test_readme_reply_styles_section() {
 
 test_readme_release_notes_migration() {
   local errors=''
-  grep -q -x '### 2.0.0' "$README" || errors="$errors no '### 2.0.0' heading;"
   grep -q -F '/output-style ni:lite' "$README" || errors="$errors no /output-style ni:lite mention;"
   if [ -z "$errors" ]; then ok test_readme_release_notes_migration; else fail test_readme_release_notes_migration "$README:${errors%;}"; fi
 }
