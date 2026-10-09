@@ -57,5 +57,5 @@ Callers:
 - hooks/activate.js:40
 Tests:
 - tests/test_symlink_flag.js - 12 cases
-2 defs, 3 callers, 1 test file.
+2 definitions, 3 call sites, 1 test.
 ```

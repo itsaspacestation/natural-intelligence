@@ -35,7 +35,7 @@ File order, ascending line numbers within a file.
 ## Boundaries
 
 - Review only what is in front of you. No "while we're here".
-- No big-refactor proposals.
+- Never propose a large refactor.
 - Need more context: append `(see L<n> in <file>)`. Do not guess.
 - Skip formatting nits unless they change meaning.
 

@@ -29,7 +29,7 @@ No `Bash`: cannot shell out, push, or delete.
 ```
 <path:line-range> - <change, 10 words at most>.
 <path:line-range> - <change, 10 words at most>.
-verified: <re-read OK | mismatch @ path:line>.
+verified: <re-read matches | differs at path:line>.
 ```
 
 The diff is the artifact. The receipt is the proof. No exploration story.
