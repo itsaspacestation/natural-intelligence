@@ -6,9 +6,9 @@ multi-session trigger (see the triage in SKILL.md).
 ## Format
 
 One markdown file, four sections, nothing else. No PREFLIGHT.md, no adrs/ folder, no
-Mermaid diagram. A hard-to-reverse decision, if one appears, gets an ADR file; every
-other choice is an inline bullet. This applies to build tasks too: a small
-implementation task records its choices as bullets, not ADR files.
+Mermaid diagram. An ADR exists only for persistence or a wire protocol. Every other
+choice is an inline bullet: an additive flag, a CLI option, an output shape. This
+applies to build tasks too.
 
 ```markdown
 # <task> — plan
@@ -30,11 +30,20 @@ Resume: continue at the first unchecked task; re-run the last verify before trus
 
 ## Rules
 
+- Decisions: at most five bullets, one per question the brief leaves open. Never
+  restate what the brief fixes.
 - The `## Tasks` section is the machine layer: checkboxes, named tests, verify
   commands, the resume line. A few dozen words protect the crash, rate-limit, and
   compaction cases that the full TASKS.md protects on multi-session work.
-- Plan exactly what the brief asks. Extras become one out-of-scope line, never
-  sections or tasks.
+- Tasks are test-first by construction: each task names its test. Write no prose
+  about TDD or the red run. No baseline task, no "run existing tests" task.
+- Never name a skill or plugin inside the document.
+- No documentation or help-text task unless the brief asks. Help text belongs to the
+  task that adds the flag.
+- Out of scope: omit the section unless the brief invites scope creep. Three lines
+  at most. Extras become one line there, never sections or tasks.
+- Plan exactly what the brief asks.
+- The small route reads code and runs nothing. Commands run when the tasks do.
 - Code snippets stay illustrative — shapes and signatures, not implementations.
 - Tick boxes as tasks complete; the document is the progress tracker.
 

@@ -509,7 +509,7 @@ classDiagram
 **Tests**: `bash tests/docs.test.sh`
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`
 **Acceptance criteria**:
-- [ ] Rules landed; `grep -c 'at most five' skills/plan/small-plan.md` prints 1
+- [x] Rules landed; `grep -c 'at most five' skills/plan/small-plan.md` prints 1
 - [ ] Rerun (task 22): plan-easy ni2 tokens at least 15% under run 3 (2227) with readability and executability equal or better
 **Depends on**: task 19
 **Time-box**: ~30 min
@@ -525,24 +525,24 @@ classDiagram
 **Tests**: `bash tests/docs.test.sh`
 **Verify**: `bash tests/docs.test.sh && claude plugin validate .`
 **Acceptance criteria**:
-- [ ] Both wordings landed
+- [x] Both wordings landed
 - [ ] Rerun (task 22): no PREFLIGHT.md written by Write in ni2 plan traces; ported-debug ni2 tokens within 5% of ni
 **Depends on**: task 19
 **Time-box**: ~20 min
 **Uncertainty**: downhill
 
-### 22. `ni2full` arm and targeted rerun ([NFR8](./DESIGN.md#nfr8))
-**Goal**: Measure lite and full against 1.8.0 on the three scenarios the fixes target.
+### 22. ni2 on `ni:full`, targeted rerun ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Measure ni2 on `ni:full` against 1.8.0 terse full on the three scenarios the fixes target.
 **Types**: none (ni-bench `compare-ni-2`, results tables)
 **Constraints**:
-- ni-bench: service `ni2full` reusing Dockerfile.ni2 with a build arg or a second init hook writing `outputStyle: ni:full`; Arm entry `ni2full` (artifact glob as ni, verbosity outputStyle=ni:full); blind list, plugin-versions, check-isolation, report PLUGIN_NAMES updated; `arm_prompt_path` already strips trailing digits, so name the arm so the fallback reaches the `prompt-ni` variant (digits-only suffix: `ni3`), or extend the fallback to strip a `full` suffix
-- Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2 ni2full`, then `BENCH_ARMS=ni,ni2,ni2full BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
-- Record the table here and in the analysis file; NFR8 verdict per arm on the published scenarios; the README publishes the arm that meets NFR8, both if both do
+- ni-bench: maintainer decision 2026-10-09: `ni2` switches to `outputStyle: ni:full` (like-for-like with 1.8.0 terse level full); no lite arm is benchmarked. Dockerfile.ni2 takes a `NI_STYLE` build arg defaulting to `ni:full`; check-isolation expects it
+- Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2 ni2full`, then `BENCH_ARMS=ni,ni2 BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
+- Record the table here and in the analysis file; NFR8 verdict on the published scenarios; the README publishes the `ni:full` reading
 **Tests**: ni-bench pytest for the new arm
 **Verify**: `uv run pytest -q` in ni-bench; the run
 **Acceptance criteria**:
-- [ ] Arm added, tests green, isolation clean
-- [ ] Run recorded with SHA, labels, date; NFR8 verdict per arm
+- [ ] ni2 on ni:full, tests green, isolation clean
+- [ ] Run recorded with SHA, labels, date; NFR8 verdict
 **Depends on**: tasks 20, 21
 **Time-box**: ~45 min plus bench wall-clock
 **Uncertainty**: downhill
