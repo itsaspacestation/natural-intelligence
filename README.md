@@ -1,5 +1,7 @@
 <p align="center"><img src="assets/logo.svg" alt="ni" width="300"></p>
 
+[![Linux](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/linux.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/linux.yml) [![Windows](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/windows.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/windows.yml) [![macOS](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/macos.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/macos.yml)
+
 # ni
 
 **Never Claude alone.** You and I: Claude NI.
@@ -10,20 +12,48 @@ ni is a Claude Code plugin, distributed through the [itsaspacestation marketplac
 
 ## Benchmark vs other plugin
 
+Medians of 3 trials per scenario, [ni-bench](https://github.com/itsaspacestation/ni-bench), claude-sonnet-5-5, Claude Code 2.1.285, 2026-10-09. ni 2.0.0 runs the `ni:full` output style. Resource percentages are relative to the best arm (100%); 🏆 marks the best plugin.
+
 ### ported-build (superpowers-evals)
 
-| KPI | baseline | openspec | superpowers | ni |
+| KPI | baseline | openspec 1.14.1 | superpowers 6.4.2 | ni 2.0.0 |
 |---|---|---|---|---|
-| tokens_total | 100% (1 962 tok) | 40% (4 901 tok) | 54% (3 636 tok) | 🏆64% (3 084 tok) |
-| cost_usd | 100% ($0.0596) | 33% ($0.1804) | 49% ($0.1228) | 🏆58% ($0.1030) |
-| duration_s | 100% (15.1 s) | 30% (50.8 s) | 45% (33.6 s) | 🏆63% (23.8 s) |
-| turns | 100% (5) | 50% (10) | 62% (8) | 50% (10) |
+| tokens_total | 100% (1 854 tok) | 44% (4 187 tok) | 52% (3 548 tok) | 🏆53% (3 494 tok) |
+| cost_usd | 100% ($0.0547) | 34% ($0.1593) | 48% ($0.1151) | 🏆52% ($0.1058) |
+| duration_s | 100% (13.5 s) | 32% (42.0 s) | 52% (26.2 s) | 🏆53% (25.3 s) |
+| turns | 100% (4) | 44% (9) | 40% (10) | 🏆44% (9) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 55% (55) | 80% (80) | 62% (62) | 🏆80% (80) |
-| agent_executability | 40% (40) | 70% (70) | 55% (55) | 🏆78% (78) |
-| verbosity_score | 85% (85) | 82% (82) | 80% (80) | 🏆85% (85) |
+| human_readability | 62% (62) | 68% (68) | 68% (68) | 🏆82% (82) |
+| agent_executability | 45% (45) | 62% (62) | 62% (62) | 🏆80% (80) |
+| verbosity_score | 85% (85) | 78% (78) | 80% (80) | 🏆82% (82) |
+| outcome | 100% (3/3) | 67% (2/3) | 100% (3/3) | 100% (3/3) |
+| indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
+
+### ported-debug (superpowers-evals)
+
+| KPI | baseline | openspec 1.14.1 | superpowers 6.4.2 | ni 2.0.0 |
+|---|---|---|---|---|
+| tokens_total | 86% (664 tok) | 100% (571 tok) | 53% (1 073 tok) | 52% (1 088 tok) |
+| cost_usd | 97% ($0.0354) | 100% ($0.0341) | 44% ($0.0777) | 46% ($0.0735) |
+| duration_s | 90% (8.4 s) | 100% (7.5 s) | 57% (13.1 s) | 63% (11.9 s) |
+| turns | 100% (3) | 100% (3) | 50% (6) | 50% (6) |
+| user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
+| human_readability | 78% (78) | 80% (80) | 85% (85) | 🏆88% (88) |
+| agent_executability | 40% (40) | 40% (40) | 55% (55) | 🏆80% (80) |
+| verbosity_score | 90% (90) | 90% (90) | 88% (88) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
+
+### Reply styles vs built-in styles
+
+| style | output tokens | reply chars | facts kept | words |
+|---|---|---|---|---|
+| default | 4911 | 9175 | 36/36 | 1494 |
+| concise | 5286 | 10146 | 36/36 | 1617 |
+| ni:lite | 3374 | 5618 | 36/36 | 899 |
+| ni:full | 3271 | 3445 | 36/36 | 521 |
+
+Setup: 10 prompts, sonnet replies, haiku judge, Claude Code 2.1.292, 2026-10-07, `scripts/style-bench.sh` in [ni-bench](https://github.com/itsaspacestation/ni-bench). ni:lite is 36% under concise on output tokens, ni:full 39% under ni:lite on visible characters, all facts kept.
 
 ## Quick tour
 Claude does the heavy lifting. You make the calls. Skills trigger on their own from what you ask; the prompts below are examples.
@@ -31,15 +61,7 @@ Claude does the heavy lifting. You make the calls. Skills trigger on their own f
 ### 1. Set up
 Install as above, run `/reload-plugins`, then `/ni:help` to check the skills are loaded.
 
-### 2. Pick a terse level
-```
-/ni:terse lite   # default: no filler, full sentences
-/ni:terse full   # fragments, fewest tokens
-/ni:terse off
-```
-The level persists across sessions. See [Terse mode](#terse-mode).
-
-### 3. Claude plans, and I decide
+### 2. Claude plans, and I decide
 > /ni:plan a workspace for the invoice export feature.
 
 or simply
@@ -49,12 +71,12 @@ or simply
 
 For a small change, Claude Code's built-in plan mode is enough.
 
-### 4. Claude builds, and I steer
+### 3. Claude builds, and I steer
 > Fix the rounding bug in the VAT total.
 
 `ni:software-engineer`, `ni:tdd`, and `ni:debug` enforce plan, failing test, fix, and commit, with the root cause found before any fix. `ni:git-conventions` writes the commit and the MR or PR description, routing to the right forge from the origin remote. Nothing is pushed without your go.
 
-### 5. Claude reviews, and I judge
+### 4. Claude reviews, and I judge
 > /ni:code-review my branch before I open the MR.
 
 or simply
@@ -63,22 +85,30 @@ or simply
 
 `ni:code-review` checks design, tests, performance, security, and correctness, and cites every finding by file and line. You decide what to fix.
 
-### 6. Claude reviews others, and I sign off
+### 5. Claude reviews others, and I sign off
 ```
 /ni:review-loop group/project
 ```
 Works on GitLab and GitHub: pass a project path or URL, or let it read the origin remote. Reviews every MR or PR assigned to you in a loop, posts each finding as its own discussion, and reports the links. It never approves, merges, or resolves: those stay yours.
 
-### 7. Claude merges mine once approved
+### 6. Claude merges mine once approved
 ```
 /ni:merge-loop group/project
 ```
 Watches your own MRs or PRs in a loop and merges each one once every reviewer has approved, threads are resolved, and CI is green. Anything blocked is reported with its reason, never forced.
 
-### 8. Claude answers reviewers, and I approve
+### 7. Claude answers reviewers, and I approve
 > Address the unresolved threads on MR !42 (or PR #42).
 
 `ni:code-review` reads the threads, drafts the fixes and replies, and shows you a preview. Nothing is posted or resolved until you approve it.
+
+## Requirements
+- Claude Code with its own [system requirements](https://code.claude.com/docs/en/setup) per OS: macOS, Linux, or Windows (native or WSL).
+- Claude Code 2.1.251 or later for live output-style switching with `/output-style`.
+- `glab` for GitLab or `gh` for GitHub, depending on the forge the project uses.
+- Chrome, only for the c4-graph PNG export.
+
+ni ships no scripts and assumes no shell: the commands in the skills are shell-neutral and run in bash, PowerShell, and cmd.
 
 ## Install
 Inside Claude Code:
@@ -106,7 +136,21 @@ For a team, commit this to the project's `.claude/settings.json`. Claude Code of
 }
 ```
 
-For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini/`. 
+For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini/` (Windows: `%USERPROFILE%\.copilot`, `%USERPROFILE%\.cursor`, `%USERPROFILE%\.gemini`).
+
+## Reply styles
+ni ships two output styles. Switch live inside Claude Code:
+```
+/output-style ni:lite
+/output-style ni:full
+/output-style default
+```
+
+- `ni:lite`: no filler, full sentences, every technical fact kept, a scope budget per reply.
+- `ni:full`: the same budget, and it also drops articles and allows fragments.
+- `default`: Claude Code's built-in style.
+
+The choice persists as `outputStyle`: per project in `.claude/settings.local.json`, or for every project in `~/.claude/settings.json` (Windows: `%USERPROFILE%\.claude\settings.json`). Live switching needs Claude Code 2.1.251 or later.
 
 ## Layout
 | Path | Purpose |
@@ -114,8 +158,6 @@ For other agents, copy `skills/` into `~/.copilot/`, `~/.cursor/`, or `~/.gemini
 | `.claude-plugin/plugin.json` | Plugin manifest, name `ni` |
 | `agents/` | Subagents with compressed output, spawned as `ni:<agent>` |
 | `commands/` | Slash commands, invoked as `/ni:<command>` |
-| `output-styles/` | The `ni:terse` output style, auto-applied while the plugin is enabled |
-| `scripts/` | Hook scripts behind the terse reply mode |
 | `skills/` | The skills, invoked as `ni:<skill>` |
 
 ## Update
@@ -130,6 +172,7 @@ Restart Claude Code to apply.
 ```bash
 claude plugin validate . --strict
 claude --plugin-dir .   # load from the working tree
+bash .github/scripts/docs.test.sh   # docs lint, runs in CI
 ```
 
 ## Release
@@ -141,27 +184,10 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
-## Terse mode
-Terse rests on two mechanisms:
-
-1. **Output style.** The `ni:terse` output style overrides Claude Code's default communication style, which otherwise fights terse: it asks for full readable prose and forbids fragments. The style auto-applies while the plugin is enabled (`force-for-plugin`) and keeps the built-in coding instructions (`keep-coding-instructions`).
-2. **Hooks.** ni injects the ruleset at session start and reminds Claude of the active level every turn, so replies stay short even after context compaction.
-
-Adapted from [caveman](https://github.com/juliusbrussee/caveman) (MIT), with two levels only.
-
-| Level | Effect |
-|---|---|
-| `lite` | Default. No filler, hedging, preamble, or recap. Full sentences kept. |
-| `full` | Also drops articles, allows fragments. |
-| `off` | Nothing injected. |
-
-Switch with `/ni:terse lite|full|off`. The level persists in `~/.claude/ni/terse`. Persisted text (docs, MR text, comments, commit messages) follows lite rules whatever the level; code and security warnings stay in normal prose.
-
 ## Skills
 | Skill | Use when |
 |---|---|
-| `ni:terse` | The terse ruleset itself, for reference or manual invocation |
-| `ni:software-engineer` | Implementing, fixing, or refactoring with the plan, test, implement, commit workflow; Rust and .NET build, test, and coverage commands |
+| `ni:software-engineer` | Implementing, fixing, or refactoring with the plan, test, implement, commit workflow; onboarding on an existing project: commands discovered from the CI pipeline, wrappers, lock files, and repository conventions |
 | `ni:tdd` | Writing tests first, red-green-refactor |
 | `ni:debug` | Any failure or bug, before proposing a fix |
 | `ni:plan` | Multi-session work with a durable workspace, design doc, and ADRs |
@@ -180,12 +206,11 @@ User-invoked only; none loads on its own.
 | Command | Does |
 |---|---|
 | `/ni:help` | List the ni skills |
-| `/ni:terse` | Set the terse reply level |
 | `/ni:review-loop` | Review MRs or PRs assigned to me in a /loop on GitLab or GitHub, post findings as one-click applicable suggestions where possible, resolve its own threads once a new commit fixes the finding, report the links |
 | `/ni:merge-loop` | Merge my MRs or PRs approved by every reviewer in a /loop, report merged and blocked ones |
 
 ## Agents
-Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose. Adapted from caveman's cavecrew (MIT).
+Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose.
 
 | Agent | Use for | Returns |
 |---|---|---|
@@ -199,111 +224,113 @@ Rule of thumb: want the result in a third of the tokens, pick ni. Want prose, pi
 benchmark tool: [ni-bench](https://github.com/itsaspacestation/ni-bench)
 
 ### Latest report
+run-20261009-171135, 2026-10-09, n=3, claude-sonnet-5-5; ni 2.0.0 runs `ni:full`.
+
 #### plan-easy (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 81% (2 999 tok) | 55% (4 420 tok) | 53% (4 558 tok) | 100% (2 437 tok) |
-| cost_usd | 100% ($0.0747) | 56% ($0.1344) | 28% ($0.2663) | 82% ($0.0909) |
-| duration_s | 91% (25.4 s) | 49% (47.4 s) | 60% (39.0 s) | 100% (23.3 s) |
-| turns | 100% (4) | 50% (8) | 50% (8) | 57% (7) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 86% (2 481 tok) | 47% (4 564 tok) | 49% (4 423 tok) | 100% (2 146 tok) |
+| cost_usd | 100% ($0.0692) | 44% ($0.1572) | 52% ($0.1328) | 76% ($0.0910) |
+| duration_s | 84% (20.7 s) | 37% (46.5 s) | 54% (32.3 s) | 100% (17.4 s) |
+| turns | 100% (3) | 38% (8) | 38% (8) | 43% (7) |
 | user_turns | 100% (0) | 100% (0) | 0% (1) | 100% (0) |
-| plan_words | 73% (710 words) | 58% (883 words) | 51% (1 016 words) | 100% (515 words) |
-| machine_words | 0 words | 192 words | 0 words | 0 words |
+| plan_words | 72% (671 words) | 52% (933 words) | 56% (868 words) | 100% (484 words) |
+| machine_words | 0 words | 205 words | 0 words | 0 words |
 | human_readability | 88% (88) | 85% (85) | 88% (88) | 88% (88) |
-| agent_executability | 86% (86) | 82% (82) | 90% (90) | 88% (88) |
-| verbosity_score | 85% (85) | 72% (72) | 80% (80) | 85% (85) |
+| agent_executability | 85% (85) | 80% (80) | 88% (88) | 87% (87) |
+| verbosity_score | 82% (82) | 78% (78) | 80% (80) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### plan-complex (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 100% (8 218 tok) | 59% (13 916 tok) | 61% (13 381 tok) | 38% (21 432 tok) |
-| cost_usd | 100% ($0.1358) | 44% ($0.3074) | 29% ($0.4740) | 31% ($0.4362) |
-| duration_s | 100% (64.8 s) | 52% (124.7 s) | 66% (97.9 s) | 43% (150.8 s) |
-| turns | 100% (2) | 20% (10) | 36% (5.5) | 22% (9) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 100% (7 530 tok) | 64% (11 782 tok) | 68% (11 003 tok) | 39% (19 373 tok) |
+| cost_usd | 100% ($0.1287) | 45% ($0.2845) | 61% ($0.2097) | 32% ($0.4040) |
+| duration_s | 100% (57.3 s) | 57% (99.9 s) | 56% (103.0 s) | 43% (134.8 s) |
+| turns | 100% (3) | 30% (10) | 60% (5) | 23% (13) |
 | user_turns | 100% (0) | 100% (0) | 0% (1) | 100% (0) |
-| plan_words | 100% (2 589 words) | 73% (3 559 words) | 75% (3 455.5 words) | 93% (2 791 words) |
-| machine_words | 0 words | 870 words | 0 words | 2 649 words |
-| human_readability | 90% (90) | 90% (90) | 88% (88) | 90% (90) |
-| agent_executability | 85% (85) | 90% (90) | 90% (90) | 90% (90) |
-| verbosity_score | 78% (78) | 80% (80) | 78% (78) | 72% (72) |
-| outcome | 100% (3/3) | 100% (3/3) | 100% (2/2) | 100% (3/3) |
-| indeterminate | 0/3 | 0/3 | 1/3 | 0/3 |
+| plan_words | 99% (2 479 words) | 82% (2 989 words) | 93% (2 652 words) | 100% (2 458 words) |
+| machine_words | 0 words | 726 words | 0 words | 2 418 words |
+| human_readability | 90% (90) | 88% (88) | 88% (88) | 90% (90) |
+| agent_executability | 82% (82) | 88% (88) | 90% (90) | 90% (90) |
+| verbosity_score | 80% (80) | 82% (82) | 80% (80) | 72% (72) |
+| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
+| indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### debug-easy (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 100% (405 tok) | 100% (404 tok) | 59% (681 tok) | 63% (645 tok) |
-| cost_usd | 99% ($0.0324) | 100% ($0.0319) | 45% ($0.0704) | 49% ($0.0655) |
-| duration_s | 96% (6.4 s) | 100% (6.1 s) | 59% (10.4 s) | 64% (9.6 s) |
-| turns | 100% (4) | 100% (4) | 57% (7) | 57% (7) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 77% (381 tok) | 100% (295 tok) | 42% (709 tok) | 37% (801 tok) |
+| cost_usd | 97% ($0.0324) | 100% ($0.0314) | 44% ($0.0711) | 50% ($0.0629) |
+| duration_s | 100% (5.7 s) | 99% (5.7 s) | 61% (9.3 s) | 53% (10.6 s) |
+| turns | 75% (4) | 100% (3) | 43% (7) | 50% (6) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 62% (62) | 70% (70) | 78% (78) | 85% (85) |
-| agent_executability | 25% (25) | 35% (35) | 40% (40) | 65% (65) |
-| verbosity_score | 90% (90) | 90% (90) | 90% (90) | 88% (88) |
+| human_readability | 72% (72) | 60% (60) | 80% (80) | 88% (88) |
+| agent_executability | 35% (35) | 20% (20) | 35% (35) | 70% (70) |
+| verbosity_score | 90% (90) | 90% (90) | 90% (90) | 85% (85) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### debug-complex (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 100% (895 tok) | 96% (935 tok) | 64% (1 398 tok) | 76% (1 173 tok) |
-| cost_usd | 98% ($0.0469) | 100% ($0.0459) | 53% ($0.0861) | 58% ($0.0791) |
-| duration_s | 95% (11.9 s) | 100% (11.3 s) | 66% (17.1 s) | 77% (14.7 s) |
-| turns | 100% (5) | 100% (5) | 71% (7) | 56% (9) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 92% (845 tok) | 100% (778 tok) | 74% (1 058 tok) | 68% (1 149 tok) |
+| cost_usd | 99% ($0.0417) | 100% ($0.0415) | 53% ($0.0779) | 57% ($0.0734) |
+| duration_s | 87% (9.9 s) | 100% (8.6 s) | 66% (13.0 s) | 61% (14.0 s) |
+| turns | 100% (4) | 100% (4) | 67% (6) | 67% (6) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 82% (82) | 82% (82) | 88% (88) | 88% (88) |
-| agent_executability | 40% (40) | 35% (35) | 55% (55) | 80% (80) |
-| verbosity_score | 85% (85) | 88% (88) | 88% (88) | 88% (88) |
+| human_readability | 78% (78) | 72% (72) | 88% (88) | 88% (88) |
+| agent_executability | 35% (35) | 35% (35) | 60% (60) | 80% (80) |
+| verbosity_score | 88% (88) | 88% (88) | 88% (88) | 85% (85) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### build-small (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 87% (1 778 tok) | 100% (1 553 tok) | 46% (3 386 tok) | 54% (2 895 tok) |
-| cost_usd | 85% ($0.0612) | 100% ($0.0522) | 42% ($0.1255) | 45% ($0.1169) |
-| duration_s | 89% (16.3 s) | 100% (14.5 s) | 50% (29.0 s) | 62% (23.5 s) |
-| turns | 100% (5) | 100% (5) | 45% (11) | 38% (13) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 100% (1 300 tok) | 71% (1 819 tok) | 50% (2 592 tok) | 55% (2 373 tok) |
+| cost_usd | 100% ($0.0510) | 77% ($0.0663) | 46% ($0.1101) | 50% ($0.1017) |
+| duration_s | 100% (13.3 s) | 72% (18.5 s) | 56% (23.6 s) | 61% (21.6 s) |
+| turns | 100% (4) | 67% (6) | 50% (8) | 40% (10) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 72% (72) | 72% (72) | 85% (85) | 82% (82) |
-| agent_executability | 55% (55) | 55% (55) | 80% (80) | 80% (80) |
-| verbosity_score | 85% (85) | 82% (82) | 80% (80) | 80% (80) |
-| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
+| human_readability | 72% (72) | 62% (62) | 80% (80) | 85% (85) |
+| agent_executability | 55% (55) | 45% (45) | 72% (72) | 82% (82) |
+| verbosity_score | 80% (80) | 70% (70) | 82% (82) | 80% (80) |
+| outcome | 100% (3/3) | 67% (2/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### ported-debug (superpowers-evals)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 100% (613 tok) | 80% (771 tok) | 54% (1 134 tok) | 57% (1 067 tok) |
-| cost_usd | 100% ($0.0344) | 94% ($0.0366) | 44% ($0.0777) | 47% ($0.0725) |
-| duration_s | 98% (8.9 s) | 100% (8.7 s) | 67% (13.1 s) | 60% (14.6 s) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 86% (664 tok) | 100% (571 tok) | 53% (1 073 tok) | 52% (1 088 tok) |
+| cost_usd | 97% ($0.0354) | 100% ($0.0341) | 44% ($0.0777) | 46% ($0.0735) |
+| duration_s | 90% (8.4 s) | 100% (7.5 s) | 57% (13.1 s) | 63% (11.9 s) |
 | turns | 100% (3) | 100% (3) | 50% (6) | 50% (6) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 72% (72) | 82% (82) | 82% (82) | 82% (82) |
-| agent_executability | 35% (35) | 55% (55) | 55% (55) | 72% (72) |
-| verbosity_score | 88% (88) | 88% (88) | 88% (88) | 85% (85) |
+| human_readability | 78% (78) | 80% (80) | 85% (85) | 88% (88) |
+| agent_executability | 40% (40) | 40% (40) | 55% (55) | 80% (80) |
+| verbosity_score | 90% (90) | 90% (90) | 88% (88) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### ported-build (superpowers-evals)
 
-| KPI | baseline | openspec | superpowers | ni |
-|---|---|---|---|---|
-| tokens_total | 100% (1 962 tok) | 40% (4 901 tok) | 54% (3 636 tok) | 🏆64% (3 084 tok) |
-| cost_usd | 100% ($0.0596) | 33% ($0.1804) | 49% ($0.1228) | 🏆58% ($0.1030) |
-| duration_s | 100% (15.1 s) | 30% (50.8 s) | 45% (33.6 s) | 🏆63% (23.8 s) |
-| turns | 100% (5) | 50% (10) | 62% (8) | 50% (10) |
+| KPI | baseline | openspec | superpowers | ni 2.0.0 |
+| --- | --- | --- | --- | --- |
+| tokens_total | 100% (1 854 tok) | 44% (4 187 tok) | 52% (3 548 tok) | 53% (3 494 tok) |
+| cost_usd | 100% ($0.0547) | 34% ($0.1593) | 48% ($0.1151) | 52% ($0.1058) |
+| duration_s | 100% (13.5 s) | 32% (42.0 s) | 52% (26.2 s) | 53% (25.3 s) |
+| turns | 100% (4) | 44% (9) | 40% (10) | 44% (9) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 55% (55) | 80% (80) | 62% (62) | 🏆80% (80) |
-| agent_executability | 40% (40) | 70% (70) | 55% (55) | 🏆78% (78) |
-| verbosity_score | 85% (85) | 82% (82) | 80% (80) | 🏆85% (85) |
-| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
+| human_readability | 62% (62) | 68% (68) | 68% (68) | 82% (82) |
+| agent_executability | 45% (45) | 62% (62) | 62% (62) | 80% (80) |
+| verbosity_score | 85% (85) | 78% (78) | 80% (80) | 82% (82) |
+| outcome | 100% (3/3) | 67% (2/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 |

@@ -61,7 +61,7 @@ Before committing, the code must compile and tests must pass, none failing or ig
 
 ## Commit message
 
-Terse and exact. Why over what: the diff already says what changed.
+Short and exact. Why over what: the diff already says what changed.
 
 ### Subject
 
@@ -98,25 +98,23 @@ convention requires it.
 
 Examples:
 
-- Not: `feat: add a new endpoint to get user profile information from the database`
+- Not: `feat: added a new option so that users can export their invoices as CSV files`
 - Yes:
   ```
-  feat(api): add GET /users/:id/profile
+  feat(export): add --format csv to invoice export
 
-  Mobile client needs profile data without the full user payload
-  to reduce LTE bandwidth on cold-launch screens.
+  Finance imports invoices into a spreadsheet each month and
+  currently retypes them from the PDF export.
 
-  Closes #128
+  Closes #214
   ```
 - Breaking change:
   ```
-  feat(api)!: rename /v1/orders to /v1/checkout
+  refac(config)!: read settings from ni.toml instead of ni.json
 
-  BREAKING CHANGE: clients on /v1/orders must migrate to /v1/checkout
-  before 2026-06-01. Old route returns 410 after that date.
+  BREAKING CHANGE: ni.json is no longer read. Rename it to ni.toml
+  and convert the keys; startup fails with a pointer to the new file.
   ```
-
-Adapted from the MIT-licensed caveman-commit skill by Julius Brussee.
 
 ## Change description
 

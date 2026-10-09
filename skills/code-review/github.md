@@ -17,7 +17,8 @@ the red flags. Load it first. Git rules are in the
 
 ## Reading the review
 
-Find the pull request. With no number, `gh` uses the current branch's PR.
+Find the pull request. With no number, `gh` uses the current branch's PR. Commands
+follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).
 
 ```bash
 gh pr list --search "review-requested:@me"   # PRs waiting on me
@@ -25,25 +26,31 @@ gh pr list --author "@me"                    # my own PRs
 ```
 
 `gh` has no CLI verb for open review threads — no `--unresolved` equivalent. Go
-through GraphQL for both the human-readable pass and the structured data:
+through GraphQL for both the human-readable pass and the structured data. Write the
+query to `threads.graphql` with the Write tool:
 
-```bash
-# All review threads with resolution state, file, line, and comment ids
-gh api graphql -f query='
-  query($owner: String!, $repo: String!, $pr: Int!) {
-    repository(owner: $owner, name: $repo) {
-      pullRequest(number: $pr) {
-        reviewThreads(first: 100) {
-          nodes {
-            id isResolved path line startLine diffSide
-            comments(first: 50) {
-              nodes { databaseId author { login } body }
-            }
+```graphql
+query($owner: String!, $repo: String!, $pr: Int!) {
+  repository(owner: $owner, name: $repo) {
+    pullRequest(number: $pr) {
+      reviewThreads(first: 100) {
+        nodes {
+          id isResolved path line startLine diffSide
+          comments(first: 50) {
+            nodes { databaseId author { login } body }
           }
         }
       }
     }
-  }' -f owner=<owner> -f repo=<repo> -F pr=<number>
+  }
+}
+```
+
+Then run it; `-F key=@file` reads the file, and every field other than `query` is a
+GraphQL variable:
+
+```bash
+gh api graphql -F query=@threads.graphql -f owner=<owner> -f repo=<repo> -F pr=<number>
 ```
 
 Get `<owner>` and `<repo>` once with `gh repo view --json owner,name`. Filter to
@@ -109,11 +116,10 @@ SHA makes the comment outdated and its suggestion unapplyable:
 gh pr view <number> --json headRefOid --jq .headRefOid   # fresh head SHA
 ```
 
-Build the payload as a JSON file (fenced blocks do not survive inline shell quoting)
-and post the review:
+Write the payload to `review.json` with the Write tool (fenced blocks do not survive
+inline shell quoting):
 
-```bash
-cat > review.json <<'EOF'
+```json
 {
   "commit_id": "<headRefOid>",
   "event": "COMMENT",
@@ -128,7 +134,11 @@ cat > review.json <<'EOF'
     }
   ]
 }
-EOF
+```
+
+Then post the review:
+
+```bash
 gh api repos/{owner}/{repo}/pulls/{number}/reviews -X POST --input review.json
 ```
 
@@ -158,34 +168,36 @@ after the reply.
 replies endpoint takes the first comment's `databaseId`:
 
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies \
-  -f body=@body.md
+gh api repos/{owner}/{repo}/pulls/{number}/comments/{comment_id}/replies -F body=@body.md
 ```
 
-Write the body to a file first with a heredoc, because fenced blocks and backticks do
-not survive inline shell quoting. There is no uniqueness flag: to stay idempotent on a
-retry, re-read the thread and skip the ones that already have your note.
+Write the body to `body.md` first with the Write tool, because fenced blocks and
+backticks do not survive inline shell quoting. Only `-F` reads a file from `@file`;
+`-f body=@body.md` sends the literal string. There is no uniqueness flag: to stay
+idempotent on a retry, re-read the thread and skip the ones that already have your note.
 
 Start a new inline thread when there is no existing discussion on that line:
 
 ```bash
-gh api repos/{owner}/{repo}/pulls/{number}/comments \
-  -f body=@body.md -f commit_id=<headRefOid> -f path=src/Domain/Booking.cs \
-  -F line=42 -f side=RIGHT
+gh api repos/{owner}/{repo}/pulls/{number}/comments -F body=@body.md -f commit_id=<headRefOid> -f path=src/Domain/Booking.cs -F line=42 -f side=RIGHT
 # range: add -F start_line=40 -f start_side=RIGHT
 # removed line: -f side=LEFT with the old line number
 ```
 
 **2. Resolve** the thread. Resolution is GraphQL-only — the thread id is the one from
-the reading query, not a comment id:
+the reading query, not a comment id. Write the mutation to `resolve.graphql` with the
+Write tool:
+
+```graphql
+mutation($id: ID!) {
+  resolveReviewThread(input: {threadId: $id}) {
+    thread { id isResolved }
+  }
+}
+```
 
 ```bash
-gh api graphql -f query='
-  mutation($id: ID!) {
-    resolveReviewThread(input: {threadId: $id}) {
-      thread { id isResolved }
-    }
-  }' -f id=<thread-id>
+gh api graphql -F query=@resolve.graphql -f id=<thread-id>
 ```
 
 If the mutation fails, report that thread id and the error, then continue with the
@@ -199,5 +211,6 @@ re-run the reading query and check `isResolved` on every thread you touched.
 Check auth with `gh auth status`. On failure, tell the user to run `gh auth login`;
 do not attempt to create or read tokens.
 
-`gh` syntax in this file is from documented behaviour (`manual: no gh binary in this
-environment`); flag and field spellings were not proven by a live call.
+`gh api` flag semantics in this file (`-F key=@file` reads a file, `-f` does not) were
+checked against `gh api --help` (gh 2.101.0); field spellings were not proven by a live
+call.

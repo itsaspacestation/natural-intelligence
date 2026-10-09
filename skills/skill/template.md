@@ -23,7 +23,7 @@ Reference: [<topic>.md](<topic>.md). Read it when <condition>.
 
 ## <Topic>
 
-<One technique or table.>
+<One technique or table.> <Commands follow the shell rules in [onboarding.md](../software-engineer/onboarding.md#shell-rules).>
 
 Not: "<verbose or wrong example>"
 Yes: "<short, right example>"

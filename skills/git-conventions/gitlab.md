@@ -9,24 +9,27 @@ suggestions belong to the [`code-review`](../code-review/SKILL.md) skill.
 
 ## Create and describe
 
-Write the description markdown to a file, pick the reviewer (rule below), then:
+Write the description markdown to a file with the Write tool, pick the reviewer (rule
+below), then:
 
 ```bash
 glab mr create --title "<title>" --description-file <file> --assignee @me --reviewer <username>
 ```
 
+Commands follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).
+
 Reviewer selection, in order:
 1. `CODEOWNERS` exists (root, `.gitlab/` or `docs/`): the owners matching the touched paths.
 2. Otherwise the top recent committer of the touched files, excluding the author and bots:
-   `git log --since="6 months ago" --format=%ae -- <paths> | sort | uniq -c | sort -rn`
+   `git shortlog -sne --since="6 months ago" -- <paths>`
 3. No candidate: create without `--reviewer` and tell the user to pick one.
 
 The assignee is always me (`--assignee @me`).
 
-Edit an existing description:
+Edit an existing description. Write the description to a file with the Write tool, then:
 
 ```bash
-glab mr update <iid> --description "$(cat <file>)"
+glab mr update <iid> --description-file <file>
 ```
 
 ## Diff

@@ -123,8 +123,6 @@ Full prose instead of one line for: security findings (state the risk and a refe
 architectural disagreements (rationale needed), and an author new to the codebase who
 needs the why. Write the paragraph, then resume the one-line format.
 
-Adapted from the MIT-licensed caveman-review skill by Julius Brussee.
-
 ## Checklist
 
 ### Design

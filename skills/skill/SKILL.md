@@ -25,10 +25,9 @@ Template: [template.md](template.md). Copy it, then delete the sections you do n
 
 ```
 natural-intelligence/
-  .claude-plugin/plugin.json   manifest, hooks
+  .claude-plugin/plugin.json   manifest
   agents/<name>.md             subagents, spawned as ni:<name>
   commands/<name>.md           slash commands, run as /ni:<name>
-  scripts/*.sh                 hook scripts, bash only, no node
   skills/<name>/SKILL.md       one skill per folder, name = folder
   skills/<name>/<topic>.md     reference file, linked from SKILL.md
   README.md                    skill, agent, and command tables
@@ -71,7 +70,7 @@ Sections in this order. Drop any that has nothing to say.
 | `## <Topic>` | One heading per technique or table |
 | `## Boundaries` | What the skill never does, what it hands to another skill |
 
-Voice: lite terse prose, whatever the session level. Full sentences under 20 words,
+Voice: short plain prose. Full sentences under 20 words,
 active, imperative for instructions, one term per concept. No filler, no emoji, no
 decorative tables. Tables carry data or comparisons only.
 
@@ -79,6 +78,12 @@ Length: under 300 lines. Under 150 when the skill loads often. Move heavy refere
 (commands, API detail, long examples) to a sibling file and link it.
 
 Examples: one "Not" line and one "Yes" line beat a paragraph. Code blocks for commands.
+
+Snippets: ni runs on Linux, macOS, and Windows with or without WSL. Every command in a
+skill, agent, or command file follows the shell rules in
+[onboarding.md](../software-engineer/onboarding.md#shell-rules): one command per line,
+no shell syntax, each shell's form on its own line where the invocation differs. No
+hooks, no script that needs one particular shell.
 
 ## Linking
 
@@ -107,17 +112,18 @@ first lines, auto-clarity note. Output contracts are the point: rows, not prose.
 File `commands/<name>.md`. Frontmatter: `description`, optional `argument-hint`. Body
 is the prompt Claude receives. The placeholder `ARGUMENTS` with a dollar prefix carries the
 arguments (written out here because skills expand it too). Keep commands thin:
-point at a skill or a hook, do not restate rules. A command that needs a shell call
-prompts for approval, so let a hook do the write when one runs anyway.
+point at a skill, do not restate rules. A command that needs a shell call prompts for
+approval, so prefer commands that only read and reason.
 
 ## Verify and install
 
 1. `claude plugin validate . --strict` from the repo root
-2. `claude --plugin-dir . -p "..."` to load from the working tree
-3. Add the skill, agent, or command to the README table
-4. Bump `version` in `.claude-plugin/plugin.json`: users only get updates on a version change
-5. `/reload-plugins` in a running session, or start a new one
-6. Commit with the [`git-conventions`](../git-conventions/SKILL.md) skill
+2. `bash .github/scripts/docs.test.sh`: enforces the shell rules, links, and shipped tree
+3. `claude --plugin-dir . -p "..."` to load from the working tree
+4. Add the skill, agent, or command to the README table
+5. Bump `version` in `.claude-plugin/plugin.json`: users only get updates on a version change
+6. `/reload-plugins` in a running session, or start a new one
+7. Commit with the [`git-conventions`](../git-conventions/SKILL.md) skill
 
 Optional trigger test: run a prompt that should load the skill with `--model haiku -p`
 and ask which skills it used. Run one that should not. Adjust the description on a miss.

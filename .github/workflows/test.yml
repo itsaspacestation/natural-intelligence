@@ -1,0 +1,21 @@
+name: validate
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+
+jobs:
+  validate:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # No shell key: each runner uses its default shell (bash, pwsh, zsh), which proves the plugin is shell-neutral.
+      - run: npx --yes @anthropic-ai/claude-code plugin validate .
+      - run: bash .github/scripts/docs.test.sh
+        if: runner.os == 'Linux'

@@ -25,7 +25,9 @@ Assess the work against three triggers, in order:
 2. **Multi-session scope?** More than one session of work, more than ~5 tasks, or a
    domain model worth tracing → full workspace: load [complex-plan.md](complex-plan.md).
 3. **Hard-to-reverse decision?** Persistence, protocol, public contract → that
-   decision gets an ADR whatever the route; the route still follows trigger 2.
+   decision gets an ADR whatever the route; the route still follows trigger 2. On the
+   small route an additive flag, a CLI option, or an output shape is a decision bullet,
+   not an ADR. The small route writes an ADR only for persistence or a wire protocol.
 
 None of the above → small plan: load [small-plan.md](small-plan.md) and produce one
 document. Heavy scaffolding on a small task reads as noise to the human and costs
@@ -58,3 +60,4 @@ Claude Code's built-in plan mode covers interactive approval of an immediate cha
 once a plan should persist to disk, this skill owns it at either scale. Implementation
 methodology belongs to [`software-engineer`](../software-engineer/SKILL.md) and
 [`tdd`](../tdd/SKILL.md); commits to [`git-conventions`](../git-conventions/SKILL.md).
+Commands follow the shell rules in [`software-engineer`](../software-engineer/SKILL.md#onboarding).

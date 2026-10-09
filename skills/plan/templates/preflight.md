@@ -23,7 +23,8 @@ Copy this file to `docs/workspace/<NAME>/PREFLIGHT.md` at Phase 4c, tick every b
 - [ ] Every DESIGN.md section is filled or marked `N/A: <reason>` — no blank sections
 - [ ] No constraint is ambiguous enough that two reasonable agents would interpret it differently
 - [ ] Link lint green — every file reference in workspace docs is a clickable link:
-  `! grep -rPn '(?<!\[)\x60(?:[\w.-]+/)*[\w.-]+\.md(?::\d+(?:[-,:]\d+)?)?\x60' docs/workspace/<NAME> --include='*.md'`
+  `` ! git grep --untracked -nE '(^|[^[])`([[:alnum:]._-]+/)*[[:alnum:]._-]+\.md(:[0-9]+([-,:][0-9]+)?)?`' -- 'docs/workspace/<NAME>/*.md' ``
+  Run from the repository root; `--untracked` scans the workspace before it is staged, so nothing is added to the index; green when the command prints nothing (exit 1 means no match); in cmd use double quotes around the pattern.
 
 **Autopilot readiness**:
 - [ ] Build, test, and lint commands pass (green baseline) — run them now and confirm

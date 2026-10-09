@@ -1,7 +1,7 @@
 {
   "name": "ni",
-  "description": "ni, natural intelligence: a fresh, grounded set of engineering skills that keep the human in the loop. Say it nickel (French: spot on, good enough) or nice (UK/US). Terse replies by default, test-driven development, domain-driven design, git conventions, code and merge request reviews, .NET and Rust builds, planning for multi-session work, and evidence-based analysis that cites the code instead of guessing.",
-  "version": "1.8.0",
+  "description": "ni, natural intelligence: a fresh, grounded set of engineering skills that keep the human in the loop. Say it nickel (French: spot on, good enough) or nice (UK/US). Test-driven development, domain-driven design, git conventions, code and merge request reviews, build, test, and coverage on any project through onboarding, planning for multi-session work, and evidence-based analysis that cites the code instead of guessing.",
+  "version": "2.0.0",
   "author": {
     "name": "Clément Boudereau",
     "email": "cboudereau@gmail.com"
@@ -14,44 +14,21 @@
     "natural-intelligence",
     "nickel",
     "nice",
-    "terse",
     "skills",
     "tdd",
     "ddd",
     "git",
     "code-review",
     "gitlab",
-    "dotnet",
-    "rust",
     "planning",
     "evidence-based",
     "c4",
     "mermaid",
-    "diagrams"
-  ],
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/terse-activate.sh\"",
-            "timeout": 10,
-            "statusMessage": "Loading ni terse mode..."
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/terse-reinforce.sh\"",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  }
+    "diagrams",
+    "output-style",
+    "onboarding",
+    "windows",
+    "macos",
+    "cross-platform"
+  ]
 }

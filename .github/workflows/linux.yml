@@ -1,0 +1,11 @@
+name: linux
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    uses: ./.github/workflows/test.yml
+    with:
+      os: ubuntu-latest
