@@ -448,7 +448,7 @@ classDiagram
     | ni:lite | 3347 | 4608 | 36/36 (100%) | 745 |
     | ni:full | 3032 | 3339 | 34/36 (94%) | 506 |
 
-  - Run 2 (2026-10-08, same settings, exit 1, `tests/style-bench/last-run.md`): tokens and chars thresholds pass; ni:full 34/36 again. P4: the reply says the keys derived in the handshake "then encrypt and integrity-protect all application data"; the judge failed `default` P4 on the same fact for "After the handshake, both sides use those keys", so this is a judge false negative on a strict reading. P1: "opening a connection is costly" absent, real miss; the prompt is an explanation with no acronym and no code, so neither reworded rule reaches it. `default` also dropped to 34/36 (P4, P6). Not green on the facts gate; not re-run a third time (noise at n=1 per task brief). The wording stays: tokens and chars thresholds passed in both runs.
+  - Run 2 (2026-10-08, same settings, exit 1, [last-run.md](../../../tests/style-bench/last-run.md)): tokens and chars thresholds pass; ni:full 34/36 again. P4: the reply says the keys derived in the handshake "then encrypt and integrity-protect all application data"; the judge failed `default` P4 on the same fact for "After the handshake, both sides use those keys", so this is a judge false negative on a strict reading. P1: "opening a connection is costly" absent, real miss; the prompt is an explanation with no acronym and no code, so neither reworded rule reaches it. `default` also dropped to 34/36 (P4, P6). Not green on the facts gate; not re-run a third time (noise at n=1 per task brief). The wording stays: tokens and chars thresholds passed in both runs.
 
     | style | output tokens | reply chars | facts kept | words |
     |---|---|---|---|---|
@@ -535,7 +535,7 @@ classDiagram
 **Goal**: Measure lite and full against 1.8.0 on the three scenarios the fixes target.
 **Types**: none (ni-bench `compare-ni-2`, results tables)
 **Constraints**:
-- ni-bench: service `ni2full` reusing Dockerfile.ni2 with a build arg or a second init hook writing `outputStyle: ni:full`; Arm entry `ni2full` (artifact glob as ni, verbosity outputStyle=ni:full); blind list, plugin-versions, check-isolation, report PLUGIN_NAMES updated; `arm_prompt_path` already strips trailing digits, so name the arm so the fallback reaches `prompt-ni.md` (digits-only suffix: `ni3`), or extend the fallback to strip a `full` suffix
+- ni-bench: service `ni2full` reusing Dockerfile.ni2 with a build arg or a second init hook writing `outputStyle: ni:full`; Arm entry `ni2full` (artifact glob as ni, verbosity outputStyle=ni:full); blind list, plugin-versions, check-isolation, report PLUGIN_NAMES updated; `arm_prompt_path` already strips trailing digits, so name the arm so the fallback reaches the `prompt-ni` variant (digits-only suffix: `ni3`), or extend the fallback to strip a `full` suffix
 - Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2 ni2full`, then `BENCH_ARMS=ni,ni2,ni2full BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
 - Record the table here and in the analysis file; NFR8 verdict per arm on the published scenarios; the README publishes the arm that meets NFR8, both if both do
 **Tests**: ni-bench pytest for the new arm
