@@ -498,6 +498,55 @@ classDiagram
 **Time-box**: ~30 min plus bench wall-clock
 **Uncertainty**: downhill
 
+### 20. Small-plan route tightening ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Cut plan-easy output by about a quarter without losing a criterion.
+**Types**: [small-plan.md](../../../skills/plan/small-plan.md), [plan/SKILL.md](../../../skills/plan/SKILL.md)
+**Constraints**:
+- Evidence: run 3 plan-easy trace reading in [bench-analysis-20261007.md](./bench-analysis-20261007.md) (route correct 18/18; plans 460 to 570 words where criteria need about 300; Decisions 7 to 11 bullets; ADR on an additive flag; TDD prose and `ni:tdd` named in the deliverable; Out of scope written 6/6; help-text task 5/6; pytest run during planning)
+- small-plan.md: Decisions capped at five bullets, one per question the brief leaves open, never restating what the brief fixes; Tasks are test-first by construction: no prose about TDD or the red run, no baseline or "run existing tests" task, never name a skill or plugin inside the document; Out of scope omitted unless the brief invites scope creep, three lines at most; no documentation or help-text task unless the brief asks (help text belongs to the flag task); the small route reads code and runs nothing
+- SKILL.md triage trigger 3: on the small route an additive flag or output shape is a decision bullet, not an ADR; ADRs on the small route only for persistence or wire protocol
+- Short plain sentences; file lengths unchanged within 10 lines
+**Tests**: `bash tests/docs.test.sh`
+**Verify**: `bash tests/docs.test.sh && claude plugin validate .`
+**Acceptance criteria**:
+- [ ] Rules landed; `grep -c 'at most five' skills/plan/small-plan.md` prints 1
+- [ ] Rerun (task 22): plan-easy ni2 tokens at least 15% under run 3 (2227) with readability and executability equal or better
+**Depends on**: task 19
+**Time-box**: ~30 min
+**Uncertainty**: downhill
+
+### 21. PREFLIGHT copy and debug summary shape ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Close the two remaining traced causes from run 3.
+**Types**: [complex-plan.md](../../../skills/plan/complex-plan.md), [debug/SKILL.md](../../../skills/debug/SKILL.md)
+**Constraints**:
+- Evidence: run 3 reading: ni2 drafted PREFLIGHT.md with Write in 2/3 plan-complex trials (370 and 394 output words) where 1.8.0 copied the template with one substitution; ported-debug ni2 replies carry a 3 to 5 bullet labelled list before the evidence lines (+6% to +32% chars)
+- complex-plan.md Phase 1: remove PREFLIGHT.md from the "draft the small files" sentence; Phase 4c: "copy the template with one substitution of `<NAME>`, never draft it"
+- debug SKILL.md final summary: two or three sentences of prose (cause, fix, verification) followed by the three plain evidence lines; no labelled bullet list, no "not committed" line unless the user asked about commits
+**Tests**: `bash tests/docs.test.sh`
+**Verify**: `bash tests/docs.test.sh && claude plugin validate .`
+**Acceptance criteria**:
+- [ ] Both wordings landed
+- [ ] Rerun (task 22): no PREFLIGHT.md written by Write in ni2 plan traces; ported-debug ni2 tokens within 5% of ni
+**Depends on**: task 19
+**Time-box**: ~20 min
+**Uncertainty**: downhill
+
+### 22. `ni2full` arm and targeted rerun ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Measure lite and full against 1.8.0 on the three scenarios the fixes target.
+**Types**: none (ni-bench `compare-ni-2`, results tables)
+**Constraints**:
+- ni-bench: service `ni2full` reusing Dockerfile.ni2 with a build arg or a second init hook writing `outputStyle: ni:full`; Arm entry `ni2full` (artifact glob as ni, verbosity outputStyle=ni:full); blind list, plugin-versions, check-isolation, report PLUGIN_NAMES updated; `arm_prompt_path` already strips trailing digits, so name the arm so the fallback reaches `prompt-ni.md` (digits-only suffix: `ni3`), or extend the fallback to strip a `full` suffix
+- Run after tasks 20 and 21 land: `./scripts/stage-ni-local.sh`, `docker compose build ni2 ni2full`, then `BENCH_ARMS=ni,ni2,ni2full BENCH_N=3 BENCH_SCENARIOS=plan-easy,ported-build,ported-debug ./scripts/bench.sh matrix`
+- Record the table here and in the analysis file; NFR8 verdict per arm on the published scenarios; the README publishes the arm that meets NFR8, both if both do
+**Tests**: ni-bench pytest for the new arm
+**Verify**: `uv run pytest -q` in ni-bench; the run
+**Acceptance criteria**:
+- [ ] Arm added, tests green, isolation clean
+- [ ] Run recorded with SHA, labels, date; NFR8 verdict per arm
+**Depends on**: tasks 20, 21
+**Time-box**: ~45 min plus bench wall-clock
+**Uncertainty**: downhill
+
 ### 12. Shipped-tree lint ([NFR9](./DESIGN.md#nfr9))
 **Goal**: Fail CI when the repository grows outside the Claude Code plugin structure, over budget, or with a secret.
 **Types**: `tests/docs.test.sh`
@@ -567,8 +616,14 @@ Tasks: 14, 15, 16, 17, 18
 **Checkpoint**: `bash tests/docs.test.sh && claude plugin validate . && bash tests/style-bench.sh` here; `uv run pytest -q` and `./scripts/check-isolation.sh` in the ni-bench worktree
 **Commit point**: yes, `fix(onboarding): ...`, `fix(plan): ...`, `fix(styles): ...` here; `fix(harness): ...` on `compare-ni-2`
 
-### Session 4 — Rerun, Windows verification, PR close (~1H, human)
-Tasks: 19, 13 (task 9 merged into 11 and 19)
+### Session 4 — Bench feedback round 2 (~1.5H)
+Tasks: 20, 21, 22
+**Skills**: `skill`, `software-engineer`, `evidence-based-analysis`
+**Checkpoint**: `bash tests/docs.test.sh && claude plugin validate .`; the task 22 run recorded
+**Commit point**: yes, `fix(plan): ...`, `fix(debug): ...` here; `feat(arms): ni2full` on `compare-ni-2`
+
+### Session 5 — Verdict and PR close (~0.5H, human)
+Tasks: 19 verdict, 13 (task 9 merged into 11 and 19)
 **Skills**: `evidence-based-analysis`
 **Checkpoint**: manual observations recorded in task 9
 **Commit point**: yes, `docs(workspace): record windows smoke test`
