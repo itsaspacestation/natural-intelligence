@@ -218,3 +218,20 @@ task did not need (low). (4) write the probed interpreter name into verify comma
 (medium, portability). Bench: `ni:full` arm; judge tool-trace visibility; the
 cost-on-resume fix needs a two-turn trial to be exercised. Accept as noise:
 ported-build duration, debug-easy executability, plan-easy and build-small.
+
+## Run 4 (run-20261009-120453, ni2 = 2.0.0+local.801a5b9, ni:full)
+
+| Scenario | Readability ni→ni2 | Executability ni→ni2 |
+|---|---|---|
+| plan-easy | 88→85 | 86→82 |
+| debug-easy | 82→85 | 70→62 |
+| debug-complex | 88→85 | 80→70 |
+| ported-build | 80→80 | 78→72 |
+| build-small | 80→85 | 72→80 |
+| ported-debug | 82→85 | 70→72 |
+| plan-complex | 88→90 | 90→90 |
+
+- plan-easy: task 20 cut plans to 4–6 tasks and dropped function names. The one plan that kept them scored 88/87.
+- debug-complex: task 21's two-or-three-sentence cap dropped test file names and why the existing tests missed the bug.
+- debug-easy, ported-build: judge noise; the judge sees no tool calls, both arms get the same "only asserted" reason.
+- `ni:full` is not the cause. Fixes in task 23.

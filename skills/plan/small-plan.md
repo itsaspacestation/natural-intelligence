@@ -37,6 +37,11 @@ Resume: continue at the first unchecked task; re-run the last verify before trus
   compaction cases that the full TASKS.md protects on multi-session work.
 - Tasks are test-first by construction: each task names its test. Write no prose
   about TDD or the red run. No baseline task, no "run existing tests" task.
+- Each task names the file and the function it changes. One behaviour per task: the
+  flag wiring, the output shape, each option interaction, the error path, and the
+  unchanged default are separate tasks. The five-bullet cap applies to Decisions,
+  never to Tasks.
+- Each named test states its assertion with a concrete expected value.
 - Never name a skill or plugin inside the document.
 - No documentation or help-text task unless the brief asks. Help text belongs to the
   task that adds the flag.

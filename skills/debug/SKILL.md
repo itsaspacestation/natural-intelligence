@@ -64,8 +64,12 @@ Four phases, in order. No phase is skipped because the bug looks simple.
 
 ## Evidence block
 
-The final summary is two or three sentences of prose (cause, fix, how it was verified)
-followed by three plain text lines, not a fenced block and not a list. No labelled bullet
+The final summary is up to five sentences of prose: the cause and why the symptom
+appears only where it does, the fix at `file:line`, each regression test as
+`file::name`, and why the existing tests missed it. A claim about which inputs are or
+are not affected must match a reproduction you ran; otherwise omit it. When the bug has
+a threshold, include one boundary reproduction. Three plain text lines follow, not a
+fenced block and not a list. No labelled bullet
 list before the lines; no "not committed" line unless the user asked about commits. The
 three lines carry the proof that the process happened, for a reviewer who sees only the
 summary:

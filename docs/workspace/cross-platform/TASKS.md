@@ -541,10 +541,27 @@ classDiagram
 **Tests**: ni-bench pytest for the new arm
 **Verify**: `uv run pytest -q` in ni-bench; the run
 **Acceptance criteria**:
-- [ ] ni2 on ni:full, tests green, isolation clean
-- [ ] Run recorded with SHA, labels, date; NFR8 verdict
+- [x] ni2 on ni:full, tests green, isolation clean
+- [x] Run 4 (2026-10-09, run-20261009-120453, ni2 = 2.0.0+local.801a5b9, ni:full): resources improved; executability below ni on plan-easy, debug-easy, debug-complex, ported-build; NFR8 not met, causes in task 23
 **Depends on**: tasks 20, 21
 **Time-box**: ~45 min plus bench wall-clock
+**Uncertainty**: downhill
+
+### 23. Plan task granularity and debug summary content ([NFR8](./DESIGN.md#nfr8))
+**Goal**: Undo the over-tightening from tasks 20 and 21 that run 4 (run-20261009-120453) traced to the plan-easy and debug-complex drops.
+**Types**: none (markdown rules)
+**Constraints**:
+- small-plan.md: each task names file and function; one behaviour per task; each test states a concrete expected value; the five-bullet cap stays on Decisions only
+- debug SKILL.md: up to five sentences (cause and where the symptom shows, fix at `file:line`, tests as `file::name`, why existing tests missed it); input claims match a run reproduction; one boundary reproduction for threshold bugs
+- No scenario-specific symbol in either rule
+- Run: `./scripts/stage-ni-local.sh`, `docker compose build ni2`, then `BENCH_ARMS=ni,ni2 BENCH_N=3 BENCH_SCENARIOS=plan-easy,debug-complex ./scripts/bench.sh matrix`
+**Tests**: `bash tests/docs.test.sh`
+**Verify**: `claude plugin validate .`; the run
+**Acceptance criteria**:
+- [x] Both wordings landed; docs lint green
+- [ ] Rerun: plan-easy and debug-complex ni2 readability and executability equal or better than ni (medians, n=3)
+**Depends on**: task 22
+**Time-box**: ~20 min plus bench wall-clock
 **Uncertainty**: downhill
 
 ### 12. Shipped-tree lint ([NFR9](./DESIGN.md#nfr9))
@@ -617,7 +634,7 @@ Tasks: 14, 15, 16, 17, 18
 **Commit point**: yes, `fix(onboarding): ...`, `fix(plan): ...`, `fix(styles): ...` here; `fix(harness): ...` on `compare-ni-2`
 
 ### Session 4 — Bench feedback round 2 (~1.5H)
-Tasks: 20, 21, 22
+Tasks: 20, 21, 22, 23
 **Skills**: `skill`, `software-engineer`, `evidence-based-analysis`
 **Checkpoint**: `bash tests/docs.test.sh && claude plugin validate .`; the task 22 run recorded
 **Commit point**: yes, `fix(plan): ...`, `fix(debug): ...` here; `feat(arms): ni2 runs output style ni:full` on `compare-ni-2`
