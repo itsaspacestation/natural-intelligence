@@ -1,6 +1,6 @@
 <p align="center"><img src="assets/logo.svg" alt="ni" width="300"></p>
 
-![CI](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/test.yml/badge.svg)
+[![Linux](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/linux.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/linux.yml) [![Windows](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/windows.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/windows.yml) [![macOS](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/macos.yml/badge.svg)](https://github.com/itsaspacestation/natural-intelligence/actions/workflows/macos.yml)
 
 # ni
 

@@ -280,7 +280,7 @@ test_ci_workflow_matrix() {
   local runner errors=''
   if [ ! -f "$WORKFLOW" ]; then fail test_ci_workflow_matrix "$WORKFLOW missing"; return; fi
   for runner in "${CI_RUNNERS[@]}"; do
-    grep -q -F -- "$runner" "$WORKFLOW" || errors="$errors no $runner;"
+    grep -q -r -F -- "os: $runner" .github/workflows || errors="$errors no $runner caller;"
   done
   grep -q -F 'plugin validate' "$WORKFLOW" || errors="$errors no plugin validate step;"
   grep -q -E '^[[:space:]]*shell:' "$WORKFLOW" && errors="$errors has a shell: line;"
