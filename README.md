@@ -183,6 +183,10 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.3.0
+
+- `create-grafana-dashboards`: new skill; infrastructure as code read first, metrics chosen from the vendor's official monitoring page, rows by RED mirroring that page's sections, quotas drawn next to their consumption metric, a pricing preview with a log-derived alternative for every paid metric family, decided by the user, generated and linted JSON in template form, a first live review, README without vendor figures, and screenshots supplied by the human and anonymised by Claude.
+
 ### 2.2.0
 
 - `plan`: an ADR is written only when the decision is hard to reverse, surprising later, and weighed against alternatives.
@@ -217,6 +221,7 @@ The marketplace entry tracks the default branch, so the marketplace repository n
 | `ni:bias-analysis` | Comparative studies from field reports, reviews, or statistics: bias checklist sweep with verdicts |
 | `ni:skill` | Creating or editing a ni skill, agent, or command |
 | `ni:c4-graph` | C4 architecture diagrams as draw.io files on the C4 palette with line jumps on crossings, rendered in VS Code or draw.io and embedded as `.drawio.svg`; converts text, DOT, and draw.io sources |
+| `ni:create-grafana-dashboards` | Grafana dashboards for a service, cloud resource, or runtime: metrics from the vendor's official monitoring page, rows by RED or USE, pricing preview before keeping a paid metric family or its log alternative, README with screenshots supplied by the human |
 
 Run `/ni:help` inside Claude for the same list.
 
