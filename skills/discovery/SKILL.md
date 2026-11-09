@@ -32,9 +32,11 @@ Reference: [market-scan.md](market-scan.md). Read it at workflow step 3.
    legal, support). One sentence per risk, each marked `low`, `open`, or
    `blocking`, with its evidence.
 3. **Scan the market.** Browse what already solves the job: competitors, adjacent
-   products, open source, internal tools, and doing nothing. Compare by how well
-   each completes the user's job, never by feature checklist. Table format and
-   sources live in [market-scan.md](market-scan.md).
+   products, open source, internal tools, and doing nothing. Search the job in the
+   end user's words before any solution-shaped query, or adjacent players stay
+   invisible. Compare by how well each completes the user's job, never by feature
+   checklist. Query shapes, table format, and sources live in
+   [market-scan.md](market-scan.md).
 4. **Map opportunities before solutions** (Torres, opportunity solution tree).
    One outcome per tree: outcome, then unmet needs, then candidate solutions, then
    assumption tests. Hold at least three candidates before choosing, and "integrate
@@ -53,7 +55,7 @@ One page. Every claim cites a source: a user quote, a metric, a ticket, or a URL
 |---|---|
 | Outcome | The measurable user or business outcome, one sentence |
 | Evidence | Demand signals, each with its source |
-| Market | Scan verdict and the comparison table from step 3 |
+| Market | Full player list (rejected ones included), scan verdict, and the comparison table from step 3 |
 | Risks | The four risks, each `low`, `open`, or `blocking`, with why |
 | Verdict | Build, buy, test first, or drop, with the reason |
 | Kill criteria | The evidence that would reverse the verdict |

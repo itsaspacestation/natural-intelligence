@@ -188,6 +188,10 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.4.1
+
+- `discovery`: market scan searches the job in the end user's own words before any solution-shaped query, and the brief's Market section opens with the full player list, rejected players included, as proof the scan ran.
+
 ### 2.4.0
 
 - `discovery`: new skill; challenges a feature or product idea before any plan exists — outcome reframe, Cagan's four-risk check, a market scan compared by jobs to be done, and a one-page opportunity brief ending in build, buy, test first, or drop.
