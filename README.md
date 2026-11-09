@@ -183,6 +183,11 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.4.0
+
+- `discovery`: new skill; challenges a feature or product idea before any plan exists — outcome reframe, Cagan's four-risk check, a market scan compared by jobs to be done, and a one-page opportunity brief ending in build, buy, test first, or drop.
+- `plan`: boundary added — whether the feature should exist belongs to `discovery`; `plan` starts once the decision to build is made.
+
 ### 2.2.0
 
 - `plan`: an ADR is written only when the decision is hard to reverse, surprising later, and weighed against alternatives.
@@ -210,6 +215,7 @@ The marketplace entry tracks the default branch, so the marketplace repository n
 | `ni:tdd` | Writing tests first, red-green-refactor |
 | `ni:debug` | Any failure or bug, before proposing a fix |
 | `ni:plan` | Multi-session work with a durable workspace, design doc, and ADRs |
+| `ni:discovery` | Challenging a feature or product idea before any plan: outcome reframe, four-risk check, market scan by jobs to be done, opportunity brief with a build, buy, test first, or drop verdict |
 | `ni:git-conventions` | Any git operation, commit messages, MR or PR descriptions; routes to the forge from the origin remote and keeps the git-versus-forge boundary |
 | `ni:code-review` | Reviewing a change or answering reviewer comments, GitLab and GitHub threads via glab and gh included; posts findings as one-click applicable suggestions on both forges and resolves its own threads once a new commit fixes the finding |
 | `ni:retro` | After a session or a plan: turns friction into checks, conventions, or pointers; never touches product code |

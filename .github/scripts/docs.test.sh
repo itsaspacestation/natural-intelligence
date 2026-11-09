@@ -271,8 +271,8 @@ test_readme_names_no_language() {
   if [ -z "$hits" ]; then ok test_readme_names_no_language; else fail test_readme_names_no_language "$hits"; fi
 }
 
-test_plugin_version_is_2_2_0() {
-  if grep -q -F '"version": "2.2.0"' "$MANIFEST"; then ok test_plugin_version_is_2_2_0; else fail test_plugin_version_is_2_2_0 "$MANIFEST version is not 2.2.0"; fi
+test_plugin_version_is_2_4_0() {
+  if grep -q -F '"version": "2.4.0"' "$MANIFEST"; then ok test_plugin_version_is_2_4_0; else fail test_plugin_version_is_2_4_0 "$MANIFEST version is not 2.4.0"; fi
 }
 
 test_ci_workflow_matrix() {
@@ -301,7 +301,7 @@ test_readme_has_requirements_section
 test_readme_reply_styles_section
 test_readme_release_notes_migration
 test_readme_names_no_language
-test_plugin_version_is_2_2_0
+test_plugin_version_is_2_4_0
 test_ci_workflow_matrix
 
 [ "$FAILED" -eq 0 ] || { printf '%s test(s) failed\n' "$FAILED"; exit 1; }
