@@ -37,7 +37,6 @@ SECRET_PATTERN='-----BEGIN|ghp_[A-Za-z0-9]{20}|glpat-|AKIA[0-9A-Z]{16}'
 SECRET_EXEMPT=':!.github/scripts/docs.test.sh :!docs'
 SHIPPED_MAX_BYTES=1048576
 
-# Release 2.1.0 (FR8, FR9, NFR4) and 2.2.0 (version): README sections, manifest version, CI matrix.
 README='README.md'
 MANIFEST='.claude-plugin/plugin.json'
 WORKFLOW='.github/workflows/test.yml'
