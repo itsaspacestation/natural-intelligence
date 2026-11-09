@@ -188,6 +188,11 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.5.0
+
+- `ni:implementer`: new agent; executes one closed task from a plan workspace (red, green, refactor, verify, check off, commit) on `sonnet` by default, returns `done` / `blocked: <question>` / `gap: <adr slug>` plus evidence, and never asks the user — ambiguity goes back to the orchestrator.
+- `plan`: autopilot Phase 5 spawns `ni:implementer` per task (the agent file owns the per-task contract); on `blocked`, the orchestrator answers and resumes the same implementer where SendMessage is available, re-spawn as fallback.
+
 ### 2.4.1
 
 - `discovery`: market scan searches the job in the end user's own words before any solution-shaped query, and the brief's Market section opens with the full player list, rejected players included, as proof the scan ran.
@@ -250,13 +255,14 @@ User-invoked only; none loads on its own.
 | `/ni:merge-loop` | Merge my MRs or PRs approved by every reviewer in a /loop, report merged and blocked ones |
 
 ## Agents
-Subagent results land in the main context verbatim, so these three return structured one-liners instead of prose.
+Subagent results land in the main context verbatim, so these four return structured one-liners instead of prose.
 
 | Agent | Use for | Returns |
 |---|---|---|
 | `ni:investigator` | Where is X defined, what calls Y, map this directory | `path:line - symbol - note` rows |
 | `ni:builder` | Surgical edit of 1 or 2 known files | Diff receipt, or `too-big.` / `ambiguous.` |
 | `ni:reviewer` | Findings-only review of a diff, branch, or file | `path:L42: severity: problem. fix.` rows |
+| `ni:implementer` | One closed task from a plan workspace (autopilot Phase 5) | `done` / `blocked: question` / `gap: slug` + evidence |
 
 Rule of thumb: want the result in a third of the tokens, pick ni. Want prose, pick the vanilla agent.
 

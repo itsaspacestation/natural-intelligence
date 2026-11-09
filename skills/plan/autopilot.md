@@ -10,17 +10,7 @@ Work through TASKS.md session by session. **Execution is delegated — the orche
 
 **Why a per-task subagent loop**: inline execution has two failure modes — (a) the orchestrator fills its context, compaction fires, and the in-flight thread is lost; (b) the model drifts and fails to advance sequential work on its own. Delegating each task to a **fresh-context subagent** fixes both: no single window holds all of TASKS.md, and the orchestrator's loop — driven by the durable TASKS.md checklist, not by memory — advances tasks deterministically. After each subagent returns, the orchestrator **re-runs the session checkpoint itself** before trusting the result.
 
-**Session startup**: each task subagent loads every skill listed in its session's `Skills` field using the Skill tool. These provide the coding standards, build commands, and methodology for that session.
-
-**Per-task contract** (each task subagent):
-1. Read the task specification (goal, types, constraints) from TASKS.md
-2. Write a failing test that proves the acceptance criteria (red)
-3. Implement to make the test pass (green)
-4. Refactor if needed
-5. Run the verify command
-6. Check off the acceptance criteria in TASKS.md — **only when green**
-7. Update the root `CLAUDE.md` `task N/M` pointer, then commit — **only on success**, per the [`git-conventions`](../git-conventions/SKILL.md) skill
-8. Return to the orchestrator with one first line, then the evidence (red line, green line, commit hash): `done`, `blocked: <question>`, or `gap: <adr slug>`. A subagent never pauses and never asks the user; it returns.
+**The execution unit is `ni:implementer`** — its agent file owns the per-task contract: load the session's `Skills`, red test, green implementation, refactor, verify, check off only when green, commit only on success, and return one first line (`done`, `blocked: <question>`, or `gap: <adr slug>`) plus evidence. It never pauses and never asks the user; on hesitation it returns `blocked` to the orchestrator. The coding is cheap because the task is `closed`; the judgement stays with the orchestrator, which answers `blocked` questions on its own (stronger) model.
 
 **Durability invariants** (these make execution compaction- and crash-proof):
 - **Check off a box only when its criterion is green; commit only on success.** A half-done task leaves no checkmark and no commit, so a re-run re-attempts it from clean state (idempotent).
@@ -30,9 +20,9 @@ Work through TASKS.md session by session. **Execution is delegated — the orche
 **The orchestrator loop** (documented subagents; the user's "go" at pre-flight is the trigger):
 
 1. From TASKS.md, take the first unchecked task whose `Depends on` tasks are all done.
-2. Spawn a subagent for it (the Agent/Task tool), passing the task spec and instructing it to follow the per-task contract above. The subagent loads the session's `Skills` first. Pick its model by `Fit`: a `closed` task runs on a cheaper model (`haiku`; `sonnet` when the toolchain is heavy), because the checkpoint re-run in step 3 is the safety net, not the subagent's model. An `open` task never reaches this loop (pre-flight gate).
+2. Spawn `ni:implementer` for it (the Agent/Task tool), passing the task spec. Its agent file defaults the model to `sonnet`; override per task via the Agent tool's `model` parameter — `haiku` for a trivial `closed` task (mechanical edits, light toolchain), because the checkpoint re-run in step 3 is the safety net, not the implementer's model. An `open` task never reaches this loop (pre-flight gate).
 3. When it returns, re-run the verify/checkpoint command yourself. If green and the box is checked, advance the `CLAUDE.md` pointer and move on; otherwise re-open the task.
-4. On a `blocked` result, decide in a delegated context, record the decision and its reason in the task, and re-spawn; otherwise park the task and batch the question for the session checkpoint (see severity 2 below). On a `gap` result, draft/collect the `proposed` ADR, park that task and its dependents, and pick the next independent task (see severity 3 below).
+4. On a `blocked` result, decide in a delegated context, record the decision and its reason in the task, then **resume the same implementer with the answer** (SendMessage to the agent, where available — its context survives) or re-spawn fresh as the fallback; otherwise park the task and batch the question for the session checkpoint (see severity 2 below). On a `gap` result, draft/collect the `proposed` ADR, park that task and its dependents, and pick the next independent task (see severity 3 below).
 5. Repeat until the session's tasks are done, then run the session checkpoint and commit.
 
 The loop is driven by the **on-disk checklist**, not conversational memory — so a restart (new session, `/clear`, compaction) resumes by re-reading TASKS.md (Phase 0), not by remembering where it was. Long runs can be paced with [`/loop`](https://code.claude.com/docs/en/scheduled-tasks.md) so the orchestrator wakes, advances one task, and checkpoints. Sessions that must run concurrently can use [worktrees](https://code.claude.com/docs/en/worktrees.md) for isolation.
@@ -58,7 +48,7 @@ Discovery during implementation means the planning phase missed something. If Ph
 
 1. **Within constitution** (agent continues) — the agent needs to adjust types, add fields, or rework an approach, but the change respects all ADRs, invariants, and requirements. This is normal autonomous adaptation, not discovery. Continue without stopping.
 
-2. **Ambiguous** (subagent returns `blocked: <question>`) — the subagent is unsure whether a change respects the constitution. It leaves no checkmark and no commit, writes the question into the task, and returns. The orchestrator decides in a delegated context, records the decision and its reason in the task, and re-spawns; otherwise it parks the task and surfaces the batch of `blocked` questions at the session checkpoint. Nobody pauses mid-task to ask.
+2. **Ambiguous** (`ni:implementer` returns `blocked: <question>`) — the implementer is unsure whether a change respects the constitution. It leaves no checkmark and no commit, writes the question into the task, and returns. The orchestrator decides in a delegated context, records the decision and its reason in the task, and resumes the implementer with the answer (or re-spawns); otherwise it parks the task and surfaces the batch of `blocked` questions at the session checkpoint. Nobody pauses mid-task to ask.
 
 3. **Outside constitution** (agent analyzes, proposes, and keeps independent work moving) — an ADR decision is wrong, a requirement is missing or contradictory, an invariant cannot be satisfied, or a new external dependency is needed. The agent does **not** halt blankly and dump the raw problem on the human. It does the legwork autonomously and hands the human a *decision, not a problem*:
    - **Analyze the option space.** For a genuinely contested decision, fan out a judge panel (parallel subagents, one arguing each viable option); for a simple one, analyze inline.

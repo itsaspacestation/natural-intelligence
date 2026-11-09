@@ -27,7 +27,7 @@ This route is **explicitly orchestrated** — do not run every phase inline on t
 
 - **Phase 4a (Analysis)** — fan out read-only `Explore` subagents **in parallel**, one per axis (domain model, build/test/lint commands, interfaces/contracts, dependencies, existing patterns). Each burns its own context and returns structured findings; the orchestrator synthesizes the `## Analysis` section.
 - **Phases 2–3 (Design/ADRs)** — for a genuinely contested decision, spawn parallel agents arguing each viable option (judge panel), then synthesize the ADR. For simple decisions, draft inline.
-- **Phase 5 (Implementation)** — the orchestrator runs a **per-task subagent loop** (one fresh-context subagent per task), monitors, re-runs checkpoints, and surfaces gaps — it does **not** implement inline. (Optionally accelerated by Dynamic Workflows where available — see Phase 5.)
+- **Phase 5 (Implementation)** — the orchestrator runs a **per-task subagent loop** (one fresh-context `ni:implementer` per task), monitors, re-runs checkpoints, and surfaces gaps — it does **not** implement inline. (Optionally accelerated by Dynamic Workflows where available — see Phase 5.)
 
 **Why this matters**: an orchestrator that does everything inline fills its own context, triggers compaction, and loses the thread. Delegation keeps the orchestrator thin (so it rarely compacts) and gives each unit of work a fresh context (so no single window carries the whole job). This is what restores the "listen to the human while monitoring ongoing work" behavior.
 
