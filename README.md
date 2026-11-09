@@ -60,7 +60,12 @@ Claude does the heavy lifting. You make the calls. Skills trigger on their own f
 ### 1. Set up
 Install as above, run `/reload-plugins`, then `/ni:help` to check the skills are loaded.
 
-### 2. Claude plans, and I decide
+### 2. Claude challenges, and I decide what to build
+> Is a wishlist feature worth building? What already exists on the market?
+
+`ni:discovery` challenges the idea before any plan: it reframes the request as an outcome, checks the four big risks, scans the market by jobs to be done, and writes a one-page opportunity brief under `docs/discovery/`. The verdict — build, buy, test first, or drop — is yours. On build, `ni:plan` takes over.
+
+### 3. Claude plans, and I decide
 > /ni:plan a workspace for the invoice export feature.
 
 or simply
@@ -70,12 +75,12 @@ or simply
 
 For a small change, Claude Code's built-in plan mode is enough.
 
-### 3. Claude builds, and I steer
+### 4. Claude builds, and I steer
 > Fix the rounding bug in the VAT total.
 
 `ni:software-engineer`, `ni:tdd`, and `ni:debug` enforce plan, failing test, fix, and commit, with the root cause found before any fix. `ni:git-conventions` writes the commit and the MR or PR description, routing to the right forge from the origin remote. Nothing is pushed without your go.
 
-### 4. Claude reviews, and I judge
+### 5. Claude reviews, and I judge
 > /ni:code-review my branch before I open the MR.
 
 or simply
@@ -84,19 +89,19 @@ or simply
 
 `ni:code-review` checks design, tests, performance, security, and correctness, and cites every finding by file and line. You decide what to fix.
 
-### 5. Claude reviews others, and I sign off
+### 6. Claude reviews others, and I sign off
 ```
 /ni:review-loop group/project
 ```
 Works on GitLab and GitHub: pass a project path or URL, or let it read the origin remote. Reviews every MR or PR assigned to you in a loop, posts each finding as its own discussion, and reports the links. It never approves, merges, or resolves: those stay yours.
 
-### 6. Claude merges mine once approved
+### 7. Claude merges mine once approved
 ```
 /ni:merge-loop group/project
 ```
 Watches your own MRs or PRs in a loop and merges each one once every reviewer has approved, threads are resolved, and CI is green. Anything blocked is reported with its reason, never forced.
 
-### 7. Claude answers reviewers, and I approve
+### 8. Claude answers reviewers, and I approve
 > Address the unresolved threads on MR !42 (or PR #42).
 
 `ni:code-review` reads the threads, drafts the fixes and replies, and shows you a preview. Nothing is posted or resolved until you approve it.
@@ -183,6 +188,11 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.4.0
+
+- `discovery`: new skill; challenges a feature or product idea before any plan exists — outcome reframe, Cagan's four-risk check, a market scan compared by jobs to be done, and a one-page opportunity brief ending in build, buy, test first, or drop.
+- `plan`: boundary added — whether the feature should exist belongs to `discovery`; `plan` starts once the decision to build is made.
+
 ### 2.3.0
 
 - `create-grafana-dashboards`: new skill; infrastructure as code read first, metrics chosen from the vendor's official monitoring page, rows by RED mirroring that page's sections, quotas drawn next to their consumption metric, a pricing preview with a log-derived alternative for every paid metric family, decided by the user, generated and linted JSON in template form, a first live review, README without vendor figures, and screenshots supplied by the human and anonymised by Claude.
@@ -214,6 +224,7 @@ The marketplace entry tracks the default branch, so the marketplace repository n
 | `ni:tdd` | Writing tests first, red-green-refactor |
 | `ni:debug` | Any failure or bug, before proposing a fix |
 | `ni:plan` | Multi-session work with a durable workspace, design doc, and ADRs |
+| `ni:discovery` | Challenging a feature or product idea before any plan: outcome reframe, four-risk check, market scan by jobs to be done, opportunity brief with a build, buy, test first, or drop verdict |
 | `ni:git-conventions` | Any git operation, commit messages, MR or PR descriptions; routes to the forge from the origin remote and keeps the git-versus-forge boundary |
 | `ni:code-review` | Reviewing a change or answering reviewer comments, GitLab and GitHub threads via glab and gh included; posts findings as one-click applicable suggestions on both forges and resolves its own threads once a new commit fixes the finding |
 | `ni:retro` | After a session or a plan: turns friction into checks, conventions, or pointers; never touches product code |
