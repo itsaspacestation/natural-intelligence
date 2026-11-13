@@ -40,6 +40,21 @@ glab mr diff <iid>
 
 Local `git diff` covers uncommitted work only.
 
+## Review verdict
+
+Submit the verdict of the [`code-review`](../code-review/SKILL.md#verdict) skill.
+Write the summary to `verdict.md` with the Write tool first.
+
+```bash
+glab mr approve <iid>
+glab mr revoke <iid>
+glab api --method POST "projects/:id/merge_requests/<iid>/notes" -F body=@verdict.md
+```
+
+`approve` runs the first line. `changes required` posts the summary note, and runs
+`revoke` first when you approved an earlier head. GitLab has no request-changes state
+in `glab`, so the note carries the verdict.
+
 ## Merge gates
 
 Merge only when GitLab reports the MR mergeable and not a draft:

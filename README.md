@@ -87,13 +87,13 @@ or simply
 
 > Review my branch before I open the MR.
 
-`ni:code-review` checks design, tests, performance, security, and correctness, and cites every finding by file and line. You decide what to fix.
+`ni:code-review` checks design, tests, performance, security, and correctness, and cites every finding by file and line. It ends with a verdict: `approve`, or `changes required` with the mandatory findings listed.
 
-### 6. Claude reviews others, and I sign off
+### 6. Claude reviews others and gives a verdict
 ```
 /ni:review-loop group/project
 ```
-Works on GitLab and GitHub: pass a project path or URL, or let it read the origin remote. Reviews every MR or PR assigned to you in a loop, posts each finding as its own discussion, and reports the links. It never approves, merges, or resolves: those stay yours.
+Works on GitLab and GitHub: pass a project path or URL, or let it read the origin remote. Reviews every MR or PR assigned to you in a loop, posts each finding as its own discussion, resolves its own fixed threads, approves when no mandatory finding is left or requests changes otherwise, and reports the links. It never merges: that stays yours.
 
 ### 7. Claude merges mine once approved
 ```
@@ -188,6 +188,13 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.6.0
+
+- `code-review`: every review ends with a verdict line. `bug`, `risk`, and own threads still open are mandatory; `nit` and `q` are optional. `approve` when nothing mandatory is left, `changes required` with the list otherwise.
+- `code-review`: step 0 runs own-thread resolution on every re-review; step 5 submits the verdict to the forge without confirmation (approve, or request changes). Never on your own change.
+- `git-conventions`: review verdict commands for GitLab (`glab mr approve`, `revoke`, summary note) and GitHub (`gh pr review --approve`, `--request-changes`).
+- `/ni:review-loop`: submits the verdict per change and reports it first; a held conflicting finding blocks approval.
+
 ### 2.5.0
 
 - `ni:implementer`: new agent; executes one closed task from a plan workspace (red, green, refactor, verify, check off, commit) on `sonnet` by default, returns `done` / `blocked: <question>` / `gap: <adr slug>` plus evidence, and never asks the user — ambiguity goes back to the orchestrator.
@@ -235,7 +242,7 @@ The marketplace entry tracks the default branch, so the marketplace repository n
 | `ni:plan` | Multi-session work with a durable workspace, design doc, and ADRs |
 | `ni:discovery` | Challenging a feature or product idea before any plan: outcome reframe, four-risk check, market scan by jobs to be done, opportunity brief with a build, buy, test first, or drop verdict |
 | `ni:git-conventions` | Any git operation, commit messages, MR or PR descriptions; routes to the forge from the origin remote and keeps the git-versus-forge boundary |
-| `ni:code-review` | Reviewing a change or answering reviewer comments, GitLab and GitHub threads via glab and gh included; posts findings as one-click applicable suggestions on both forges and resolves its own threads once a new commit fixes the finding |
+| `ni:code-review` | Reviewing a change or answering reviewer comments, GitLab and GitHub threads via glab and gh included; posts findings as one-click applicable suggestions on both forges resolves its own threads once a new commit fixes the finding, and ends with a verdict it submits: approve, or request changes |
 | `ni:retro` | After a session or a plan: turns friction into checks, conventions, or pointers; never touches product code |
 | `ni:evidence-based-analysis` | Any claim about the codebase, cited by file and line |
 | `ni:bias-analysis` | Comparative studies from field reports, reviews, or statistics: bias checklist sweep with verdicts |
@@ -251,7 +258,7 @@ User-invoked only; none loads on its own.
 | Command | Does |
 |---|---|
 | `/ni:help` | List the ni skills |
-| `/ni:review-loop` | Review MRs or PRs assigned to me in a /loop on GitLab or GitHub, post findings as one-click applicable suggestions where possible, resolve its own threads once a new commit fixes the finding, report the links |
+| `/ni:review-loop` | Review MRs or PRs assigned to me in a /loop on GitLab or GitHub, post findings as one-click applicable suggestions where possible, resolve its own threads once a new commit fixes the finding, approve or request changes per the verdict, report the links |
 | `/ni:merge-loop` | Merge my MRs or PRs approved by every reviewer in a /loop, report merged and blocked ones |
 
 ## Agents

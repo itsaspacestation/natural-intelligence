@@ -31,14 +31,17 @@ git rules in the [`git-conventions`](../git-conventions/SKILL.md) skill.
 
 ## Giving a review
 
-Four steps, in this order. Do not start the checklist before step 1 has returned.
+Steps in this order. Do not start the checklist before step 1 has returned.
 When the diff is under 50 changed lines, run step 2 inline instead of with subagents.
 
 **Local target** (working tree, staged, or an unpushed branch — the common pre-push
 review): diff via local git against the merge-base of the target branch, no forge
-routing. Steps 1–3 unchanged; step 4 does not apply — the findings report is the
-deliverable; fixes go straight to the working tree on request, no suggestion fences.
+routing. Steps 1–3 unchanged, verdict included; steps 0, 4, and 5 do not apply — the
+findings report is the deliverable; fixes go straight to the working tree on request,
+no suggestion fences.
 
+0. **Own threads first.** On a change you reviewed before, run own-thread resolution
+   (below) before anything else. Its open threads feed the verdict.
 1. **Built-in review first.** Run Claude Code's built-in `code-review` skill (the diff
    reviewer for correctness bugs and simplification) on the same target, at the effort
    level the user gave, or medium when none was given. Keep its findings.
@@ -51,10 +54,29 @@ deliverable; fixes go straight to the working tree on request, no suggestion fen
    finding in the format below, prefixed with the item number; none without a `file:line`.
 3. **Merge and report once.** Drop checklist findings the built-in review already
    reported, dedupe across the two subagents, rank by severity, and report in one
-   message. Say which step each finding came from.
+   message. Say which step each finding came from. End with the verdict line below.
 4. **Post after approval.** Once the user approves the findings report, post each finding
    as its own diff-anchored discussion: suggestion per the ladder below, prose fallback,
    assembled per the read-first rule; forge commands in the reference files, routed as above.
+5. **Submit the verdict.** No confirmation needed. `approve`: approve the change.
+   `changes required`: post the verdict as the review summary, with the forge's
+   request-changes state where it has one. Commands: review verdict section of the
+   [gitlab.md](../git-conventions/gitlab.md#review-verdict) or
+   [github.md](../git-conventions/github.md#review-verdict) lifecycle file.
+
+## Verdict
+
+Every review ends with one verdict line. Mandatory findings decide it.
+
+| Mandatory | Optional |
+|---|---|
+| `bug`, `risk`, and own threads still open from an earlier pass | `nit`, `q` |
+
+- `approve` — no mandatory finding. Optional ones still post; they never block.
+- `changes required: <n> mandatory` — list each mandatory finding's `file:line` under it.
+
+Format: `Verdict: approve` or `Verdict: changes required: 2 mandatory (src/a.ts:L12, src/b.ts:L40)`.
+Never approve your own change: report the verdict and stop.
 
 Quick bug pass without the checklist: spawn `ni:reviewer` — same one-line format, nothing else.
 
@@ -83,7 +105,7 @@ Replacement lines are edited copies of the actual lines, exact indentation kept,
 never regenerated from memory or from comment text alone. The posting step above
 and the answering flow below both follow this rule.
 
-**Own-thread resolution.** On re-review of a change with new commits, check each
+**Own-thread resolution.** On re-review of a change (step 0), check each
 thread you yourself opened: re-read the anchored span at the new head and the diff
 since the finding was posted. When the posted fix, or an equivalent that removes the
 defect, is present, reply with one line naming the fixing commit, then resolve the
@@ -215,7 +237,8 @@ First review with no reviewer threads yet: use the checklist above.
 1. Always preview and wait for explicit approval before any write to the forge.
 2. Resolve every approved thread whose preview **Disposition** said `reply + resolve`.
    This is required, not optional, and happens in the same pass as the reply.
-   Never unresolve, approve, merge, close, or delete anything: those stay the user's calls.
+   Never unresolve, merge, close, or delete anything: those stay the user's calls.
+   Approval belongs to the verdict of a review you give, never to answering one.
 3. Follow the git rules in [`git-conventions`](../git-conventions/SKILL.md).
 4. Quote the reviewer's comment verbatim in the preview. Do not paraphrase feedback.
 5. Follow the read-first rule in the classification ladder before proposing any suggestion.

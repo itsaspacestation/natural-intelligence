@@ -34,12 +34,16 @@ Each iteration:
    the posts per the forge reference file — posting commands and payloads live
    there, never here. This command's standing instruction is the approval for these
    first-review comments.
-7. Report the posted comment links grouped by change: one section per change, links
-   listed under it.
-8. When a loop finding conflicts with an existing comment or thread, do not publish
+7. Submit the verdict of the `ni:code-review` skill on each change: approve when no
+   mandatory finding is left, request changes otherwise. Commands live in the
+   lifecycle reference file, never here. A held finding (step 9) blocks approval
+   until I decide.
+8. Report the posted comment links grouped by change: one section per change, the
+   verdict line first, links listed under it.
+9. When a loop finding conflicts with an existing comment or thread, do not publish
    that finding: hold it, ask me for help with both positions summarised, and post
    only what I decide. The standing approval never covers a conflicting comment.
-9. Carry state forward in the loop prompt: append the reviewed change ids with
+10. Carry state forward in the loop prompt: append the reviewed change ids with
    "skip unless new commits or reviewer replies".
 
 Keep it simple: the loop orchestrates only — the review itself follows the
@@ -58,8 +62,8 @@ waited on, for example "2 reviewed, 5 findings posted; !42 held (conflicting thr
 Set `noop: false` on a tick that posted or held a finding, `noop: true` on a no-change
 tick so quiet ticks collapse in the panel.
 
-Boundaries: never approve, merge, or close anything: those stay my calls; resolving is
-limited to my own threads per step 3. Replies to existing reviewer threads keep the
-preview-then-approval flow of `ni:code-review`; only first-review comments and own-thread
-resolution ride the standing approval. The loop dies with the session; a durable
+Boundaries: never merge or close anything: those stay my calls; resolving is limited
+to my own threads per step 3; approving follows the verdict per step 7. Replies to
+existing reviewer threads keep the preview-then-approval flow of `ni:code-review`; only
+first-review comments, own-thread resolution, and the verdict ride the standing approval. The loop dies with the session; a durable
 schedule is /schedule, not /loop.

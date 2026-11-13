@@ -44,6 +44,19 @@ gh pr diff <number>
 
 Local `git diff` covers uncommitted work only.
 
+## Review verdict
+
+Submit the verdict of the [`code-review`](../code-review/SKILL.md#verdict) skill.
+Write the summary to `verdict.md` with the Write tool first.
+
+```bash
+gh pr review <number> --approve
+gh pr review <number> --request-changes --body-file verdict.md
+```
+
+`approve` runs the first line. `changes required` runs the second; it also replaces
+an approval you gave an earlier head. GitHub refuses both on your own PR.
+
 ## Merge gates
 
 Merge only when GitHub reports the PR clean, approved, and not a draft:
