@@ -12,35 +12,35 @@ ni is a Claude Code plugin, distributed through the [itsaspacestation marketplac
 
 ## Benchmark vs other plugin
 
-Medians of 3 trials per scenario, [ni-bench](https://github.com/itsaspacestation/ni-bench), claude-sonnet-5-5, Claude Code 2.1.285, 2026-10-20. ni 2.2.0 runs the `ni:full` output style. Resource percentages are relative to the best arm (100%); 🏆 marks the best plugin.
+Medians of 3 trials per scenario, [ni-bench](https://github.com/itsaspacestation/ni-bench), claude-sonnet-5-5, Claude Code 2.1.285, 2026-11-13. ni 2.6.0 runs the `ni:full` output style. Resource percentages are relative to the best arm (100%); 🏆 marks the best plugin.
 
 ### ported-build (superpowers-evals)
 
-| KPI | baseline | openspec 1.14.3 | superpowers 7.0.0 | ni 2.2.0 | mattpocock 1.3.1 |
+| KPI | baseline | openspec 2.0.0 | superpowers 7.0.2 | ni 2.6.0 | mattpocock 1.3.2 |
 |---|---|---|---|---|---|
-| tokens_total | 100% (2 018 tok) | 43% (4 707 tok) | 47% (4 265 tok) | 38% (5 375 tok) | 39% (5 221 tok) |
-| cost_usd | 100% ($0.0608) | 37% ($0.1627) | 48% ($0.1261) | 35% ($0.1743) | 25% ($0.2473) |
-| duration_s | 100% (14.7 s) | 37% (39.2 s) | 52% (28.4 s) | 34% (42.8 s) | 27% (53.5 s) |
-| turns | 100% (5) | 50% (10) | 45% (11) | 33% (15) | 28% (18) |
+| tokens_total | 100% (1 822 tok) | 40% (4 526 tok) | 54% (3 361 tok) | 39% (4 652 tok) | 42% (4 341 tok) |
+| cost_usd | 100% ($0.0579) | 35% ($0.1647) | 51% ($0.1129) | 35% ($0.1650) | 29% ($0.2002) |
+| duration_s | 100% (13.9 s) | 33% (42.4 s) | 52% (26.6 s) | 26% (52.8 s) | 27% (51.4 s) |
+| turns | 100% (5) | 50% (10) | 50% (10) | 33% (15) | 33% (15) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 62% (62) | 68% (68) | 62% (62) | 🏆82% (82) | 72% (72) |
-| agent_executability | 40% (40) | 40% (40) | 55% (55) | 🏆85% (85) | 62% (62) |
-| verbosity_score | 85% (85) | 72% (72) | 78% (78) | 85% (85) | 68% (68) |
-| outcome | 67% (2/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
+| human_readability | 62% (62) | 62% (62) | 72% (72) | 🏆82% (82) | 62% (62) |
+| agent_executability | 35% (35) | 45% (45) | 55% (55) | 🏆82% (82) | 68% (68) |
+| verbosity_score | 85% (85) | 78% (78) | 82% (82) | 85% (85) | 80% (80) |
+| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 ### ported-debug (superpowers-evals)
 
-| KPI | baseline | openspec 1.14.3 | superpowers 7.0.0 | ni 2.2.0 | mattpocock 1.3.1 |
+| KPI | baseline | openspec 2.0.0 | superpowers 7.0.2 | ni 2.6.0 | mattpocock 1.3.2 |
 |---|---|---|---|---|---|
-| tokens_total | 100% (593 tok) | 93% (638 tok) | 55% (1 084 tok) | 53% (1 119 tok) | 50% (1 181 tok) |
-| cost_usd | 100% ($0.0344) | 99% ($0.0347) | 44% ($0.0779) | 50% ($0.0687) | 49% ($0.0702) |
-| duration_s | 100% (7.4 s) | 85% (8.7 s) | 58% (12.8 s) | 62% (11.9 s) | 63% (11.7 s) |
+| tokens_total | 98% (701 tok) | 100% (685 tok) | 64% (1 068 tok) | 57% (1 199 tok) | 65% (1 056 tok) |
+| cost_usd | 98% ($0.0361) | 100% ($0.0355) | 46% ($0.0773) | 46% ($0.0775) | 52% ($0.0686) |
+| duration_s | 92% (7.7 s) | 100% (7.1 s) | 66% (10.7 s) | 56% (12.7 s) | 55% (13.0 s) |
 | turns | 100% (3) | 100% (3) | 50% (6) | 50% (6) | 75% (4) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 78% (78) | 80% (80) | 85% (85) | 🏆88% (88) | 86% (86) |
-| agent_executability | 45% (45) | 45% (45) | 62% (62) | 🏆82% (82) | 62% (62) |
-| verbosity_score | 88% (88) | 88% (88) | 90% (90) | 88% (88) | 88% (88) |
+| human_readability | 78% (78) | 82% (82) | 85% (85) | 🏆90% (90) | 82% (82) |
+| agent_executability | 45% (45) | 55% (55) | 62% (62) | 🏆82% (82) | 62% (62) |
+| verbosity_score | 88% (88) | 90% (90) | 90% (90) | 88% (88) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 ### Reply styles vs built-in styles
@@ -277,113 +277,113 @@ Rule of thumb: want the result in a third of the tokens, pick ni. Want prose, pi
 benchmark tool: [ni-bench](https://github.com/itsaspacestation/ni-bench)
 
 ### Latest report
-run-20261020-143432, 2026-10-20, n=3, claude-sonnet-5-5; ni 2.2.0 runs `ni:full`.
+run-20261113-151108, 2026-11-13, n=3, claude-sonnet-5-5; ni 2.6.0 runs `ni:full`.
 
 #### plan-easy (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 88% (2 456 tok) | 54% (3 998 tok) | 53% (4 101 tok) | 100% (2 161 tok) | 54% (3 989 tok) |
-| cost_usd | 100% ($0.0674) | 52% ($0.1289) | 56% ($0.1210) | 77% ($0.0879) | 42% ($0.1621) |
-| duration_s | 100% (22.3 s) | 54% (41.2 s) | 70% (31.6 s) | 100% (22.2 s) | 65% (34.1 s) |
-| turns | 100% (4) | 50% (8) | 67% (6) | 57% (7) | 44% (9) |
+| tokens_total | 93% (2 434 tok) | 49% (4 612 tok) | 59% (3 857 tok) | 100% (2 260 tok) | 57% (3 977 tok) |
+| cost_usd | 100% ($0.0687) | 44% ($0.1569) | 61% ($0.1131) | 75% ($0.0916) | 41% ($0.1660) |
+| duration_s | 99% (19.8 s) | 48% (41.3 s) | 69% (28.4 s) | 100% (19.7 s) | 65% (30.5 s) |
+| turns | 100% (4) | 57% (7) | 67% (6) | 57% (7) | 40% (10) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 0% (1) |
-| plan_words | 48% (691 words) | 44% (753 words) | 34% (978 words) | 75% (443 words) | 100% (332 words) |
-| machine_words | 0 words | 189 words | 0 words | 0 words | 108 words |
-| human_readability | 90% (90) | 85% (85) | 88% (88) | 90% (90) | 85% (85) |
-| agent_executability | 85% (85) | 80% (80) | 85% (85) | 88% (88) | 72% (72) |
-| verbosity_score | 85% (85) | 80% (80) | 82% (82) | 88% (88) | 85% (85) |
+| plan_words | 72% (615 words) | 3% (15 118 words) | 45% (968 words) | 100% (440 words) | 87% (508 words) |
+| machine_words | 0 words | 226 words | 0 words | 0 words | 115 words |
+| human_readability | 90% (90) | 80% (80) | 88% (88) | 88% (88) | 88% (88) |
+| agent_executability | 85% (85) | 80% (80) | 85% (85) | 87% (87) | 80% (80) |
+| verbosity_score | 85% (85) | 78% (78) | 80% (80) | 88% (88) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### plan-complex (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 100% (8 166 tok) | 62% (13 126 tok) | 66% (12 340 tok) | 33% (24 395 tok) | 67% (12 215 tok) |
-| cost_usd | 100% ($0.1370) | 43% ($0.3212) | 31% ($0.4469) | 28% ($0.4880) | 42% ($0.3269) |
-| duration_s | 100% (63.4 s) | 61% (104.4 s) | 74% (85.4 s) | 38% (166.7 s) | 69% (92.3 s) |
-| turns | 100% (3) | 27% (11) | 60% (5) | 21% (14) | 25% (12) |
-| user_turns | 100% (0) | 100% (0) | 0% (1) | 100% (0) | 0% (1) |
-| plan_words | 85% (2 503 words) | 65% (3 269 words) | 65% (3 251 words) | 100% (2 129 words) | 80% (2 657 words) |
-| machine_words | 0 words | 730 words | 0 words | 3 610 words | 813 words |
-| human_readability | 88% (88) | 88% (88) | 88% (88) | 88% (88) | 88% (88) |
-| agent_executability | 62% (62) | 72% (72) | 80% (80) | 88% (88) | 62% (62) |
-| verbosity_score | 78% (78) | 82% (82) | 78% (78) | 72% (72) | 82% (82) |
-| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 67% (2/3) |
+| tokens_total | 100% (9 528 tok) | 92% (10 342 tok) | 86% (11 115 tok) | 36% (26 185 tok) | 71% (13 486 tok) |
+| cost_usd | 87% ($0.3042) | 100% ($0.2639) | 64% ($0.4110) | 52% ($0.5043) | 84% ($0.3134) |
+| duration_s | 100% (75.2 s) | 85% (88.9 s) | 95% (79.4 s) | 41% (182.3 s) | 74% (101.9 s) |
+| turns | 83% (6) | 50% (10) | 100% (5) | 38% (13) | 42% (12) |
+| user_turns | 0% (1) | 100% (0) | 0% (1) | 100% (0) | 0% (1) |
+| plan_words | 100% (2 595 words) | 15% (16 875 words) | 88% (2 939 words) | 88% (2 957 words) | 98% (2 659 words) |
+| machine_words | 0 words | 648 words | 0 words | 3 938 words | 806 words |
+| human_readability | 88% (88) | 82% (82) | 88% (88) | 90% (90) | 88% (88) |
+| agent_executability | 62% (62) | 60% (60) | 70% (70) | 90% (90) | 62% (62) |
+| verbosity_score | 80% (80) | 78% (78) | 80% (80) | 72% (72) | 80% (80) |
+| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### debug-easy (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 73% (388 tok) | 100% (285 tok) | 42% (674 tok) | 36% (800 tok) | 42% (672 tok) |
-| cost_usd | 94% ($0.0325) | 100% ($0.0307) | 43% ($0.0713) | 51% ($0.0601) | 50% ($0.0607) |
-| duration_s | 97% (5.7 s) | 100% (5.5 s) | 62% (8.9 s) | 60% (9.3 s) | 70% (7.9 s) |
-| turns | 75% (4) | 100% (3) | 43% (7) | 50% (6) | 60% (5) |
+| tokens_total | 100% (288 tok) | 74% (389 tok) | 42% (690 tok) | 42% (688 tok) | 37% (789 tok) |
+| cost_usd | 100% ($0.0305) | 95% ($0.0320) | 42% ($0.0719) | 50% ($0.0604) | 49% ($0.0619) |
+| duration_s | 100% (4.5 s) | 81% (5.5 s) | 58% (7.7 s) | 49% (9.1 s) | 50% (9.0 s) |
+| turns | 100% (3) | 75% (4) | 43% (7) | 50% (6) | 60% (5) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 70% (70) | 70% (70) | 85% (85) | 92% (92) | 85% (85) |
-| agent_executability | 35% (35) | 30% (30) | 40% (40) | 80% (80) | 55% (55) |
+| human_readability | 70% (70) | 70% (70) | 85% (85) | 90% (90) | 85% (85) |
+| agent_executability | 35% (35) | 35% (35) | 40% (40) | 80% (80) | 55% (55) |
 | verbosity_score | 90% (90) | 90% (90) | 90% (90) | 85% (85) | 85% (85) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### debug-complex (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 92% (912 tok) | 100% (835 tok) | 67% (1 244 tok) | 65% (1 293 tok) | 68% (1 219 tok) |
-| cost_usd | 97% ($0.0475) | 100% ($0.0462) | 54% ($0.0854) | 61% ($0.0760) | 63% ($0.0739) |
-| duration_s | 94% (11.1 s) | 100% (10.5 s) | 72% (14.6 s) | 67% (15.7 s) | 77% (13.7 s) |
+| tokens_total | 100% (832 tok) | 93% (896 tok) | 63% (1 312 tok) | 64% (1 306 tok) | 61% (1 353 tok) |
+| cost_usd | 100% ($0.0454) | 96% ($0.0475) | 53% ($0.0853) | 59% ($0.0771) | 60% ($0.0761) |
+| duration_s | 100% (9.2 s) | 90% (10.2 s) | 70% (13.1 s) | 75% (12.3 s) | 60% (15.4 s) |
 | turns | 100% (5) | 100% (5) | 71% (7) | 71% (7) | 100% (5) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 80% (80) | 80% (80) | 88% (88) | 90% (90) | 85% (85) |
-| agent_executability | 50% (50) | 55% (55) | 62% (62) | 82% (82) | 55% (55) |
-| verbosity_score | 85% (85) | 88% (88) | 88% (88) | 88% (88) | 85% (85) |
+| human_readability | 80% (80) | 82% (82) | 85% (85) | 90% (90) | 90% (90) |
+| agent_executability | 40% (40) | 45% (45) | 60% (60) | 82% (82) | 62% (62) |
+| verbosity_score | 88% (88) | 88% (88) | 90% (90) | 85% (85) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### build-small (home-grown)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 100% (1 781 tok) | 92% (1 942 tok) | 59% (3 038 tok) | 40% (4 435 tok) | 64% (2 783 tok) |
-| cost_usd | 100% ($0.0648) | 94% ($0.0688) | 47% ($0.1387) | 38% ($0.1722) | 26% ($0.2458) |
-| duration_s | 97% (16.7 s) | 100% (16.1 s) | 59% (27.3 s) | 36% (44.4 s) | 49% (33.0 s) |
-| turns | 100% (5) | 83% (6) | 50% (10) | 29% (17) | 42% (12) |
+| tokens_total | 100% (2 431 tok) | 54% (4 519 tok) | 74% (3 282 tok) | 57% (4 244 tok) | 95% (2 556 tok) |
+| cost_usd | 100% ($0.0749) | 40% ($0.1883) | 64% ($0.1163) | 49% ($0.1521) | 36% ($0.2085) |
+| duration_s | 100% (17.2 s) | 42% (40.5 s) | 71% (24.3 s) | 46% (37.4 s) | 49% (35.4 s) |
+| turns | 100% (6) | 50% (12) | 75% (8) | 46% (13) | 43% (14) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 70% (70) | 70% (70) | 78% (78) | 82% (82) | 80% (80) |
-| agent_executability | 55% (55) | 55% (55) | 60% (60) | 85% (85) | 72% (72) |
-| verbosity_score | 85% (85) | 72% (72) | 82% (82) | 85% (85) | 80% (80) |
+| human_readability | 72% (72) | 78% (78) | 80% (80) | 85% (85) | 72% (72) |
+| agent_executability | 50% (50) | 55% (55) | 78% (78) | 85% (85) | 55% (55) |
+| verbosity_score | 85% (85) | 72% (72) | 85% (85) | 85% (85) | 72% (72) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### ported-debug (superpowers-evals)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 100% (593 tok) | 93% (638 tok) | 55% (1 084 tok) | 53% (1 119 tok) | 50% (1 181 tok) |
-| cost_usd | 100% ($0.0344) | 99% ($0.0347) | 44% ($0.0779) | 50% ($0.0687) | 49% ($0.0702) |
-| duration_s | 100% (7.4 s) | 85% (8.7 s) | 58% (12.8 s) | 62% (11.9 s) | 63% (11.7 s) |
+| tokens_total | 98% (701 tok) | 100% (685 tok) | 64% (1 068 tok) | 57% (1 199 tok) | 65% (1 056 tok) |
+| cost_usd | 98% ($0.0361) | 100% ($0.0355) | 46% ($0.0773) | 46% ($0.0775) | 52% ($0.0686) |
+| duration_s | 92% (7.7 s) | 100% (7.1 s) | 66% (10.7 s) | 56% (12.7 s) | 55% (13.0 s) |
 | turns | 100% (3) | 100% (3) | 50% (6) | 50% (6) | 75% (4) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 78% (78) | 80% (80) | 88% (88) | 88% (88) | 88% (88) |
-| agent_executability | 45% (45) | 45% (45) | 62% (62) | 82% (82) | 62% (62) |
-| verbosity_score | 88% (88) | 88% (88) | 90% (90) | 88% (88) | 88% (88) |
+| human_readability | 78% (78) | 82% (82) | 85% (85) | 90% (90) | 82% (82) |
+| agent_executability | 45% (45) | 55% (55) | 62% (62) | 82% (82) | 62% (62) |
+| verbosity_score | 88% (88) | 90% (90) | 90% (90) | 88% (88) | 88% (88) |
 | outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
 
 #### ported-build (superpowers-evals)
 
-| KPI | baseline | openspec | superpowers | ni 2.2.0 | mattpocock |
+| KPI | baseline | openspec | superpowers | ni 2.6.0 | mattpocock |
 |---|---|---|---|---|---|
-| tokens_total | 100% (2 018 tok) | 43% (4 707 tok) | 47% (4 265 tok) | 38% (5 375 tok) | 39% (5 221 tok) |
-| cost_usd | 100% ($0.0608) | 37% ($0.1627) | 48% ($0.1261) | 35% ($0.1743) | 25% ($0.2473) |
-| duration_s | 100% (14.7 s) | 37% (39.2 s) | 52% (28.4 s) | 34% (42.8 s) | 27% (53.5 s) |
-| turns | 100% (5) | 50% (10) | 45% (11) | 33% (15) | 28% (18) |
+| tokens_total | 100% (1 822 tok) | 40% (4 526 tok) | 54% (3 361 tok) | 39% (4 652 tok) | 42% (4 341 tok) |
+| cost_usd | 100% ($0.0579) | 35% ($0.1647) | 51% ($0.1129) | 35% ($0.1650) | 29% ($0.2002) |
+| duration_s | 100% (13.9 s) | 33% (42.4 s) | 52% (26.6 s) | 26% (52.8 s) | 27% (51.4 s) |
+| turns | 100% (5) | 50% (10) | 50% (10) | 33% (15) | 33% (15) |
 | user_turns | 100% (0) | 100% (0) | 100% (0) | 100% (0) | 100% (0) |
-| human_readability | 62% (62) | 68% (68) | 62% (62) | 82% (82) | 72% (72) |
-| agent_executability | 40% (40) | 40% (40) | 55% (55) | 85% (85) | 62% (62) |
-| verbosity_score | 85% (85) | 72% (72) | 78% (78) | 85% (85) | 68% (68) |
-| outcome | 67% (2/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
+| human_readability | 62% (62) | 62% (62) | 72% (72) | 82% (82) | 62% (62) |
+| agent_executability | 35% (35) | 45% (45) | 55% (55) | 82% (82) | 68% (68) |
+| verbosity_score | 85% (85) | 78% (78) | 82% (82) | 85% (85) | 80% (80) |
+| outcome | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) | 100% (3/3) |
 | indeterminate | 0/3 | 0/3 | 0/3 | 0/3 | 0/3 |
