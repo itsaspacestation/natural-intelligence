@@ -188,6 +188,10 @@ Users only get an update when `version` in `.claude-plugin/plugin.json` changes.
 
 The marketplace entry tracks the default branch, so the marketplace repository needs no change for a release.
 
+### 2.7.0
+
+- `ni:orchestrator`: new main-thread agent; started with `claude --agent ni:orchestrator`, it holds the conversation with delegation tools only, routes every read, edit, command, and review to a subagent, and keeps one receipt row per worker.
+
 ### 2.6.0
 
 - `code-review`: every review ends with a verdict line. `bug`, `risk`, and own threads still open are mandatory; `nit` and `q` are optional. `approve` when nothing mandatory is left, `changes required` with the list otherwise.
@@ -272,6 +276,13 @@ Subagent results land in the main context verbatim, so these four return structu
 | `ni:implementer` | One closed task from a plan workspace (autopilot Phase 5) | `done` / `blocked: question` / `gap: slug` + evidence |
 
 Rule of thumb: want the result in a third of the tokens, pick ni. Want prose, pick the vanilla agent.
+
+### Orchestrator
+`ni:orchestrator` is not a worker: it runs as the main thread and delegates everything to the agents above.
+```bash
+claude --agent ni:orchestrator
+```
+To make it the default, set `"agent": "ni:orchestrator"` in `.claude/settings.json`; the flag overrides the setting. It has delegation tools only, so the main context holds the conversation and the receipts, nothing else. Workers may spawn their own subagents; set `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH` to `1` under `env` in the same file to turn nesting off. Delegation spends more tokens in total: use a normal session for a quick question or a one-file edit.
 
 ## Latest benchmark
 benchmark tool: [ni-bench](https://github.com/itsaspacestation/ni-bench)
